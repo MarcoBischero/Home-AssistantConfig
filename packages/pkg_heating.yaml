@@ -1,0 +1,597 @@
+#################################################################
+#                                                               #
+#                       Packages/Heating                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'HeatingSystem'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+
+
+#########################################################
+#                                                       #
+#                       GROUP                           #
+#                                                       #
+#########################################################
+group:
+  riscaldamento_pack:
+    name: Riscaldamento Pack
+    entities:
+      - input_number.t1
+      - input_number.t2
+      - input_number.t3
+      - input_number.thome
+      - input_number.taway
+      - input_number.offset_stanzetta
+      - input_number.offset_stanzaletto
+      - input_number.offset_cucina
+      - input_number.offset_salotto
+      - input_datetime.t1_after
+      - input_datetime.t2_after
+      - input_datetime.t3_1_after
+      - input_datetime.t3_2_after
+      - input_number.thermotemperatureset
+      - climate.riscaldamentosalotto
+      - climate.heat_cucina
+      - climate.heat_stanzaletto
+      - climate.heat_stanzetta
+      - sensor.riscaldamento_temperature
+      - sensor.riscaldamento_humidity
+      - sensor.riscaldamento_link
+      - sensor.riscaldamento_overlay
+      - sensor.riscaldamento_power
+      - sensor.riscaldamento_tado_mode
+      - sensor.riscaldamento_heating
+
+#########################################################
+#                                                       #
+#                        INPUT                          #
+#                                                       #
+#########################################################
+input_number:
+  thermotemperatureset:
+    name: Thermo Temperature Set
+    min: 16
+    max: 25
+    step: 0.5
+    icon: mdi:home-thermometer-outline
+  t1:
+    name: T1
+    min: 16
+    max: 25
+    step: 0.5
+    icon: mdi:timer-sand
+  t2:
+    name: T2
+    min: 16
+    max: 25
+    step: 0.5
+    icon: mdi:timer-sand
+  t3:
+    name: T3
+    min: 16
+    max: 25
+    step: 0.5
+    icon: mdi:timer-sand
+  thome:
+    name: THome
+    min: 0
+    max: 3
+    step: 0.5
+    icon: mdi:home-import-outline
+  taway:
+    name: TAway
+    min: -3
+    max: 0
+    step: 0.5
+    icon: mdi:home-export-outline
+  offset_cucina:
+    name: Offset Cucina
+    min: -3
+    max: 3
+    step: 0.5
+    icon: mdi:diameter
+  offset_salotto:
+    name: Offset Salotto
+    min: -3
+    max: 3
+    step: 0.5
+    icon: mdi:diameter
+  offset_stanzetta:
+    name: Offset Stanzetta
+    min: -3
+    max: 3
+    step: 0.5
+    icon: mdi:diameter
+  offset_stanzaletto:
+    name: Offset Stanza da Letto
+    min: -3
+    max: 3
+    step: 0.5
+    icon: mdi:diameter
+#########################################################
+input_datetime:
+  t1_after:
+    name: "T1 Start"
+    has_date: false
+    has_time: true
+  t2_after:
+    name: "T2 Start"
+    has_date: false
+    has_time: true
+  t3_1_after:
+    name: "T3-1 Start"
+    has_date: false
+    has_time: true
+  t3_2_after:
+    name: "T3-2 Start"
+    has_date: false
+    has_time: true
+#########################################################
+
+
+#########################################################
+#                                                       #
+#                        SCRIPT                         #
+#                                                       #
+#########################################################
+script:
+  heating_on:
+    sequence:
+      - service: climate.set_hvac_mode
+        data_template:
+          entity_id: "{{ entity_id }}"
+          hvac_mode: heat
+      - service: climate.set_temperature
+        data_template:
+          entity_id: "{{ entity_id }}"
+          temperature: 25
+  heating_off:
+    sequence:
+      - service: climate.turn_off
+        data_template:
+          entity_id: "{{ entity_id }}"
+  heating_set_temperature:
+    alias: Heating Set Temperature
+    mode: queued
+    sequence:
+      - variables:
+          entity: "{{ entity }}"
+          family_toggle: "{{ family_toggle }}"
+          temperature: "{{ temperature }}"
+          offset: "{{ offset }}"
+          entity_temp: "{{ entity_temp }}"
+      - service: climate.set_temperature
+        data:
+          entity_id: "{{ entity }}"
+          temperature: >
+            {% if family_toggle  == "on" %}
+              {{ temperature|float + entity_temp|float + states('input_number.thome')|float + offset|float }}
+            {% else %}
+              {{ temperature|float + entity_temp|float + states('input_number.taway')|float + offset|float }}
+            {% endif %}
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: mobile_app_iphonexs
+          title: "HeatingSystem"
+          message: "Temperatura {{ state_attr(entity,'friendly_name') }}: {{temperature}}°"
+     # - service: script.my_notify
+     #   data:
+     #     mute: 1
+     #     call_informare: 0
+     #     call_no_fatto_casuale: 1
+     #     call_no_annuncio: 1
+     #     notify: mobile_app_iphonexs
+     #     title: "DEBUG"
+     #     message: "Entity: {{ entity }}{{ '\n' -}}family_toggle: {{ family_toggle }}{{ '\n' -}}temperature: {{ temperature }}{{ '\n' -}}offset: {{ offset }}{{ '\n' -}}entity_temp: {{ entity_temp }}"
+#########################################################
+#                                                       #
+#                     AUTOMATION                        #
+#                                                       #
+#########################################################
+
+automation:
+    #----------------------------------------------------------------------------------------------------#
+    # Crea Gruppo Windows Open Detection in base all'attributo ID: + window_detection                    #
+    #----------------------------------------------------------------------------------------------------#
+  - id: create_window_detection_group
+    alias: Heating Crea Gruppo Automazioni Window Detection
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: automation.heating_crea_gruppo_automazioni_window_detection
+        to: 'on'
+    action:
+      - delay: 00:00:30
+      - service: group.set
+        data:
+          object_id: "automations_windows_open"
+          name: "Automazioni Windows Detection"
+          icon: mdi:group
+          entities: >
+            {%- for item in states.automation if ((item.attributes.id | lower).endswith('window_detection')) -%}
+            {{ item.entity_id }}{% if not loop.last %}, {% endif %}
+            {%- endfor -%}
+#########################################################
+#                                                       #
+#                     AUTOMAZIONI D/W                   #
+#                                                       #
+#########################################################
+  - id: heating_cucina_open_window_detection
+    alias: Heating Cucina Open Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwcucina
+        to: 'on'
+      - platform: state
+        entity_id: climate.hisense_cucina
+        to: 'dry'
+    action:
+      - service: climate.turn_off
+        entity_id: climate.heat_cucina
+  - id: heating_stanzetta_open_window_detection
+    alias: Heating Stanzetta Open Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwstanzetta
+        to: 'on'
+    action:
+      - service: climate.turn_off
+        entity_id: climate.heat_stanzetta
+  - id: heating_stanzaletto_open_window_detection
+    alias: Heating Stanza da Letto Open Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwstanzaletto
+        to: 'on'
+      - platform: state
+        entity_id: climate.hisense_stanzaletto
+        to: 'dry'
+    action:
+      - service: climate.turn_off
+        entity_id: climate.heat_stanzaletto
+  - id: heating_cucina_close_window_detection
+    alias: Heating Cucina Close Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwcucina
+        to: 'off'
+      - platform: state
+        entity_id: climate.hisense_cucina
+        from: 'dry'
+        to: 'off'
+    action:
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: climate.heat_cucina
+          hvac_mode: heat
+  - id: heating_stanzetta_close_window_detection
+    alias: Heating Stanzetta Close Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwstanzetta
+        to: 'off'
+    action:
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: climate.heat_stanzetta
+          hvac_mode: heat
+  - id: heating_stanzaletto_close_window_detection
+    alias: Heating Stanza da Letto Close Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwstanzaletto
+        to: 'off'
+      - platform: state
+        entity_id: climate.hisense_stanzaletto
+        from: 'dry'
+        to: 'off'
+    action:
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: climate.heat_stanzaletto
+          hvac_mode: heat
+
+#########################################################
+#                                                       #
+#               AUTOMAZIONI TERMOSTATO                  #
+#                                                       #
+#########################################################
+
+  - alias: Riscaldamento T1
+    id: riscaldamento_t1
+    trigger:
+      - platform: template
+        value_template: "{% if states('sensor.time') >= (state_attr('input_datetime.t1_after','timestamp')| int | timestamp_custom('%H:%M', False)) %}true{% endif %}"
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: input_number.t1
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: or
+          conditions:
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t1')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_stanzetta','temperature')| float != (states('input_number.t1')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_stanzaletto','temperature')| float != (states('input_number.t1')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_cucina','temperature')| float != (states('input_number.t1')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t1')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_stanzetta','temperature')| float != (states('input_number.t1')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_stanzaletto','temperature')| float != (states('input_number.t1')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_cucina','temperature')| float != (states('input_number.t1')|float + states('input_number.taway')|float) }}"
+    action:
+      - variables:
+         script_name: script.heating_set_temperature
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.riscaldamentosalotto
+            offset: "{{ states('input_number.offset_salotto')|float }}"
+            temperature: "{{ states('input_number.t1')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzetta
+            offset: "{{ states('input_number.offset_stanzetta')|float }}"
+            temperature: "{{ states('input_number.t1')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzaletto
+            offset: "{{ states('input_number.offset_stanzaletto')|float }}"
+            temperature: "{{ states('input_number.t1')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_cucina
+            offset: "{{ states('input_number.offset_cucina')|float }}"
+            temperature: "{{ states('input_number.t1')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+
+  - alias: Riscaldamento T2
+    id: riscaldamento_t2
+    trigger:
+      - platform: template
+        value_template: "{% if states('sensor.time') >= (state_attr('input_datetime.t2_after','timestamp')| int | timestamp_custom('%H:%M', False)) %}true{% endif %}"
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: input_number.t2
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: or
+          conditions:
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t2')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_stanzetta','temperature')| float != (states('input_number.t2')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_stanzaletto','temperature')| float != (states('input_number.t2')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_cucina','temperature')| float != (states('input_number.t2')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t2')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_stanzetta','temperature')| float != (states('input_number.t2')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_stanzaletto','temperature')| float != (states('input_number.t2')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_cucina','temperature')| float != (states('input_number.t2')|float + states('input_number.taway')|float) }}"
+    action:
+      - variables:
+         script_name: script.heating_set_temperature
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.riscaldamentosalotto
+            offset: "{{ states('input_number.offset_salotto')|float }}"
+            temperature: "{{ states('input_number.t2')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzetta
+            offset: "{{ states('input_number.offset_stanzetta')|float }}"
+            temperature: "{{ states('input_number.t2')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzaletto
+            offset: "{{ states('input_number.offset_stanzaletto')|float }}"
+            temperature: "{{ states('input_number.t2')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_cucina
+            offset: "{{ states('input_number.offset_cucina')|float }}"
+            temperature: "{{ states('input_number.t2')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+
+  - alias: Riscaldamento T3
+    id: riscaldamento_t3
+    trigger:
+      - platform: template
+        value_template: "{% if states('sensor.time') >= (state_attr('input_datetime.t3_1_after','timestamp')| int | timestamp_custom('%H:%M', False)) %}true{% endif %}"
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: input_number.t3
+      - platform: template
+        value_template: "{% if states('sensor.time') >= (state_attr('input_datetime.t3_2_after','timestamp')| int | timestamp_custom('%H:%M', False)) %}true{% endif %}"
+    condition:
+      condition: and
+      conditions:
+        - condition: or
+          conditions:
+            - condition: template
+              value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+            - condition: template
+              value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t3_2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: or
+          conditions:
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t3')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_stanzetta','temperature')| float != (states('input_number.t3')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_stanzaletto','temperature')| float != (states('input_number.t3')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.heat_cucina','temperature')| float != (states('input_number.t3')|float + states('input_number.thome')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t3')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_stanzetta','temperature')| float != (states('input_number.t3')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_stanzaletto','temperature')| float != (states('input_number.t3')|float + states('input_number.taway')|float) }}"
+            - "{{ is_state('input_boolean.family_home_toggle', 'off') and state_attr('climate.heat_cucina','temperature')| float != (states('input_number.t3')|float + states('input_number.taway')|float) }}"
+    action:
+      - variables:
+         script_name: script.heating_set_temperature
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.riscaldamentosalotto
+            offset: "{{ states('input_number.offset_salotto')|float }}"
+            temperature: "{{ states('input_number.t3')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzetta
+            offset: "{{ states('input_number.offset_stanzetta')|float }}"
+            temperature: "{{ states('input_number.t3')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzaletto
+            offset: "{{ states('input_number.offset_stanzaletto')|float }}"
+            temperature: "{{ states('input_number.t3')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_cucina
+            offset: "{{ states('input_number.offset_cucina')|float }}"
+            temperature: "{{ states('input_number.t3')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+
+#########################################################
+#                                                       #
+#                  AWAY/HOME MODE                       #
+#                                                       #
+#########################################################
+  - alias: Riscaldamento Home/Away
+    id: riscaldamento_home_away
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.family_home
+    action:
+      - variables:
+         script_name: script.heating_set_temperature
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.riscaldamentosalotto
+            entity_temp: "{{ state_attr('climate.riscaldamentosalotto','temperature')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_cucina
+            entity_temp: "{{ state_attr('climate.heat_cucina','temperature')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzaletto
+            entity_temp: "{{ state_attr('climate.heat_stanzaletto','temperature')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzetta
+            entity_temp: "{{ state_attr('climate.heat_stanzetta','temperature')|float }}"
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
+            
+  - alias: Thermo Temperature Set
+    id: thermo_temperature_set
+    trigger:
+      - platform: state
+        entity_id: input_number.thermotemperatureset
+    action:
+      - variables:
+         script_name: script.heating_set_temperature
+         temperature: "{{ states('input_number.thermotemperatureset')|float }}"
+         family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.riscaldamentosalotto
+            offset: "{{ states('input_number.offset_salotto')|float }}"
+            temperature: "{{ temperature }}"
+            family_toggle: "{{ family_toggle }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_cucina
+            offset: "{{ states('input_number.offset_cucina')|float }}"
+            temperature: "{{ temperature }}"
+            family_toggle: "{{ family_toggle }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzetta
+            offset: "{{ states('input_number.offset_stanzetta')|float }}"
+            temperature: "{{ temperature }}"
+            family_toggle: "{{ family_toggle }}" 
+      - service: script.turn_on
+        data:
+          entity_id: "{{ script_name }}"
+          variables:
+            entity: climate.heat_stanzaletto
+            offset: "{{ states('input_number.offset_stanzaletto')|float }}"     
+            temperature: "{{ temperature }}"
+            family_toggle: "{{ family_toggle }}" 
+                   

@@ -1,0 +1,168 @@
+#  smart_home:
+#    locale: "it-IT"
+#    endpoint: "https://api.eu.amazonalexa.com/v3/events"
+#    client_id: "amzn1.application-oa2-client.85a0e4dc244f42ad9b11d225fd429ff2"
+#    client_secret: "a6b113ec7f49bad791b2b9693e48a16eb1b680a180545ddfdfe2485bd069791c"
+#    filter:
+#      include_entities:
+#        - media_player.televisione
+#        - script.netflix
+#        - script.plex
+#        - script.youtube
+#        - script.climatizzami
+#        - script.luci_soffuse
+#        - script.canale_5
+#        - script.italia_1
+#        - script.tv_8
+#        - script.canale_31
+#        - script.cartoni_animati
+#        - script.zidu
+#        - script.chromecast
+#        - script.playstation
+#        - script.twdiretta
+#        - script.buonanotte
+#        - script.peperoni
+#        - script.riepilogo
+#        - script.playlist_preferita
+#        - light.lampada_comodino_noemi
+#        - light.lampada
+#        - light.lampada_tavolo1
+#        - light.lampada_tavolo2
+#        - light.lampada_stanzetta1
+#        - light.lampada_stanzetta2
+#        - light.lampada_stanzetta3
+#        - light.lampada_stanzaletto1
+#        - light.lampada_stanzaletto2
+#        - light.lampada_stanzaletto3
+#        - light.lampada_farino
+#        - light.switchtavolo
+#        - light.switchstanzaletto
+#        - light.switchfarino
+#        - light.corridoio
+#        - light.stanzetta
+#        - light.migateway
+#        - light.cappa
+#        - light.bagno
+#        - switch.allarme_perimetrale
+#        - switch.luce_baby
+#        - switch.comodino_marco
+#        - switch.comodino_noemi
+#        - switch.asciugatrice
+#        - switch.lavatrice
+#        - binary_sensor.dwporta
+#        - binary_sensor.dwstanzetta
+#        - binary_sensor.dwcucina
+#        - binary_sensor.dwbagno
+#        - binary_sensor.dwstanzaletto
+#        - sensor.temperature_salotto
+#        - sensor.temperature_cucina
+#        - sensor.temperature_bagno
+#        - sensor.temperature_stanzetta
+#        - sensor.temperature_stanzaletto
+#       # - sensor.humidity_salotto
+#       # - sensor.humidity_cucina
+#       # - sensor.humidity_bagno
+#       # - sensor.humidity_stanzetta
+#       # - sensor.humidity_stanzaletto
+#        - climate.climate_cucina
+#        - climate.climate_stanzaletto
+#        - climate.riscaldamentosalotto
+#        - climate.heat_cucina
+#        - climate.heat_stanzaletto
+#        - climate.heat_stanzetta
+    #entity_config:
+    #  media_player.televisione:
+    #    name: Televisione
+    #    description: La mia TV
+    #    display_categories: TV
+    #  script.netflix:
+    #    name: Netflix
+    #    display_categories: SCENE_TRIGGER
+    #  script.youtube:
+    #    name: YouTube
+    #    display_categories: SCENE_TRIGGER
+    #  script.plex:
+    #    name: Plex
+    #    display_categories: SCENE_TRIGGER
+    #  script.climatizzami:
+    #    name: Climatizzami
+    #    display_categories: SCENE_TRIGGER
+    #  script.riepilogo:
+    #    name: Riepilogo
+    #    display_categories: SCENE_TRIGGER
+    #  script.luci_soffuse:
+    #    name: Luci Soffuse
+    #    display_categories: SCENE_TRIGGER
+    #  script.buonanotte:
+    #    name: Buonanotte
+    #    display_categories: SCENE_TRIGGER
+    #  script.canale_5:
+    #    name: Canale5
+    #    display_categories: SCENE_TRIGGER
+    #  script.cartoni_animati:
+    #    name: Cartoni Animati
+    #    display_categories: SCENE_TRIGGER
+    #  script.italia_1:
+    #    name: Italia1
+    #    display_categories: SCENE_TRIGGER
+    #  script.tv_8:
+    #    name: TV8
+    #    display_categories: SCENE_TRIGGER
+    #  script.canale_31:
+    #    name: Canale31
+    #    display_categories: SCENE_TRIGGER
+    #  script.zidu:
+    #    name: Zidoo
+    #    display_categories: SCENE_TRIGGER
+    #  script.chromecast:
+    #    name: Chromecast
+    #    display_categories: SCENE_TRIGGER
+    #  script.playstation:
+    #    name: HDMI2
+    #    display_categories: SCENE_TRIGGER
+    #  script.twdiretta:
+    #    name: TV Diretta
+    #    display_categories: SCENE_TRIGGER
+    #  script.playlist_preferita:
+    #    name: Playlist Preferita
+    #    display_categories: SCENE_TRIGGER
+    #  binary_sensor.dwporta:
+    #    name: Sensore Porta
+    #    display_categories: CONTACT_SENSOR
+    #  binary_sensor.dwbagno:
+    #    name: Sensore Finestra Bagno
+    #    display_categories: CONTACT_SENSOR
+    #  binary_sensor.dwstanzetta:
+    #    name: Sensore Finestra Stanzetta
+    #    display_categories: CONTACT_SENSOR
+    #  binary_sensor.dwcucina:
+    #    name: Sensore Finestra Cucina
+    #    display_categories: CONTACT_SENSOR
+    #  binary_sensor.dwstanzaletto:
+    #    name: Sensore Finestra Stanza da Letto
+    #    display_categories: CONTACT_SENSOR
+    #  climate.climate_cucina:
+    #    name: Condizionatore Cucina
+    #    display_categories: THERMOSTAT
+    #  climate.climate_stanzaletto:
+    #    name: Condizionatore Stanza da Letto
+    #    display_categories: THERMOSTAT
+    #  climate.heat_cucina:
+    #    name: Riscaldamento Cucina
+    #    display_categories: THERMOSTAT
+    #  climate.riscaldamentosalotto:
+    #    name: Riscaldamento Salotto
+    #    display_categories: THERMOSTAT
+    #  climate.heat_stanzaletto:
+    #    name: Riscaldamento Stanza da Letto
+    #    display_categories: THERMOSTAT
+    #  climate.heat_stanzetta:
+    #    name: Riscaldamento Stanzetta
+    #    display_categories: THERMOSTAT
+    #  switch.asciugatrice:
+    #    name: Asciugatrice
+    #    display_categories: SWITCH
+    #  switch.lavatrice:
+    #    name: Lavatrice
+    #    display_categories: SWITCH
+

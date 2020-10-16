@@ -1,0 +1,176 @@
+  - platform: circadian_lighting
+    name: Circadian
+    lights_ct:
+      - light.lampada
+    lights_brightness:
+      - light.cappa
+    lights_rgb:
+      - light.lampada_farino
+    disable_entity: switch.allarme_perimetrale
+    disable_state: 'on'
+    initial_transition: 10
+  - platform: circadian_lighting
+    name: Tavolo
+    min_brightness: 40
+    lights_ct:
+      - light.lampada_tavolo1
+      - light.lampada_tavolo2
+    disable_entity: switch.allarme_perimetrale
+    disable_state: 'on'
+    initial_transition: 10
+  - platform: circadian_lighting
+    name: Stanzetta
+    min_brightness: 30
+    lights_ct:
+      - light.lampada_stanzetta1
+      - light.lampada_stanzetta2
+      - light.lampada_stanzetta3
+      - light.lampada_stanzaletto1
+      - light.lampada_stanzaletto2
+      - light.lampada_stanzaletto3
+    disable_entity: switch.allarme_perimetrale
+    disable_state: 'on'
+    initial_transition: 10
+        
+#  - platform: command_line
+#    switches:
+#      pihole_switch:
+#        friendly_name: Pi Hole Blocking
+#        command_on: !secret pihole_on
+#        command_off: !secret pihole_off
+#        command_state: !secret pihole_status
+#        value_template: "{{ value_json.status == 'enabled' }}"
+#  - platform: broadlink
+#    mac: '78:0F:77:B8:EB:16'
+#    switches:
+#      learner_cucina:
+#        friendly_name: "Learner Cucina"
+#        command_on: ''
+#        command_off: ''
+#  - platform: broadlink
+#    mac: '78:0F:77:B8:EC:95'
+#    switches:
+#      learner_stanzaletto:
+#        friendly_name: "Learner Stanza da Letto"
+#        command_on: ''
+#        command_off: ''
+  - platform: template
+    switches:
+      heat_stanzaletto:
+        value_template: "{{ is_state('climate.riscaldamentostanzaletto', 'heat') }}"
+        turn_on:
+          - service: script.heating_on
+            data:
+              entity_id: climate.riscaldamentostanzaletto
+        turn_off:
+          - service: script.heating_off
+            data:
+              entity_id: climate.riscaldamentostanzaletto
+      climate_stanzaletto:
+        value_template: "{{ is_state('climate.hisense_stanzaletto', 'cool') }}"
+        turn_on:
+          - service: script.stanzaletto_climate_on
+            data:
+              entity_id: climate.hisense_stanzaletto
+        turn_off:
+          - service: script.climate_off
+            data:
+              entity_id: climate.hisense_stanzaletto
+      heat_stanzetta:
+        value_template: "{{ is_state('climate.riscaldamentostanzetta', 'heat') }}"
+        turn_on:
+          - service: script.heating_on
+            data:
+              entity_id: climate.riscaldamentostanzetta
+        turn_off:
+          - service: script.heating_off
+            data:
+              entity_id: climate.riscaldamentostanzetta
+    #  heat_salotto:
+    #    value_template: "{{ is_state('climate.riscaldamentosalotto', 'heat') }}"
+    #    turn_on:#
+    #      - service: script.heating_on
+    #        data:
+    #          entity_id: climate.riscaldamentosalotto
+    #    turn_off:
+    #      - service: script.heating_off
+    #        data:
+    #          entity_id: climate.riscaldamentosalotto
+      heat_cucina:
+        value_template: "{{ is_state('climate.riscaldamentocucina', 'heat') }}"
+        turn_on:
+          - service: script.heating_on
+            data:
+              entity_id: climate.riscaldamentocucina
+        turn_off:
+          - service: script.heating_off
+            data:
+              entity_id: climate.riscaldamentocucina
+      climate_cucina:
+        value_template: "{{ is_state('climate.hisense_cucina', 'cool') }}"
+        turn_on:
+          - service: script.cucina_climate_on
+            data:
+              entity_id: climate.hisense_cucina
+        turn_off:
+          - service: script.climate_off
+            data:
+              entity_id: climate.hisense_cucina
+      allarme_perimetrale:
+        value_template: "{{ is_state('alarm_control_panel.home_alarm', 'armed_home') }}"
+        turn_on:
+          - service: script.turn_on
+            data:
+              entity_id: script.attiva_allarme_perimetrale
+        turn_off:
+          - service: script.turn_on
+            data:
+              entity_id: script.disattiva_allarme
+  - platform: mqtt
+    name: 'Luce baby'
+    state_topic: 'shellies/shellyplug-s-7AED2B/relay/0'
+    command_topic: 'shellies/shellyplug-s-7AED2B/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'Comodino Noemi'
+    state_topic: 'shellies/shellyplug-s-7AED20/relay/0'
+    command_topic: 'shellies/shellyplug-s-7AED20/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'Comodino Marco'
+    state_topic: 'shellies/shellyplug-s-7ADE7D/relay/0'
+    command_topic: 'shellies/shellyplug-s-7ADE7D/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'Asciugatrice'
+    state_topic: 'shellies/shellyplug-s-7AED4E/relay/0'
+    command_topic: 'shellies/shellyplug-s-7AED4E/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'Lavatrice'
+    state_topic: 'shellies/shellyplug-s-7AEEE3/relay/0'
+    command_topic: 'shellies/shellyplug-s-7AEEE3/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+ # - platform: mqtt
+ #   name: 'Forno'
+ #   state_topic: 'shellies/shellyplug-s-7ADFDA/relay/0'
+ #   command_topic: 'shellies/shellyplug-s-7ADFDA/relay/0/command'
+ #   payload_on: "on"
+ #   payload_off: "off"
+ #   optimistic: false
+ #   retain: false

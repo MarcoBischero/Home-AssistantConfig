@@ -1,0 +1,87 @@
+  - platform: template
+    sensors:
+      family_home:
+        friendly_name: "Family @Home"
+        value_template: "{{ is_state('input_boolean.family_home_toggle', 'on') }}"
+        device_class: 'presence'
+    #  overtemp_shellyplug_forno:
+    #    friendly_name: "OverTemp ShellyPlug Forno"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shellyplugs_forno', 'over_temp') }}
+    #  overtemp_shellyplug_lavatrice:
+    #    friendly_name: "OverTemp ShellyPlug Lavatrice"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shellyplugs_lavatrice', 'over_temp') }}          
+    #  overtemp_shellyplug_asciugatrice:
+    #    friendly_name: "OverTemp ShellyPlug Asciugatrice"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shellyplugs_asciugatrice', 'over_temp') }}          
+    #  overtemp_shelly_farinoletto:
+    #    friendly_name: "OverTemp Shelly FarinoLetto"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shelly_farino', 'over_temp') }}          
+    #  overtemp_shellyplug_comodinomarco:
+    #    friendly_name: "OverTemp ShellyPlug Comodino Marco"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shellyplugs_comodinomarco', 'over_temp') }}
+    #  overtemp_shellyplug_comodinonoemi:
+    #    friendly_name: "OverTemp ShellyPlug Comodino Noemi"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shellyplugs_comodinonoemi', 'over_temp') }}          
+    #  overtemp_shellyplug_lucebaby:
+    #    friendly_name: "OverTemp ShellyPlug Luce Baby"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shellyplugs_lucebaby', 'over_temp') }}
+    #  overtemp_shelly_corridoiostanzetta:
+    #    friendly_name: "OverTemp Shelly CorridoioStanzetta"
+    #    device_class: problem
+    #    value_template: >-
+    #      {{ state_attr('switch.shelly_corridoio', 'over_temp') }}       
+      #overpower_shellyplug_forno:
+      #  friendly_name: "OverPower ShellyPlug Forno"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shellyplugs_forno', 'over_power') }}
+      #overpower_shellyplug_lavatrice:
+      #  friendly_name: "OverPower ShellyPlug Lavatrice"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shellyplugs_lavatrice', 'over_power') }}          
+      #overpower_shellyplug_asciugatrice:
+      #  friendly_name: "OverPower ShellyPlug Asciugatrice"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shellyplugs_asciugatrice', 'over_power') }}          
+      #overpower_shelly_farinoletto:
+      #  friendly_name: "OverPower Shelly FarinoLetto"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shelly_farino', 'over_power') }}          
+      #overpower_shellyplug_comodinomarco:
+      #  friendly_name: "OverPower ShellyPlug Comodino Marco"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shellyplugs_comodinomarco', 'over_power') }}
+      #overpower_shellyplug_comodinonoemi:
+      #  friendly_name: "OverPower ShellyPlug Comodino Noemi"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shellyplugs_comodinonoemi', 'over_power') }}          
+      #overpower_shellyplug_lucebaby:
+      #  friendly_name: "OverPower ShellyPlug Luce Baby"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shellyplugs_lucebaby', 'over_power') }}
+      #overpower_shelly_corridoiostanzetta:
+      #  friendly_name: "OverPower Shelly CorridoioStanzetta"
+      #  device_class: problem
+      #  value_template: >-
+      #    {{ state_attr('switch.shelly_corridoio', 'over_power') }}    
+#

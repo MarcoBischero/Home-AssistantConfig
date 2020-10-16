@@ -1,0 +1,420 @@
+  - platform: google_geocode
+    name: C4_Cactus
+    origin: device_tracker.c4_cactus
+    options: formatted_address
+    display_zone: hide
+    api_key: !secret geocode_api
+    language: it-IT
+    region: IT
+  - platform: google_geocode
+    name: Marco
+    origin: device_tracker.iphonexs_3
+    options: formatted_address
+    display_zone: hide
+    api_key: !secret geocode_api
+    language: it-IT
+    region: IT
+  - platform: google_geocode
+    name: Noemi
+    origin: device_tracker.noemi11
+    options: formatted_address
+    display_zone: hide
+    api_key: !secret geocode_api
+    language: it-IT
+    region: IT
+  - platform: plex_recently_added
+    token: !secret plexToken
+    host: !secret plexAddress
+    port: !secret plexPort
+    ssl: false
+    download_images: true
+    max: 3
+    section_types:
+    - movie
+    - show
+    ################################################
+    ## Template
+    ################################################    
+  - platform: systemmonitor
+    resources:
+      - type: disk_free
+        arg: /
+      - type: memory_free
+      - type: processor_use
+      - type: last_boot
+      - type: network_in
+        arg: wlan0
+      - type: network_out
+        arg: wlan0
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) | round(1) }}'
+
+  - platform: template
+    sensors:
+      thermostattemperature:
+        friendly_name: "Temperatura Thermostato"
+        value_template: '{{ states.climate.riscaldamentosalotto.attributes.temperature }}'
+        device_class: temperature
+        unit_of_measurement: "°C"
+      climatetemperature:
+        friendly_name: "Climate Temperature"
+        value_template: "{{ states('input_number.climate_temperatureset')|int }}"
+        device_class: temperature
+        unit_of_measurement: "°C"
+      cucina_climatetemperature:
+        friendly_name: "Cucina Climate Temperature"
+        value_template: "{{ state_attr('climate.climate_cucina', 'temperature')|int }}"
+        device_class: temperature
+        unit_of_measurement: "°C"
+      stanzaletto_climatetemperature:
+        friendly_name: "Stanza da letto Climate Temperature"
+        value_template: "{{ state_attr('climate.climate_stanzaletto', 'temperature')|int }}"
+        device_class: temperature
+        unit_of_measurement: "°C"
+      stanzamarco:
+        friendly_name: "Stanza Marco"
+        value_template: >-
+          {% if state_attr('device_tracker.iphonexs','rssi') %}
+            {% set rssi = state_attr('device_tracker.iphonexs', 'rssi') %}
+            {% set rssi = rssi | replace ('(', '')| replace (',', '') | replace (')', '')|int %}
+            {% if rssi >= -8 %}
+              Ingresso
+            {% elif rssi <= -10 and rssi >= -15 %}
+              Divano
+            {% elif rssi <= -16 and rssi >= -20 %}
+              Tavolo
+            {% elif rssi <= -20 %}
+              Cucina
+            {% elif rssi <= -25 %}
+              Stanza da Letto
+            {% endif %}
+          {% else %}
+            Not Home
+          {% endif %}
+      stanzamarco_rssi:
+        friendly_name: "RSSI Stanza Marco"
+        value_template: "{{ state_attr('device_tracker.iphonexs', 'rssi')|replace ('(', '') |replace (',', '')|replace (')', '')|int }}"
+      channel_delay:
+        value_template: >
+          {% if is_state('media_player.televisione', 'off') %}
+            00:05:00
+          {% else %}
+            00:00:00
+          {% endif %}
+      home_delay:
+        value_template: >
+          {% if is_state('input_boolean.family_home_toggle', 'off') %}
+            00:30:00
+          {% else %}
+            00:00:02
+          {% endif %}
+      noah:
+        value_template: >-
+          {% if is_state('person.noemi', 'home') %}
+          In casa
+          {% elif states.person.noemi.state != 'not_home' %}
+          {{ states.person.noemi.state }}
+          {% else %}
+          Fuori Casa
+          {% endif %}
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+    ################################################
+    ## WAZE
+    ################################################
+  - platform: waze_travel_time
+    name: Go to work!
+    origin: zone.home
+    destination: zone.reply_k1
+    region: 'EU'
+  - platform: waze_travel_time
+    name: Go Home!
+    origin: zone.reply_k1
+    destination: zone.home
+    region: 'EU'
+#################################################################
+##                      TEMPERATURE                            ##
+#################################################################
+  - platform: min_max
+    type: mean
+    name: 'Temperatura Casa'
+    entity_ids:
+      - sensor.riscaldamentosalotto_temperature
+      - sensor.temperatura_cucina
+      - sensor.temperatura_bagno
+      - sensor.temperatura_stanzetta
+      - sensor.temperatura_stanzaletto
+#################################################################
+##                      HUMIDITY                               ##
+#################################################################
+  - platform: min_max
+    type: mean
+    name: 'Umidità Casa'
+    entity_ids:
+      - sensor.riscaldamentostanzaletto_humidity
+      - sensor.riscaldamentostanzetta_humidity
+      - sensor.riscaldamentocucina_humidity
+      - sensor.riscaldamentosalotto_humidity
+      - sensor.humidity_cucina
+      - sensor.humidity_bagno
+      - sensor.humidity_salotto
+      - sensor.humidity_stanzetta
+      - sensor.humidity_stanzaletto
+
+#################################################################
+##                         OLD                                 ##
+#################################################################
+ # - platform: scrape
+ #   resource: https://www.home-assistant.io
+ #   name: Release
+ #   scan_interval: 3600
+ #   select: ".current-version h1"
+ #   value_template: '{{ value.split(":")[1] }}'
+  #- platform: miflora
+  #  mac: '80:EA:CA:88:B4:B5'
+  #  name: FC-Zamioculcas
+  #  force_update: true
+  #  median: 3
+  #  monitored_conditions:
+  #    - moisture
+  #    - light
+  #    - temperature
+  #    - conductivity
+  #    - battery
+    ################################################
+    ## Bagno
+    ################################################
+  #- platform: mqtt
+  #  name: "Assorbimento Bagno"
+  #  state_topic: "shellies/shellyswitch-32BFD7/relay/power"
+  #  unit_of_measurement: "W"
+  #- platform: mqtt
+  #  name: "Consumo Bagno"
+  #  state_topic: "shellies/shellyswitch-32BFD7/relay/energy"
+  #  unit_of_measurement: 'kWh'
+  #  value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+  #  ################################################
+  #  ## Forno
+  #  ################################################
+  #- platform: mqtt
+  #  name: "Assorbimento Forno"
+  #  state_topic: "shellies/shellyplug-s-7ADFDA/relay/0/power"
+  #  unit_of_measurement: "W"
+  #- platform: mqtt
+  #  name: "Consumo Forno"
+  #  state_topic: "shellies/shellyplug-s-7ADFDA/relay/0/energy"
+  #  unit_of_measurement: 'kWh'
+  #  value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+  ##- platform: mqtt
+  #  name: "Temperatura ShellyPlug Forno"
+  #  state_topic: "shellies/shellyplug-s-7ADFDA/temperature"
+  #  availability_topic: "shellies/shellyplug-s-7ADFDA/online"
+  #  value_template: "{{ value }}"
+  #  unit_of_measurement: "°C"
+  #  payload_available: "true"
+  #  payload_not_available: "false"
+    ################################################
+    ## Lavatrice
+    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Lavatrice"
+#    state_topic: "shellies/shellyplug-s-7AEEE3/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Lavatrice"
+#    state_topic: "shellies/shellyplug-s-7AEEE3/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+# # - platform: mqtt
+# #   name: "Temperatura ShellyPlug Lavatrice"
+# #   state_topic: "shellies/shellyplug-s-7AEEE3/temperature"
+# #   availability_topic: "shellies/shellyplug-s-7AEEE3/online"
+# #   value_template: "{{ value }}"
+# #   unit_of_measurement: "°C"
+# ##   payload_available: "true"
+# ##   payload_not_available: "false"
+#    ################################################
+#    ## Asciugatrice
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Asciugatrice"
+#    state_topic: "shellies/shellyplug-s-7AED4E/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Asciugatrice"
+#    state_topic: "shellies/shellyplug-s-7AED4E/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+##  - platform: mqtt
+##    name: "Temperatura ShellyPlug Asciugatrice"
+##    state_topic: "shellies/shellyplug-s-7AED4E/temperature"
+##    availability_topic: "shellies/shellyplug-s-7AED4E/online"
+##    value_template: "{{ value }}"
+##    unit_of_measurement: "°C"
+##    payload_available: "true"
+##    payload_not_available: "false"
+#    ################################################
+#    ## Stanzetta
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Stanzetta"
+#    state_topic: "shellies/shellyswitch25-00AE5A/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Stanzetta"
+#    state_topic: "shellies/shellyswitch25-00AE5A/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+## - platform: mqtt
+##   name: "Temperatura Shelly CorridoioStanzetta"
+##   state_topic: "shellies/shellyswitch25-00AE5A/temperature"
+##   availability_topic: "shellies/shellyswitch25-00AE5A/online"
+##   value_template: "{{ value }}"
+##   unit_of_measurement: "°C"
+##   payload_available: "true"
+##   payload_not_available: "false"
+#    ################################################
+#    ## Corridoio
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Corridoio"
+#    state_topic: "shellies/shellyswitch25-00AE5A/relay/1/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Corridoio"
+#    state_topic: "shellies/shellyswitch25-00AE5A/relay/1/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+#    ################################################
+#    ## Farino
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Farino"
+#    state_topic: "shellies/shellyswitch25-E62E63/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Farino"
+#    state_topic: "shellies/shellyswitch25-E62E63/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+##  - platform: mqtt
+##    name: "Temperatura Shelly FarinoLetto"
+##    state_topic: "shellies/shellyswitch25-E62E63/temperature"
+##    availability_topic: "shellies/shellyswitch25-E62E63/online"
+##    value_template: "{{ value }}"
+##    unit_of_measurement: "°C"
+##    payload_available: "true"
+##    payload_not_available: "false"
+#    ################################################
+#    ## Stanza da Letto
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento StanzaLetto"
+#    state_topic: "shellies/shellyswitch25-E62E63/relay/1/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo StanzaLetto"
+#    state_topic: "shellies/shellyswitch25-E62E63/relay/1/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+#    ################################################
+#    ## Cucina
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Cucina"
+#    state_topic: "shellies/shellyswitch-32B841/relay/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Cucina"
+#    state_topic: "shellies/shellyswitch-32B841/relay/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+#    ################################################
+#    ## Comodino Marco
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Comodino Marco"
+#    state_topic: "shellies/shellyplug-s-7ADE7D/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Comodino Marco"
+#    state_topic: "shellies/shellyplug-s-7ADE7D/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+# # - platform: mqtt
+# #   name: "Temperatura ShellyPlug Comodino Marco"
+# #   state_topic: "shellies/shellyplug-s-7ADE7D/temperature"
+# #   availability_topic: "shellies/shellyplug-s-7ADE7D/online"
+# #   value_template: "{{ value }}"
+# #   unit_of_measurement: "°C"
+# #   payload_available: "true"
+# #   payload_not_available: "false"
+#    ################################################
+#    ## Luce Baby
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Luce Baby"
+#    state_topic: "shellies/shellyplug-s-7AED2B/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Luce Baby"
+#    state_topic: "shellies/shellyplug-s-7AED2B/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+# # - platform: mqtt
+# #   name: "Temperatura ShellyPlug Luce Baby"
+# #   state_topic: "shellies/shellyplug-s-7AED2B/temperature"
+# #   availability_topic: "shellies/shellyplug-s-7AED2B/online"
+# #   value_template: "{{ value }}"
+# #   unit_of_measurement: "°C"
+# #   payload_available: "true"
+# #   payload_not_available: "false"
+#    ################################################
+#    ## Comodino Noemi
+#    ################################################
+#  - platform: mqtt
+#    name: "Assorbimento Comodino Noemi"
+#    state_topic: "shellies/shellyplug-s-7AED20/relay/0/power"
+#    unit_of_measurement: "W"
+#  - platform: mqtt
+#    name: "Consumo Comodino Noemi"
+#    state_topic: "shellies/shellyplug-s-7AED20/relay/0/energy"
+#    unit_of_measurement: 'kWh'
+#    value_template: "{{ (( value|float )/(60*1000)) | round(2) }}"
+ # - platform: mqtt
+ #   name: "Temperatura ShellyPlug Comodino Noemi"
+ #   state_topic: "shellies/shellyplug-s-7AED20/temperature"
+ #   availability_topic: "shellies/shellyplug-s-7AED20/online"
+ #   value_template: "{{ value }}"
+ #   unit_of_measurement: "°C"
+ #   payload_available: "true"
+ #   payload_not_available: "false"
+    ################################################
+    ## Rasp
+    ################################################
+#  - platform: command_line
+#    name: Db File Size
+#    command: "du -m /config/home-assistant_v2.db | cut -f1"
+#    unit_of_measurement: 'MB'
+#    value_template: '{{ value | int - 1 }}'
+#    ################################################
+#    ## NAS
+#    ################################################
+#  - platform: synology_dsm
+#    host: !secret nas_host
+#    username: !secret nas_user
+#    password: !secret nas_password
+#    monitored_conditions:
+#      - cpu_total_load
+#      - memory_real_usage
+#      - network_up
+#      - network_down
+#      - disk_status
+#      - disk_smart_status
+#      - volume_status
+#      - volume_percentage_used

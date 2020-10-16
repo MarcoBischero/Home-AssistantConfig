@@ -1,0 +1,98 @@
+  auto_start: False
+  filter:
+    include_entities:
+      - alarm_control_panel.home_alarm
+      - media_player.televisione
+      - script.netflix
+      - script.plex
+      - script.youtube
+      - script.climatizzami
+      - script.luci_soffuse
+      - script.canale_5
+      - script.italia_1
+      - script.tv_8
+      - script.canale_31
+      - script.cartoni_animati
+      - script.zidu
+      - script.chromecast
+      - script.playstation
+      - script.twdiretta
+      - script.buonanotte
+      - script.peperoni
+      - script.riepilogo
+      - script.playlist_preferita
+      - light.lampada_comodino_noemi
+      - light.lampada
+      - light.lampada_tavolo1
+      - light.lampada_tavolo2
+      - light.lampada_stanzetta1
+      - light.lampada_stanzetta2
+      - light.lampada_stanzetta3
+      - light.lampada_stanzaletto1
+      - light.lampada_stanzaletto2
+      - light.lampada_stanzaletto3
+      - light.lampada_farino
+      - light.switchtavolo
+      - light.switchstanzaletto
+      - light.switchfarino
+      - light.corridoio
+      - light.stanzetta
+      - light.migateway
+      - light.cappa
+      - light.bagno
+      - switch.allarme_perimetrale
+      - switch.luce_baby
+      - switch.comodino_marco
+      - switch.comodino_noemi
+      - switch.asciugatrice
+      - switch.lavatrice
+      - binary_sensor.dwporta
+      - binary_sensor.dwstanzetta
+      - binary_sensor.dwcucina
+      - binary_sensor.dwbagno
+      - binary_sensor.dwstanzaletto
+      - sensor.temperature_salotto
+      - sensor.temperature_cucina
+      - sensor.temperature_bagno
+      - sensor.temperature_stanzetta
+      - sensor.temperature_stanzaletto
+      - sensor.humidity_salotto
+      - sensor.humidity_cucina
+      - sensor.humidity_bagno
+      - sensor.humidity_stanzetta
+      - sensor.humidity_stanzaletto
+      - climate.climate_cucina
+      - climate.climate_stanzaletto
+      - climate.riscaldamentosalotto
+      - climate.heat_cucina
+      - climate.heat_stanzaletto
+      - climate.heat_stanzetta  
+  entity_config:
+    alarm_control_panel.home:
+      code: !secret ha_code
+    media_player.kodi:
+      feature_list:
+        - feature: play_pause
+        - feature: play_stop
+    media_player.samsungtv:
+      feature_list:
+        - feature: on_off
+    script.luci_soffuse:
+      name: Luci Soffuse
+    script.canale_5:
+      name: Canale 5
+    script.italia_1:
+      name: Italia 1
+    script.tv_8:
+      name: TV 8
+    script.real_time:
+      name: Real Time
+    switch.comodino_marco:
+      type: outlet
+      name: "Comodino Marco"
+    switch.comodino_noemi:
+      type: outlet
+      name: "Comodino Noemi"
+    switch.luce_baby:
+      name: "Luce Baby"
+      type: outlet

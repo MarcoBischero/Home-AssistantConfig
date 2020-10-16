@@ -1,0 +1,249 @@
+#################################################################################
+## Offline Devices
+## state: number of offline devices
+## attribute: entity_ids: - comma separated list of unavailable device entity id's
+## - updates every minute (sensor.time)
+## - device list is group.devices_connected
+#################################################################################
+sensor:
+  - platform: uptime
+    name: "HA runtime in minutes"
+    unit_of_measurement: minutes
+  - platform: template
+    sensors:
+      unavailable_entities:
+      #  entity_id: sensor.time
+        friendly_name: Unavailable Entities
+        unit_of_measurement: items
+        icon_template: >
+          {% if states('sensor.unavailable_entities')|int == 0 %} mdi:check-circle
+          {% else %} mdi:alert-circle
+          {% endif %}
+        value_template: >
+          {% set count = states|selectattr('state','in',['unavailable','unknown'])
+            |rejectattr('entity_id','in',state_attr('group.entity_blacklist', 'entity_id'))
+            |rejectattr('domain','eq','group')|list|length %}
+          {{ count }}
+        attribute_templates:
+          unknown: >
+            {{ states | selectattr('state', 'eq','unknown')
+            |rejectattr('entity_id','in',state_attr('group.entity_blacklist', 'entity_id'))
+            |rejectattr('domain','eq','group') |  map(attribute='entity_id') | join(',\n') }}
+          unavailable: >
+            {{ states | selectattr('state', 'eq', 'unavailable')
+            |rejectattr('entity_id','in',state_attr('group.entity_blacklist', 'entity_id'))
+            |rejectattr('domain','eq','group') |  map(attribute='entity_id') | join(',\n') }}
+
+##################################################################################
+## System - Devices Connected
+## - used to display offline devices in alert
+## - used for binary_sensor.offline_devices state
+##################################################################################
+group:
+ # entity_whitelist:
+    # Entities you want to check are there that might not be in the states list at startrup
+     # Shelly
+   # - binary_sensor.overpower_shelly_corridoiostanzetta
+   # - binary_sensor.overpower_shelly_farinoletto
+   # - binary_sensor.overpower_shellyplug_asciugatrice
+   # - binary_sensor.overpower_shellyplug_comodinomarco
+   # - binary_sensor.overpower_shellyplug_comodinonoemi
+   # - binary_sensor.overpower_shellyplug_forno
+   # - binary_sensor.overpower_shellyplug_lavatrice
+   # - binary_sensor.overpower_shellyplug_lucebaby
+   # - binary_sensor.overtemp_shelly_corridoiostanzetta
+   # - binary_sensor.overtemp_shelly_farinoletto
+   # - binary_sensor.overtemp_shellyplug_asciugatrice
+   # - binary_sensor.overtemp_shellyplug_comodinomarco
+   # - binary_sensor.overtemp_shellyplug_comodinonoemi
+   # - binary_sensor.overtemp_shellyplug_forno
+   # - binary_sensor.overtemp_shellyplug_lavatrice
+   # - binary_sensor.overtemp_shellyplug_lucebaby
+   # - binary_sensor.shelly_bagno_mqtt
+   # - binary_sensor.shelly_corridoiostanzetta_mqtt
+   # - binary_sensor.shelly_cucina_mqtt
+   # - binary_sensor.shelly_farinoletto_mqtt
+   # - binary_sensor.shellyplugs_asciugatrice_mqtt
+   # - binary_sensor.shellyplugs_comodino_marco_mqtt
+   # - binary_sensor.shellyplugs_comodino_noemi_mqtt
+   # - binary_sensor.shellyplugs_forno_mqtt
+   # - binary_sensor.shellyplugs_lavatrice_mqtt
+   # - binary_sensor.shellyplugs_luce_baby_mqtt
+   # - device_tracker.shellyplug_s_7ade7d
+   # - device_tracker.shellyplug_s_7adfda
+   # - device_tracker.shellyplug_s_7aed20
+   # - device_tracker.shellyplug_s_7aed2b
+   # - device_tracker.shellyplug_s_7aed4e
+   # - device_tracker.shellyplug_s_7aeee3
+   # - device_tracker.shellyswitch25_00ae5a
+   # - device_tracker.shellyswitch25_e62e63
+   # - device_tracker.shellyswitch32bfd7
+   # - device_tracker.shellyswitch_32b841
+   # - sensor.shelly_bagno_rssi
+   # - sensor.shelly_corridoiostanzetta_rssi
+   # - sensor.shelly_cucina_rssi
+   # - sensor.shelly_farinoletto_rssi
+   # - sensor.shellyplugs_asciugatrice_rssi
+   # - sensor.shellyplugs_comodino_marco_rssi
+   # - sensor.shellyplugs_comodino_noemi_rssi
+   # - sensor.shellyplugs_forno_rssi
+   # - sensor.shellyplugs_lavatrice_rssi
+   # - sensor.shellyplugs_luce_baby_rssi
+   # - sensor.temperatura_shelly_corridoiostanzetta
+   # - sensor.temperatura_shelly_farinoletto
+   # - sensor.temperatura_shellyplug_asciugatrice
+   # - sensor.temperatura_shellyplug_comodinomarco
+   # - sensor.temperatura_shellyplug_comodinonoemi
+   # - sensor.temperatura_shellyplug_forno
+   # - sensor.temperatura_shellyplug_lavatrice
+   # - sensor.temperatura_shellyplug_lucebaby
+   # - switch.shelly_bagno
+   # - switch.shelly_bagno_2
+   # - switch.shelly_corridoio
+   # - switch.shelly_cucina
+   # - switch.shelly_cucina_2
+   # - switch.shelly_farino
+   # - switch.shelly_stanzaletto
+   # - switch.shelly_stanzetta
+   # - switch.shellyplugs_asciugatrice
+   # - switch.shellyplugs_comodino_marco
+   # - switch.shellyplugs_comodino_noemi
+   # - switch.shellyplugs_forno
+   # - switch.shellyplugs_lavatrice
+   # - switch.shellyplugs_luce_baby
+   #
+   # # alarm
+   # - alarm_control_panel.home_alarm
+   #
+   # # lights
+   # - light.bagno
+   # - light.cappa
+   # - light.corridoio
+   # - light.dummy_light
+   # - light.lampada
+   # - light.migateway
+   # - light.stanzetta
+   # - light.switchfarino
+   # - light.switchstanzaletto
+   # - light.switchtavolo
+   #
+   # # climate
+   # - climate.heat_cucina
+   # - climate.heat_stanzaletto
+   # - climate.heat_stanzetta
+   # - climate.hisense_cucina
+   # - climate.hisense_stanzaletto
+   # - climate.riscaldamentocucina
+   # - climate.riscaldamentosalotto
+   # - climate.riscaldamentostanzaletto
+   # - climate.riscaldamentostanzetta
+   #
+   # # cameras
+   # - camera.dafang3
+   #
+   # # sensors
+   # - sensor.fc_zamioculcas_battery
+   # - sensor.fc_zamioculcas_conductivity
+   # - sensor.fc_zamioculcas_light_intensity
+   # - sensor.fc_zamioculcas_moisture
+   # - sensor.fc_zamioculcas_temperature
+
+
+  entity_blacklist:
+    - sensor.unavailable_entities
+    # any other entities that you don't mind being unavailable/unknown/none
+    - group.entity_blacklist
+    - group.riscaldamento_pack
+    - group.timers_pack
+    - media_player.playstation_4
+    - sensor.consumo_asciugatrice
+    - sensor.consumo_comodino_marco
+    - sensor.consumo_comodino_noemi
+    - sensor.consumo_lavatrice
+    - sensor.consumo_luce_baby
+    - sensor.consumo_forno
+    - light.lampada_comodino_noemi
+    - light.lampada_tavolo1
+    - light.lampada_tavolo2
+    - sensor.echo_cucina_next_alarm
+    - sensor.echo_cucina_next_reminder
+    - sensor.echo_cucina_next_timer
+    - sensor.echodot_bagno_next_alarm
+    - sensor.echodot_bagno_next_reminder
+    - sensor.echodot_bagno_next_timer
+    - sensor.echodot_salotto_next_alarm
+    - sensor.echodot_salotto_next_reminder
+    - sensor.echodot_salotto_next_timer
+    - sensor.echodot_stanzetta_next_alarm
+    - sensor.echodot_stanzetta_next_reminder
+    - sensor.echodot_stanzetta_next_timer
+    - sensor.echoshow_stanzaletto_next_alarm
+    - sensor.echoshow_stanzaletto_next_reminder
+    - sensor.echoshow_stanzaletto_next_timer
+    - switch.echo_cucina_repeat_switch
+    - switch.echo_cucina_shuffle_switch
+    - switch.echodot_salotto_repeat_switch
+    - switch.echodot_salotto_shuffle_switch
+    - switch.echodot_stanzetta_repeat_switch
+    - switch.echodot_stanzetta_shuffle_switch
+    - switch.echoshow_stanzaletto_repeat_switch
+    - switch.echoshow_stanzaletto_shuffle_switch   
+    - switch.echodot_bagno_repeat_switch
+    - switch.echodot_bagno_shuffle_switch 
+    - sensor.cassa_salotto_next_reminder
+    - sensor.echoshow_stanza_da_letto_next_alarm
+    - sensor.echoshow_stanza_da_letto_next_reminder
+    - sensor.echoshow_stanza_da_letto_next_timer
+    - sensor.internetgatewaydevicev2_fritz_box_3490_bytes_received
+    - sensor.internetgatewaydevicev2_fritz_box_3490_bytes_sent
+    - sensor.internetgatewaydevicev2_fritz_box_3490_kib_sec_received
+    - sensor.internetgatewaydevicev2_fritz_box_3490_kib_sec_sent
+    - sensor.internetgatewaydevicev2_fritz_box_3490_packets_received
+    - sensor.internetgatewaydevicev2_fritz_box_3490_packets_sec_received
+    - sensor.internetgatewaydevicev2_fritz_box_3490_packets_sec_sent
+    - sensor.internetgatewaydevicev2_fritz_box_3490_packets_sent
+    - sensor.stanza_tv_next_reminder
+    - sensor.this_device_next_alarm
+    - sensor.this_device_next_reminder
+    - sensor.this_device_next_timer
+    - switch.cassa_salotto_repeat_switch
+    - switch.cassa_salotto_shuffle_switch
+    - switch.multistanza_repeat_switch
+    - switch.multistanza_shuffle_switch
+    - switch.stanza_tv_repeat_switch
+    - switch.stanza_tv_shuffle_switch
+    - media_player.kodi_workalexpro_local
+    - media_player.plex_plexkodiconnect_plexkodiconnect
+    
+binary_sensor:
+  - platform: template
+    sensors:
+      device_offline:
+#        entity_id: sensor.time
+        friendly_name: Device Offline
+        device_class: problem
+        icon_template: mdi:server-network-off
+        value_template: "{{ states('sensor.unavailable_entities') | int > 0 }}"
+
+automation:
+  - alias: 'Device Offline'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.device_offline
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.ha_runtime_in_minutes
+        above: 10
+    action:
+      service: script.my_notify
+      data_template:
+        mute: 1
+        call_informare: 1
+        call_no_fatto_casuale: 1
+        call_no_annuncio: 1
+        notify: mobile_app_iphonexs
+        title: "Hass"
+        message: >
+          "Device Offline:" 
+          {{ state_attr('sensor.unavailable_entities','unknown').split(',\n') }}
+          {{ state_attr('sensor.unavailable_entities','unavailable').split(',\n') }}

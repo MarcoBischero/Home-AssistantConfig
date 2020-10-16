@@ -1,0 +1,1132 @@
+resources:
+  - type: js
+    url: /local/community/monster-card/monster-card.js
+  - type: js
+    url: /local/community/group-card/group-card.js
+  - type: module
+    url: /local/community/mini-media-player/mini-media-player.js
+  - type: js
+    url: /local/community/upcoming-media-card/upcoming-media-card.js?v=0.1.2
+  - type: module
+    url: /local/community/mini-graph-card/mini-graph-card.js
+  - type: js
+    url: /community_plugin/secondaryinfo-entity-row/secondaryinfo-entity-row.js
+  - type: js
+    url: /community_plugin/entity-attributes-card/entity-attributes-card.js
+  - type: js
+    url: /local/card-tools.js
+  - type: js
+    url: /community_plugin/light-entity-card/light-entity-card.js
+title: Home
+views:
+  - cards:
+      - entities:
+          - entity: person.marco
+            secondary_info: '[[ sensor.stanzamarco ]]'
+            type: 'custom:secondaryinfo-entity-row'
+          - entity: person.noemi
+          - entity: sensor.noah
+            icon: 'mdi:face'
+          - type: divider
+          - entity: binary_sensor.family_home
+          - type: divider
+          - entity: sensor.go_to_work
+        show_header_toggle: false
+        title: Family
+        type: entities
+      - cards:
+          - type: conditional
+            conditions:
+              - entity: light.switchtavolo
+                state: 'on'
+            card:
+              type: entities
+              title: Luci
+              show_header_toggle: true
+              entities:
+                - entity: light.corridoio
+                - entity: light.migateway
+                - type: divider
+                - entity: light.stanzetta
+                - type: divider
+                - entity: light.lampada
+                - entity: light.switchfarino
+                - type: divider
+                - entity: light.switchtavolo
+                - entity: light.lampada_tavolo1
+                - entity: light.lampada_tavolo2
+                - entity: light.cappa
+                - type: divider
+                - entity: light.switchstanzaletto
+          - type: conditional
+            conditions:
+              - entity: light.switchtavolo
+                state: 'off'
+            card:
+              type: entities
+              show_header_toggle: true
+              title: Luci
+              entities:
+                - entity: light.corridoio
+                - entity: light.migateway
+                - type: divider
+                - entity: light.stanzetta
+                - type: divider
+                - entity: light.lampada
+                - entity: light.switchfarino
+                - type: divider
+                - entity: light.switchtavolo
+                - entity: light.cappa
+                - type: divider
+                - entity: light.switchstanzaletto
+        type: vertical-stack
+      - cards:
+          - type: conditional
+            conditions:
+              - entity: switch.comodino_noemi
+                state: 'on'
+            card:
+              entities:
+                - entity: switch.comodino_marco
+                - entity: switch.comodino_noemi
+                - entity: light.lampada_comodino_noemi
+                - entity: switch.luce_baby
+              title: Comodini
+              type: entities
+              show_header_toggle: true
+          - type: conditional
+            conditions:
+              - entity: switch.comodino_noemi
+                state: 'off'
+            card:
+              entities:
+                - entity: switch.comodino_marco
+                - entity: switch.comodino_noemi
+                - entity: switch.luce_baby
+              title: Comodini
+              type: entities
+              show_header_toggle: true
+        type: vertical-stack
+      - entities:
+          - entity: media_player.stanza_tv
+            hide_power: true
+            icon: 'mdi:speaker-wireless'
+            speaker_group:
+              entities:
+                - entity_id: media_player.stanza_tv
+                  name: Stanza TV
+                - entity_id: media_player.salotto
+                  name: Cassa Salotto
+              platform: sonos
+              show_group_count: true
+            type: 'custom:mini-media-player'
+          - entity: media_player.salotto
+            hide_power: true
+            icon: 'mdi:speaker-wireless'
+            show_toggle: false
+            speaker_group:
+              entities:
+                - entity_id: media_player.salotto
+                  name: Cassa Salotto
+                - entity_id: media_player.stanza_tv
+                  name: Stanza TV
+              platform: sonos
+              show_group_count: true
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: midnight
+        title: Sonos
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.televisione
+            icon: 'mdi:television-classic'
+            shortcuts:
+              buttons:
+                - icon: 'mdi:television-classic'
+                  id: script.canale_5
+                  name: Canale 5
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.italia_1
+                  name: Italia 1
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.cartoni_animati
+                  name: Cartoon
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.real_time
+                  name: RealTime
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.tv_8
+                  name: TV 8
+                  type: script
+                - icon: 'mdi:netflix'
+                  id: script.netflix
+                  name: Netflix
+                  type: script
+                - icon: 'mdi:plex'
+                  id: script.plex
+                  name: Plex
+                  type: script
+                - icon: 'mdi:youtube'
+                  id: script.youtube
+                  name: Youtube
+                  type: script
+              columns: 2
+              hide_when_off: true
+            type: 'custom:mini-media-player'
+          - entity: media_player.kodi
+            type: 'custom:mini-media-player'
+          - entity: media_player.plexkodiconnect
+            icon: 'mdi:plex'
+            type: 'custom:mini-media-player'
+          - entity: media_player.plex
+            icon: 'mdi:plex'
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: midnight
+        title: Media Players
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echo_show_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - artwork: cover
+            entity: media_player.echo_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            type: 'custom:mini-media-player'
+          - artwork: cover
+            entity: media_player.echodot_stanzaletto
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            type: 'custom:mini-media-player'
+          - artwork: cover
+            entity: media_player.echodot_bagno
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            type: 'custom:mini-media-player'
+          - artwork: cover
+            entity: media_player.echodot_stanzetta
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            type: 'custom:mini-media-player'
+          - artwork: cover
+            entity: media_player.multistanza
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: midnight
+        title: Alexa
+        type: entities
+      - cards:
+          - entity: climate.hisense_cucina
+            name: Cucina
+            type: thermostat
+          - entity: climate.hisense_stanzaletto
+            name: Stanza da Letto
+            type: thermostat
+        type: vertical-stack
+      - card:
+          title: Low Battery Devices
+          type: glance
+        filter:
+          include:
+            - entity_id: '*battery_level*'
+              state: < 15
+            - attributes:
+                battery: < 15
+            - attributes:
+                battery_level: < 15
+        show_empty: false
+        type: 'custom:monster-card'
+    icon: 'mdi:home-assistant'
+    id: 0
+    title: Home
+  - cards:
+      - card:
+          entities:
+            - entity: script.canale_5
+            - entity: script.check_dropbox_successful
+            - entity: script.flash_lights
+            - entity: script.italia_1
+            - entity: script.light_loop
+            - entity: script.light_loop_kill
+            - entity: script.luci_soffuse
+            - entity: script.real_time
+            - entity: script.sonos_say
+            - entity: script.tv_8
+          show_header_toggle: false
+          title: All Scripts
+          type: entities
+        filter:
+          include:
+            - domain: script
+        id: scripts
+        title: All Scripts
+        type: 'custom:monster-card'
+      - card:
+          entities:
+            - entity: automation.allarme
+            - entity: automation.automazione_hassio_backup
+            - entity: automation.hass_shutdown
+            - entity: automation.hass_startup
+            - entity: automation.kodi_in_pause
+            - entity: automation.luci_soffuse
+            - entity: automation.marco_is_home
+            - entity: automation.mauro_away
+            - entity: automation.mauro_home
+            - entity: automation.mauroiptv
+            - entity: automation.name_entered_zone
+            - entity: automation.noemi_is_home
+            - entity: automation.start_homekit
+            - entity: automation.upload_dropbox_backup
+            - entity: automation.uploaded_backup
+          show_header_toggle: false
+          title: All Automations
+          type: entities
+        filter:
+          include:
+            - domain: automation
+        id: automations
+        title: All Automations
+        type: 'custom:monster-card'
+      - card:
+          show_header_toggle: true
+          title: All Switch
+          type: entities
+        filter:
+          include:
+            - domain: switch
+        id: switch
+        title: All Switch
+        type: 'custom:monster-card'
+    icon: 'mdi:home-automation'
+    id: auto
+    title: Automations
+  - badges: []
+    cards:
+      - entities:
+          - entity: camera.dafang3
+          - entity: binary_sensor.dafang_motion_sensor
+          - entity: cover.dafang_move_left_right
+          - entity: cover.dafang_move_up_down
+          - entity: sensor.dafang_light_sensor
+          - entity: switch.dafang_h264_rtsp_server
+          - entity: switch.dafang_ir_filter
+          - entity: switch.dafang_motion_detection
+          - entity: switch.dafang_motion_tracking
+          - entity: switch.dafang_night_mode
+          - entity: switch.dafang_night_mode_auto
+          - entity: switch.dafang_blue_led
+          - entity: switch.dafang_yellow_led
+          - entity: switch.dafang_ir_led
+          - entity: switch.dafang_motion_send_mail
+          - entity: switch.dafang_mjpeg_rtsp_server
+          - entity: camera.dafang_motion_snapshot
+        type: entities
+      - camera_image: camera.dafang3
+        camera_view: live
+        entities:
+          - sensor.dafang_light_sensor
+          - binary_sensor.dafang_motion_sensor
+          - cover.dafang_move_up_down
+          - cover.dafang_move_left_right
+          - light.lampada
+          - light.switchtavolo
+        entity: camera.dafang3
+        title: Cucina
+        type: picture-glance
+    icon: 'mdi:cctv'
+    panel: false
+    theme: midnight
+    title: Camera
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.synology_dsm_cpu_load_total
+          - entity: sensor.synology_dsm_memory_usage_real
+          - entity: sensor.synology_dsm_network_up
+          - entity: sensor.synology_dsm_network_down
+          - entity: sensor.synology_dsm_status_sda
+          - entity: sensor.synology_dsm_status_smart_sda
+          - entity: sensor.synology_dsm_status_volume_1
+          - entity: sensor.synology_dsm_volume_used_volume_1
+        show_header_toggle: false
+        title: Nas
+        type: entities
+      - entities:
+          - entity: sensor.disk_free
+          - entity: sensor.last_boot
+          - entity: sensor.memory_free
+          - entity: sensor.processor_use
+          - entity: sensor.network_in_wlan0
+          - entity: sensor.network_out_wlan0
+          - entity: sensor.cpu_temperature
+        show_header_toggle: false
+        theme: Backend-selected
+        title: System Status
+        type: entities
+      - entities:
+          - input_boolean.dropbox_backup
+          - input_boolean.dropbox_sync_completed
+          - input_datetime.backup_time
+          - input_number.ritardo_upload
+          - input_select.backup_day
+          - input_text.backup_status
+        icon: 'mdi:dropbox'
+        path: dropbox_menu
+        show_header_toggle: false
+        title: Dropbox Backup
+        type: entities
+      - entity: switch.pihole_switch
+        hold_action:
+          action: none
+        icon: 'mdi:pi-hole'
+        show_icon: true
+        show_name: true
+        tap_action:
+          action: toggle
+        theme: midnight
+        type: entity-button
+      - entities:
+          - entity: sensor.bat_dw_porta
+          - entity: sensor.bat_dw_stanzetta
+          - entity: sensor.bat_dw_cucina
+          - entity: sensor.bat_dw_bagno
+          - entity: sensor.bat_dw_stanzaletto
+          - entity: sensor.bat_temp_stanzetta
+          - entity: sensor.bat_temp_salotto
+          - entity: sensor.bat_temp_cucina
+          - entity: sensor.bat_temp_bagno
+          - entity: sensor.bat_temp_stanzaletto
+          - entity: sensor.bat_telecomando_ikea
+          - type: divider
+          - entity: input_number.soglia_minima_batterie
+        show_header_toggle: false
+        theme: midnight
+        title: Battery Level
+        type: entities
+      - entity: sensor.plex_recently_added
+        max: 3
+        type: 'custom:upcoming-media-card'
+      - entities:
+          - entity: sensor.pi_hole_ads_percentage_blocked_today
+          - entity: sensor.pi_hole_ads_blocked_today
+          - entity: sensor.pi_hole_dns_queries_cached
+          - entity: sensor.pi_hole_dns_queries_forwarded
+          - entity: sensor.pi_hole_dns_queries_today
+          - entity: sensor.pi_hole_dns_unique_domains
+          - entity: sensor.pi_hole_seen_clients
+          - entity: sensor.pi_hole_domains_blocked
+          - entity: sensor.pi_hole_dns_unique_clients
+          - entity: switch.pihole_switch
+        show_header_toggle: false
+        title: PiHole
+        type: entities
+    icon: 'mdi:incognito'
+    theme: midnight
+    title: Geek
+  - badges: []
+    cards:
+      - title: Shopping List
+        type: shopping-list
+    icon: 'mdi:cart'
+    theme: midnight
+    title: Spesa
+  - badges: []
+    cards:
+      - entity: alarm_control_panel.home_alarm
+        type: alarm-panel
+      - entities:
+          - entity: binary_sensor.smokeingresso
+          - entity: sensor.migatewaylumen
+        show_header_toggle: false
+        title: Ambientali
+        type: entities
+      - camera_image: camera.dafang3
+        entities:
+          - sensor.dafang_light_sensor
+          - binary_sensor.dafang_motion_sensor
+          - cover.dafang_move_up_down
+          - cover.dafang_move_left_right
+          - light.lampada
+          - light.switchtavolo
+        entity: camera.dafang3
+        title: Cucina
+        type: picture-glance
+      - entities:
+          - entity: binary_sensor.dwporta
+          - entity: binary_sensor.dwstanzetta
+          - entity: binary_sensor.dwcucina
+          - entity: binary_sensor.dwbagno
+          - entity: binary_sensor.dwstanzaletto
+        show_header_toggle: false
+        title: D/W
+        type: entities
+      - entities:
+          - entity: switch.allarme_perimetrale
+          - entity: script.attiva_allarme_perimetrale
+          - entity: script.attiva_allarme_totale
+          - entity: script.disattiva_allarme
+          - entity: script.allarme_on
+          - entity: automation.allarme_away
+          - entity: automation.allarme_home
+          - entity: automation.avviso_tts_allarme_in_innesco
+          - entity: automation.avviso_tts_allarme_innescato
+        theme: midnight
+        type: entities
+      - entity: light.migateway
+        type: 'custom:light-entity-card'
+    icon: 'mdi:alarm-light'
+    panel: false
+    theme: midnight
+    title: Alarm
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.consumo_asciugatrice
+            name: Asciugatrice
+          - entity: sensor.consumo_lavatrice
+            name: Lavatrice
+        icon: 'mdi:flash'
+        name: Consumo Lavaggio Biancheria
+        theme: midnight
+        type: 'custom:mini-graph-card'
+      - entities:
+          - entity: sensor.consumo_shelly_corridoio
+            name: Corridoio
+          - entity: sensor.consumo_shelly_cucina
+            name: Cucina
+          - entity: sensor.consumo_shelly_stanzalettofarino
+            name: Stanza da Letto/Fari
+        icon: 'mdi:flash'
+        name: Shelly
+        theme: midnight
+        type: 'custom:mini-graph-card'
+      - entities:
+          - entity: sensor.consumo_comodino_noemi
+            name: Comodino Noemi
+          - entity: sensor.consumo_comodino_marco
+            name: Comodino Marco
+          - entity: sensor.consumo_luce_baby
+            name: Luce Baby
+        icon: 'mdi:flash'
+        name: Consumo Comodini
+        theme: midnight
+        type: 'custom:mini-graph-card'
+    icon: 'mdi:flash'
+    panel: false
+    title: Consumption
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_cucina
+                graph: line
+                hours_to_show: 24
+                name: Cucina
+                show:
+                  labels: true
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - detail: 2
+                    entity: sensor.humidity_cucina
+                    graph: line
+                    hours_to_show: 24
+                    name: Umidità
+                    type: sensor
+                  - detail: 2
+                    entity: sensor.pressure_cucina
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_salotto
+                graph: line
+                hours_to_show: 24
+                name: Salotto
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - detail: 2
+                    entity: sensor.humidity_salotto
+                    graph: line
+                    hours_to_show: 24
+                    name: Umidità
+                    type: sensor
+                  - detail: 2
+                    entity: sensor.pressure_salotto
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_stanzaletto
+                graph: line
+                hours_to_show: 24
+                name: Stanza da Letto
+                show:
+                  labels: true
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - detail: 2
+                    entity: sensor.humidity_stanzaletto
+                    graph: line
+                    hours_to_show: 24
+                    name: Umidità
+                    type: sensor
+                  - detail: 2
+                    entity: sensor.pressure_stanzaletto
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_stanzetta
+                graph: line
+                hours_to_show: 24
+                name: Stanzetta
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - detail: 2
+                    entity: sensor.humidity_stanzetta
+                    graph: line
+                    hours_to_show: 24
+                    name: Umidità
+                    type: sensor
+                  - detail: 2
+                    entity: sensor.pressure_stanzetta
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_bagno
+                graph: line
+                hours_to_show: 24
+                name: Bagno
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - detail: 2
+                    entity: sensor.humidity_bagno
+                    graph: line
+                    hours_to_show: 24
+                    name: Umidità
+                    type: sensor
+                  - detail: 2
+                    entity: sensor.pressure_bagno
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.riscaldamento_temperature
+                graph: line
+                hours_to_show: 24
+                name: Corridoio
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - detail: 2
+                    entity: sensor.riscaldamento_humidity
+                    graph: line
+                    hours_to_show: 24
+                    name: Umidità
+                    type: sensor
+                  - detail: 2
+                    entities:
+                      - sensor.thermostattemperatureset
+                    hours_to_show: 24
+                    name: Temperatura Set
+                    points_per_hour: 1
+                    show:
+                      graph: bar
+                    type: 'custom:mini-graph-card'
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+    icon: 'mdi:thermometer'
+    title: Sensors
+  - badges: []
+    cards:
+      - card:
+          entities:
+            - entity: light.farino
+            - entity: light.lampada
+            - entity: light.tavolo1
+            - entity: light.tavolo2
+          title: Luci
+          type: entities
+        filter:
+          include:
+            - domain: light
+        path: lights
+        title: Luci
+        type: 'custom:monster-card'
+      - entities:
+          - entity: sensor.migatewaylumen
+        name: Lumen Ingresso
+        theme: midnight
+        type: 'custom:mini-graph-card'
+      - entities:
+          - entity: sensor.dafang_light_sensor
+        name: Lumen Cucina
+        theme: midnight
+        type: 'custom:mini-graph-card'
+    icon: 'mdi:lightbulb'
+    title: Lights
+  - badges: []
+    cards:
+      - entities:
+          - entity: climate.hisense_cucina
+          - entity: climate.hisense_stanzaletto
+        show_header_toggle: false
+        title: Climatizzatori
+        type: entities
+      - entities:
+          - entity: automation.automazione_spegnimento_climate
+          - entity: input_boolean.climate_timer
+          - entity: input_number.climate_timer_off
+          - entity: input_boolean.deumidificatore_away
+          - entity: automation.dryon
+          - entity: input_number.dry_away_stanzaletto
+          - entity: input_number.dry_away_cucina
+          - entity: group.climate_pack
+        show_header_toggle: false
+        title: Climate Timer
+        type: entities
+    icon: 'mdi:air-conditioner'
+    panel: false
+    theme: midnight
+    title: Climate
+  - badges: []
+    cards:
+      - entities:
+          - entity: image_processing.facedetection
+          - entity: sensor.facebox_detection1
+          - entity: sensor.facebox_detection2
+          - entity: sensor.facebox_detection3
+          - entity: sensor.facebox_detection4
+          - entity: sensor.facebox_detection
+          - entity: automation.facebox_announcement
+          - entity: automation.turn_on_facebox_automation
+          - entity: automation.restart_facebox_container
+        type: entities
+    icon: 'mdi:face'
+    title: FaceDetection
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - detail: 3
+                entities:
+                  - entity: sensor.temperatura_casa
+                  - entity: sensor.umidita_casa
+                show_header_toggle: false
+                type: entities
+              - detail: 3
+                entities:
+                  - entity: climate.riscaldamentosalotto
+                  - entity: climate.riscaldamentocucina
+                  - entity: climate.riscaldamentostanzaletto
+                  - entity: climate.riscaldamentostanzetta
+                show_header_toggle: false
+                type: entities
+            type: vertical-stack
+          - cards:
+              - detail: 3
+                entities:
+                  - entity: input_datetime.t3_1_after
+                  - entity: input_datetime.t2_after
+                  - entity: input_datetime.t3_2_after
+                  - entity: input_datetime.t1_after
+                show_header_toggle: false
+                title: ChronoThermostato
+                type: entities
+              - detail: 3
+                entities:
+                  - entity: input_number.t1
+                    secondary_info: '[[ input_number.t1.state ]]'
+                    type: 'custom:secondaryinfo-entity-row'
+                  - entity: input_number.t2
+                    secondary_info: '[[ input_number.t2.state ]]'
+                    type: 'custom:secondaryinfo-entity-row'
+                  - entity: input_number.t3
+                    secondary_info: '[[ input_number.t3.state ]]'
+                    type: 'custom:secondaryinfo-entity-row'
+                  - entity: input_number.thome
+                    secondary_info: '[[ input_number.thome.state ]]'
+                    type: 'custom:secondaryinfo-entity-row'
+                  - entity: input_number.taway
+                    secondary_info: '[[ input_number.taway.state ]]'
+                    type: 'custom:secondaryinfo-entity-row'
+                show_header_toggle: false
+                type: entities
+            type: horizontal-stack
+          - cards:
+              - detail: 3
+                entities:
+                  - entity: sensor.thermostattemperatureset
+                hours_to_show: 24
+                name: Temperatura Set
+                points_per_hour: 1
+                show:
+                  graph: bar
+                  labels: true
+                type: 'custom:mini-graph-card'
+              - detail: 3
+                entities:
+                  - entity: automation.riscaldamento_t1
+                  - entity: automation.riscaldamento_t2
+                  - entity: automation.riscaldamento_t3_1
+                  - entity: automation.riscaldamento_t3_2
+                  - entity: automation.riscaldamentoaway
+                  - entity: automation.riscaldamentohome
+                show_header_toggle: false
+                type: entities
+            type: vertical-stack
+          - cards:
+              - detail: 3
+                entities:
+                  - entity: sensor.riscaldamento_temperature
+                  - entity: sensor.riscaldamento_humidity
+                  - entity: sensor.riscaldamento_link
+                  - entity: sensor.riscaldamento_overlay
+                  - entity: sensor.riscaldamento_power
+                  - entity: sensor.riscaldamento_tado_mode
+                  - entity: sensor.riscaldamento_heating
+                show_header_toggle: false
+                title: Salotto
+                type: entities
+              - detail: 3
+                entities:
+                  - entity: sensor.cucina_temperature
+                  - entity: sensor.cucina_humidity
+                  - entity: sensor.cucina_link
+                  - entity: sensor.cucina_overlay
+                  - entity: sensor.cucina_power
+                  - entity: sensor.cucina_tado_mode
+                  - entity: sensor.cucina_heating
+                show_header_toggle: false
+                title: Cucina
+                type: entities
+            type: horizontal-stack
+          - cards:
+              - detail: 3
+                entities:
+                  - entity: sensor.stanza_da_letto_temperature
+                  - entity: sensor.stanza_da_letto_humidity
+                  - entity: sensor.stanza_da_letto_link
+                  - entity: sensor.stanza_da_letto_overlay
+                  - entity: sensor.stanza_da_letto_power
+                  - entity: sensor.stanza_da_letto_tado_mode
+                  - entity: sensor.stanza_da_letto_heating
+                show_header_toggle: false
+                title: Stanza da Letto
+                type: entities
+              - detail: 3
+                entities:
+                  - entity: sensor.stanzetta_temperature
+                  - entity: sensor.stanzetta_humidity
+                  - entity: sensor.stanzetta_link
+                  - entity: sensor.stanzetta_overlay
+                  - entity: sensor.stanzetta_power
+                  - entity: sensor.stanzetta_tado_mode
+                  - entity: sensor.stanzetta_heating
+                show_header_toggle: false
+                title: Stanzetta
+                type: entities
+            type: horizontal-stack
+        type: vertical-stack
+    icon: 'mdi:timetable'
+    panel: true
+    title: Chronotherm
+  - badges: []
+    cards:
+      - entities:
+          - entity: timer.dwcucina
+          - entity: timer.dwstanzaletto
+          - entity: timer.dwstanzetta
+          - entity: automation.pausa_timer_dwcucina
+          - entity: automation.pausa_timer_dwstanzaletto
+          - entity: automation.pausa_timer_dwstanzetta
+          - entity: automation.start_timer_dwcucina
+          - entity: automation.start_timer_dwstanzaletto
+          - entity: automation.start_timer_dwstanzetta
+          - entity: automation.windows_timer_reminder
+          - entity: input_boolean.muffa_attack
+          - entity: automation.reset_muffaattack
+          - entity: automation.muffaattack
+          - entity: group.timers_pack
+        type: entities
+    icon: 'mdi:timer'
+    path: timers
+    title: Timers
+  - badges: []
+    cards:
+      - entities:
+          - artwork: cover
+            entity: media_player.echo_show_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: device_tracker.echo_show_5_auj
+          - entity: switch.echo_show_cucina_do_not_disturb_switch
+          - entity: sensor.echo_show_cucina_next_alarm
+          - entity: sensor.echo_show_cucina_next_reminder
+          - entity: sensor.echo_show_cucina_next_timer
+          - entity: switch.echo_show_cucina_repeat_switch
+          - entity: switch.echo_show_cucina_shuffle_switch
+        show_header_toggle: false
+        title: EchoShow Cucina
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echo_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: switch.echo_cucina_do_not_disturb_switch
+          - entity: sensor.echo_cucina_next_alarm
+          - entity: sensor.echo_cucina_next_reminder
+          - entity: sensor.echo_cucina_next_timer
+          - entity: switch.echo_cucina_repeat_switch
+          - entity: switch.echo_cucina_shuffle_switch
+        show_header_toggle: false
+        title: Echo Cucina
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.multistanza
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: switch.multistanza_do_not_disturb_switch
+          - entity: switch.multistanza_repeat_switch
+          - entity: switch.multistanza_shuffle_switch
+        show_header_toggle: false
+        title: Multistanza
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echodot_stanzetta
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: switch.echodot_stanzetta_do_not_disturb_switch
+          - entity: sensor.echodot_stanzetta_next_alarm
+          - entity: sensor.echodot_stanzetta_next_reminder
+          - entity: sensor.echodot_stanzetta_next_timer
+          - entity: switch.echodot_stanzetta_repeat_switch
+          - entity: switch.echodot_stanzetta_shuffle_switch
+        show_header_toggle: false
+        title: EchoDot Stanzetta
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echodot_stanzaletto
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: switch.echodot_stanza_da_letto_do_not_disturb_switch
+          - entity: sensor.echodot_stanza_da_letto_next_alarm
+          - entity: sensor.echodot_stanza_da_letto_next_reminder
+          - entity: sensor.echodot_stanza_da_letto_next_timer
+          - entity: switch.echodot_stanza_da_letto_repeat_switch
+          - entity: switch.echodot_stanza_da_letto_shuffle_switch
+        show_header_toggle: false
+        title: EchoDot Stanza da Letto
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echodot_bagno
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: switch.echodot_bagno_do_not_disturb_switch
+          - entity: sensor.echodot_bagno_next_alarm
+          - entity: sensor.echodot_bagno_next_reminder
+          - entity: sensor.echodot_bagno_next_timer
+          - entity: switch.echodot_bagno_repeat_switch
+          - entity: switch.echodot_bagno_shuffle_switch
+        show_header_toggle: false
+        title: EchoDot Bagno
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.marco_s_alexa_apps
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - switch.marco_s_alexa_apps_do_not_disturb_switch
+          - switch.marco_s_alexa_apps_repeat_switch
+          - switch.marco_s_alexa_apps_shuffle_switch
+        show_header_toggle: false
+        title: Alexa Apps
+        type: entities
+    icon: 'mdi:amazon-alexa'
+    path: alexa
+    title: Alexa
+  - badges: []
+    cards:
+      - entities:
+          - entity: switch.lavatrice
+          - entity: switch.asciugatrice
+          - entity: automation.attiva_notifica_lavatrice
+          - entity: automation.attiva_notifica_asciugatrice
+          - entity: automation.notifica_fine_lavaggio
+          - entity: automation.notifica_fine_asciugatura
+        show_header_toggle: false
+        theme: default
+        type: entities
+    icon: 'mdi:washing-machine'
+    path: lavatrice
+    title: Lavatrice
+

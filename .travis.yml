@@ -1,0 +1,20 @@
+language: python
+cache: pip
+python:
+  - "3.7"
+before_install:
+  - mv travis_secrets.yaml secrets.yaml
+  - sudo apt-get install -y libudev-dev
+  ### Remove stream component
+  - sed -i 's/^stream:/#stream:/g' configuration.yaml
+install:
+  - pip3 install homeassistant
+script:
+  - "sudo mkdir -p /ssl/ && sudo touch /ssl/fullchain.pem"
+  - "sudo mkdir -p /ssl/ && sudo touch /ssl/privkey.pem"
+  - "sed -i 's/- platform: bluetooth_tracker/#- platform: bluetooth_tracker/g' configuration.yaml"
+  - "sed -i 's/request_rssi: true/#request_rssi: true/g' configuration.yaml"
+  - "hass --version"
+  - "hass -c . --script check_config | tee check.output"
+  - '! less check.output | grep -q "Failed config"'
+

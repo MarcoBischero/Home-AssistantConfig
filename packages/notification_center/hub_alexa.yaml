@@ -1,0 +1,444 @@
+#### Card Lovelace minimal
+  # type: entities
+  # title: Alexa
+  # show_header_toggle: false
+  # entities:
+  #   - type: section
+  #     label: ''
+  #   - entity: input_boolean.alexa_switch
+  #   - entity: input_boolean.alexa_push
+  #   - entity: input_select.notification_media_player_alexa
+  #   - entity: input_select.default_alexa_type
+  #   - entity: input_select.default_alexa_method
+  # #  - entity: input_number.alexa_volume_storage ## Salva il volume precedente se possibile
+  # #  - automation.alexa_volume_restore ## Attiva/Disattiva il salvataggio del volume precedente
+  #############################################################################
+
+#######################################-#######################################
+##                                 CUSTOMIZE
+#######################################-#######################################
+homeassistant:
+  customize:
+    ################################################
+    ## NODE ANCHORS
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'Centro Notifiche'
+        version: 'Alexa 1.0'
+        author: 'Caio - www.hassiohelp.eu'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Automation
+    ################################################
+    automation.seleziona_alexa_method:
+      <<: *customize
+      icon: mdi:alpha-a-circle-outline
+    automation.alexa_volume_restore:
+      <<: *customize
+      icon: mdi:alpha-a-circle-outline
+    automation.mqtt_notifications_push_alexa:
+      <<: *customize
+      icon: mdi:alpha-a-circle-outline
+    automation.mqtt_notifications_tts_alexa:
+      <<: *customize
+      icon: mdi:alpha-a-circle-outline
+    ################################################
+    ## Device Tracker
+    ################################################
+    device_tracker.player_alexa:
+      <<: *customize
+      friendly_name: Tracker Player Alexa
+      icon: mdi:animation-play
+    ################################################
+    ## input Boolean
+    ################################################
+    input_boolean.alexa_switch:
+      <<: *customize
+    input_boolean.alexa_push:
+      <<: *customize
+    ################################################
+    ## input Number
+    ################################################
+    input_number.alexa_volume_storage:
+      <<: *customize
+    ################################################
+    ## input Select
+    ################################################
+    input_select.notification_media_player_alexa:
+      <<: *customize
+    input_select.default_alexa_method:
+      <<: *customize
+    input_select.default_alexa_type:
+      <<: *customize
+    ################################################
+    ## Sensor
+    ################################################
+    sensor.last_alexa:
+      <<: *customize
+      friendly_name: 'Last Alexa'
+      icon: mdi:play-network
+    sensor.media_player_alexa:
+      <<: *customize
+    ################################################
+    ## Script
+    ################################################
+    script.set_vol:
+      <<: *customize
+    ################################################
+    ## Timer
+    ################################################
+    timer.volume_alexa:
+      <<: *customize
+
+#######################################-#######################################
+##                                  SENSOR
+#######################################-#######################################
+sensor:
+  - platform: template
+    sensors:
+      media_player_alexa:
+        friendly_name: 'Player Alexa Attivo'
+        #entity_id: input_select.notification_media_player_alexa, sensor.last_alexa
+        value_template: >
+          {% set domains = ['media_player','group','sensor'] -%}
+          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_alexa')|lower -%}
+            {% if x.domain == 'sensor' %}
+              {{ x.state }}
+            {% else %}
+              {{- x.entity_id -}}
+            {% endif %}
+          {% endfor %}
+        icon_template: >-
+          {% set domains = ['media_player','group','sensor'] -%}
+          {% for x in states if x.domain in domains and x.name|lower == states('input_select.notification_media_player_alexa')|lower -%}
+            {% if x.domain == 'group' %}
+              mdi:speaker-multiple
+            {% else %}
+              mdi:speaker
+            {% endif %}
+          {% endfor %}
+
+#######################################-#######################################
+##                                   GROUP
+#######################################-#######################################
+group:
+  hub_alexa_config:
+    name: Impostazioni Alexa
+    entities:
+      - input_boolean.alexa_switch
+      - input_boolean.alexa_push
+      - input_select.notification_media_player_alexa
+      - input_select.default_alexa_type
+      - input_select.default_alexa_method
+      - input_number.alexa_volume_storage
+
+#######################################-#######################################
+##                                   INPUT
+#######################################-#######################################
+
+input_boolean:
+  alexa_switch:
+    name: Alexa
+    icon: mdi:amazon-alexa
+
+  alexa_push:
+    name: Alexa Push
+    icon: mdi:cellphone-text
+
+input_number:
+  alexa_volume_storage: #storage_alexa_volume
+    name: Salva Volume Alexa
+    icon: mdi:volume-high
+    min: 0
+    max: 1
+    step: 0.10
+
+input_select:
+  #----------------------------------------------------------------------------------------------------#
+  # Inserire i propri dispositivi ALEXA con il proprio friandly_name                                   #
+  #----------------------------------------------------------------------------------------------------#
+  notification_media_player_alexa:
+    name: Sorgente Alexa
+    icon: mdi:speaker-wireless
+    options: !secret notification_media_player_alexa_hub
+
+  default_alexa_method:
+    name: Metodo Predefinito Alexa
+    icon: mdi:speaker-multiple
+    options:
+      - All
+      - Speak
+      - Show
+      - None
+
+  default_alexa_type:
+    name: Tipo Predefinito Alexa
+    icon: mdi:bullhorn-outline
+    options:
+      - Announce
+      - Push
+      - TTS
+
+#######################################-#######################################
+##                               DEVICE TRACKER
+#######################################-#######################################
+device_tracker:
+  - platform: mqtt
+    devices:
+      player_alexa: 'hub/alexa'
+
+#######################################-#######################################
+##                                   TIMER
+#######################################-#######################################
+timer:
+  volume_alexa:
+    name: Volume timer delay alexa
+    duration: 30
+
+#######################################-#######################################
+##                                 AUTOMATION
+#######################################-#######################################
+automation:
+#1-----------------------------------------------------------------------------------------------------#
+  # Selezione automatica alexa_method per announce (Speak di default) o None per TTS e PUSH
+  #----------------------------------------------------------------------------------------------------#
+  - id: alexa_method_select_hub
+    alias: alexa_method_select_hub
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_select.default_alexa_type
+    action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.default_alexa_method
+        option: >
+          {% if is_state('input_select.default_alexa_type', 'Announce') %}
+            Speak
+          {% else %}
+            None
+          {% endif %}
+#2-----------------------------------------------------------------------------------------------------#
+  # VOLUME RESTORE
+  #----------------------------------------------------------------------------------------------------#
+  - id: alexa_volume_restore_hub
+    alias: alexa_volume_restore_hub
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.volume_alexa
+    # condition:
+    action:
+      - service: media_player.volume_set
+        data:
+          entity_id: >
+            {{ states('input_text.player_alexa') }}
+          volume_level: >
+            {{ states('input_number.alexa_volume_storage') | float | round(2) }}
+#3-----------------------------------------------------------------------------------------------------#
+  # PUSH
+  #----------------------------------------------------------------------------------------------------#
+  - id: event_notifications_push_alexa_hub
+    alias: event_notifications_push_alexa_hub
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: hub
+    condition:
+      - condition: and
+        conditions:
+          - condition: template
+            value_template: >
+              {{ is_state('input_boolean.alexa_push', 'on') }}
+          - condition: template
+            value_template: >
+              {{ is_state('input_boolean.alexa_switch', 'on') }}
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.alexa_type == 'push' }}
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.alexa_push == '1' }}
+          - condition: template
+            value_template: >
+              {{ states('input_select.default_alexa_type') | lower == 'push' }}
+    action:
+      - service: notify.alexa_media
+        data:
+          target: >
+            {{ states('input_text.player_alexa') }}
+          title: >
+            {{ trigger.event.data.title }}
+          message: >
+            {{ trigger.event.data.message }}
+          data:
+            type: push
+#4-----------------------------------------------------------------------------------------------------#
+  # TTS - ANNOUNCE
+  #----------------------------------------------------------------------------------------------------#
+  - id: event_notifications_tts_alexa_hub
+    alias: event_notifications_tts_alexa_hub
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: hub
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.mute | length == 0 }}
+      - condition: template
+        value_template: >
+          {{ is_state('input_boolean.alexa_switch', 'on') }}
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.alexa_type != 'push' }}
+      - condition: template
+        value_template: >
+          {{ states('input_select.default_alexa_type') | lower != 'push' }}
+      - condition: and
+        conditions:
+          - condition: or
+            conditions:
+              - condition: template
+                value_template: >
+                  {{ is_state('binary_sensor.dnd', 'off') }}
+              - condition: state
+                entity_id: input_boolean.priority_message
+                state: 'on'
+          - condition: state
+            entity_id: input_boolean.speech_notifications
+            state: 'on'
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: group.location_tracker
+                state: 'home'
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: 'on'
+    action:
+      - service: input_text.set_value
+        data:
+          entity_id: input_text.player_alexa
+          value: >-
+            {% if trigger.event.data.media_player_alexa | length > 2 %}
+              {{ trigger.event.data.media_player_alexa }}
+            {% else %}
+              {{ states('sensor.media_player_alexa') }}
+            {% endif %}
+
+      - service: input_boolean.turn_off
+        data:
+          entity_id:
+            - input_boolean.last_message
+            - input_boolean.priority_message
+
+      # SET VOL - Salva il volume solo se il player è in rirpoduzione.
+      #- service: script.set_vol
+
+      # Commentare il service qui sotto (input_number.set_value), se si usa lo script set_vol
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.alexa_volume_storage
+          value: >
+            {% set ns = namespace(vol=0) %}
+            {% if is_state('timer.volume_alexa', 'active') %}
+              {% set ns.vol = states('input_number.alexa_volume_storage') | float | round(2) %}
+            {% elif 'group' in states('input_text.player_alexa') %}
+              {% set entities = state_attr(states('input_text.player_alexa') , 'entity_id') %}
+              {% for x in entities %}
+              {% set val = state_attr(x, 'volume_level')| float | round(2) %}
+              {% set ns.vol = val if val > ns.vol else ns.vol %}
+              {% endfor %}
+            {% else %}
+              {% set val = state_attr(states('input_text.player_alexa'), 'volume_level') | float | round(2) %}
+              {% set ns.vol = val if val > ns.vol else ns.vol %}
+            {% endif %}
+            {% set ns.vol = (states('input_number.default_restore_volume') | int / 100) if ns.vol == 0 else ns.vol %}
+            {{ ns.vol }}
+
+      - service: notify.alexa_media
+        data:
+          target: >
+            {{ states('input_text.player_alexa') }}
+          message: >
+            {{ trigger.event.data.message_tts if trigger.event.data.message_tts else trigger.event.data.message }}
+          data:
+            type: >
+              {% if trigger.event.data.alexa_type | length == 0 %}
+                {{ states('input_select.default_alexa_type') | lower }}
+              {% else %}
+                {{ trigger.event.data.alexa_type }}
+              {% endif %}
+            method: >
+              {{ trigger.event.data.alexa_method }}
+
+      - service: media_player.volume_set
+        data:
+          entity_id: >
+            {{ states('input_text.player_alexa') }}
+          volume_level: >
+            {% if trigger.event.data.volume | length == 0 %}
+              {{ states('sensor.period_of_day_volume') }}
+            {% else %}
+              {{ trigger.event.data.volume }}
+            {% endif %}
+
+      # Commentare il service qui sotto, se si usa lo script set_vol
+      - service: timer.start
+        data:
+          entity_id: timer.volume_alexa
+          duration: >-
+            {{(trigger.event.data.message_tts if trigger.event.data.message_tts else trigger.event.data.message) | wordcount // 2+2}}
+
+#######################################-#######################################
+##                                  SCRIPT
+#######################################-#######################################
+# script:
+#   set_vol:
+#     alias: Set Volume Alexa
+#     sequence:
+#       - condition: template
+#         value_template: >
+#           {% set entities = state_attr(states('input_text.player_alexa'), 'entity_id')
+#             if states('input_text.player_alexa').split(',')|count > 1
+#             else (states('input_text.player_alexa'), 'entity_id')  %}
+#           {% set playing = states.media_player
+#             | selectattr('entity_id', 'in', entities)
+#             | selectattr('state','eq','playing')
+#             | list
+#             | length %}
+#           {{ playing >= 1 }}
+#       - service: input_number.set_value
+#         data:
+#           entity_id: input_number.alexa_volume_storage
+#           value: >
+#             {% set ns = namespace(vol=0) %}
+#             {% if is_state('timer.volume_alexa', 'active') %}
+#               {% set ns.vol = states('input_number.alexa_volume_storage') | float | round(2) %}
+#             {% elif 'group' in states('input_text.player_alexa') %}
+#               {% set entities = state_attr(states('input_text.player_alexa') , 'entity_id') %}
+#               {% for x in entities %}
+#               {% set val = state_attr(x, 'volume_level')| float | round(2) %}
+#               {% set ns.vol = val if val > ns.vol else ns.vol %}
+#               {% endfor %}
+#             {% else %}
+#               {% set val = state_attr(states('input_text.player_alexa'), 'volume_level') | float | round(2) %}
+#               {% set ns.vol = val if val > ns.vol else ns.vol %}
+#             {% endif %}
+#             {% set ns.vol = (states('input_number.default_restore_volume') | int / 100) if ns.vol == 0 else ns.vol %}
+#             {{ ns.vol }}
+#       - service: timer.start
+#         data:
+#           entity_id: timer.volume_alexa
+#           duration: "00:00:{{states('input_text.last_message') | wordcount // 2+2 }}"

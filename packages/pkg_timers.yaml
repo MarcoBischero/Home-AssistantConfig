@@ -1,0 +1,290 @@
+#################################################################
+#                                                               #
+#                       Packages/Timers                         #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'Timers'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## Timers
+    ################################################
+
+timer:
+  dwstanzaletto:
+    duration: '00:30:00'
+  dwcucina:
+    duration: '00:30:00'
+  dwstanzetta:
+    duration: '00:30:00'
+  lavatrice_ontime:
+    duration: '02:30:00'
+  asciugatrice_ontime:
+    duration: '02:30:00'
+#########################################################
+#                                                       #
+#                       GROUP                           #
+#                                                       #
+#########################################################
+group:
+  timers_pack:
+    name: Timers Pack
+    entities:
+      - timer.dwstanzaletto
+      - timer.dwstanzetta
+      - timer.dwcucina
+      - timer.lavatrice_ontime
+      - timer.asciugatrice_ontime
+
+#########################################################
+#                                                       #
+#                        INPUT                          #
+#                                                       #
+#########################################################
+input_boolean:
+  muffa_attack:
+    name: MuffaAttack
+    initial: 'off'
+    icon: mdi:skull
+
+#########################################################
+automation:
+#########################################################
+#                                                       #
+#                AUTOMAZIONI Start                      #
+#                                                       #
+#########################################################
+- id: start_timer_lavaggio_automation
+  alias: Start Timer Lavatrice
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.assorbimento_lavatrice
+      above: '50'
+  action:
+  - service: timer.start
+    entity_id: timer.lavatrice_ontime
+
+- id: start_timer_asciugatura_automation
+  alias: Start Timer Asciugatrice
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.assorbimento_asciugatrice
+      above: '50'
+  action:
+  - service: timer.start
+    entity_id: timer.asciugatrice_ontime
+
+- alias: Start Timer DwStanzaLetto
+  id: 'dwstanzalettoTimerStart'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwstanzaletto
+    from: 'off'
+    to: 'on'
+  action:
+  - service: timer.start
+    entity_id: timer.dwstanzaletto
+
+- alias: Start Timer DwStanzetta
+  id: 'dwstanzettaTimerStart'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwstanzetta
+    from: 'off'
+    to: 'on'
+  action:
+  - service: timer.start
+    entity_id: timer.dwstanzetta
+
+- alias: Start Timer DwCucina
+  id: 'dwcucinaTimerStart'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwcucina
+    from: 'off'
+    to: 'on'
+  action:
+  - service: timer.start
+    entity_id: timer.dwcucina
+
+#########################################################
+#                                                       #
+#                AUTOMAZIONI Pause                      #
+#                                                       #
+#########################################################
+- alias: Pausa Timer DwStanzaLetto
+  id: 'dwstanzalettoTimerPause'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwstanzaletto
+    from: 'on'
+    to: 'off'
+  action:
+  - service: timer.pause
+    entity_id: timer.dwstanzaletto
+
+- alias: Pausa Timer DwStanzetta
+  id: 'dwstanzettaTimerPause'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwstanzetta
+    from: 'on'
+    to: 'off'
+  action:
+  - service: timer.pause
+    entity_id: timer.dwstanzetta
+
+- alias: Pausa Timer DwCucina
+  id: 'dwcucinaTimerPause'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwcucina
+    from: 'on'
+    to: 'off'
+  action:
+  - service: timer.pause
+    entity_id: timer.dwcucina
+
+- id: pausa_timer_asciugatura_automation
+  alias: Pausa Timer Asciugatrice
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_asciugatrice
+    below: '7'
+    for:
+      minutes: 1
+  action:
+  - service: timer.pause
+    entity_id: timer.asciugatrice_ontime
+
+- id: pausa_timer_lavatrice_automation
+  alias: Pausa Timer Lavatrice
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_lavatrice
+    below: '7'
+    for:
+      minutes: 1
+  action:
+  - service: timer.pause
+    entity_id: timer.lavatrice_ontime
+#########################################################
+#                                                       #
+#                AUTOMAZIONI Stop                       #
+#                                                       #
+#########################################################
+
+- alias: MuffaAttack
+  id: 'muffaAttack'
+  trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.dwstanzaletto
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.dwstanzetta
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.dwcucina
+  condition:
+    condition: and
+    conditions:
+    - condition: template
+      value_template: >-
+        {% set remainingTime = state_attr('timer.dwstanzaletto','remaining') %}
+        {% if remainingTime == '0:00:00' %} true
+        {% else %} false
+        {% endif %}
+    - condition: template
+      value_template: >-
+        {% set remainingTime = state_attr('timer.dwstanzetta','remaining') %}
+        {% if remainingTime == '0:00:00' %} true
+        {% else %} false
+        {% endif %}
+    - condition: template
+      value_template: >-
+        {% set remainingTime = state_attr('timer.dwcucina','remaining') %}
+        {% if remainingTime == '0:00:00' %} true
+        {% else %} false
+        {% endif %}
+  action:
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.muffa_attack
+    - service: script.my_notify
+      data:
+        mute: 1
+        call_informare: 1
+        call_no_fatto_casuale: 1
+        notify: "Family"
+        title: "Muffa Attack"
+        alexa_type: "announce"
+        alexa_method: "all"
+        message: "Per oggi abbiamo sconfitto la Muffa!! Bravi!! Muffa Attack !!"
+
+#########################################################
+#                                                       #
+#                AUTOMAZIONI Reminder                   #
+#                                                       #
+#########################################################
+- alias: Reset MuffaAttack
+  id: reset_muffaattack
+  trigger:
+    - platform: time
+      at: '00:00:00'
+  action:
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.muffa_attack
+
+- alias: Windows Timer Reminder
+  id: windows_timer_reminder
+  trigger:
+    - platform: time
+      at: '12:00:00'
+    - platform: time
+      at: '18:15:00'
+    - platform: time
+      at: '22:00:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.muffa_attack
+        state: 'off'
+  action:
+    - service: script.my_notify
+      data:
+        mute: 1
+        call_informare: 0
+        call_no_fatto_casuale: 1
+        notify: "Family"
+        title: "Muffa Attack"
+        alexa_type: "announce"
+        alexa_method: "all"
+        message: >-
+            "Lasciare ancora aperto.
+            Finestra Camera: {% if state_attr('timer.dwstanzaletto', 'remaining') != None %} {{ state_attr('timer.dwstanzaletto', 'remaining').split(':')[1] }} minuti {% else %} 30 minuti {% endif %}
+            Finestra Cucina: {% if state_attr('timer.dwcucina', 'remaining') != None %} {{ state_attr('timer.dwcucina', 'remaining').split(':')[1] }} minuti {% else %} 30 minuti {% endif %}
+            Finestra Stanzetta:{% if state_attr('timer.dwstanzetta', 'remaining') != None %} {{ state_attr('timer.dwstanzetta', 'remaining').split(':')[1] }} minuti {% else %} 30 minuti {% endif %}"

@@ -1,0 +1,334 @@
+pirconfig:
+  sequence:
+    - service: deconz.configure
+      data:
+        entity: binary_sensor.pir_bagno
+        data: {'duration': 60}
+        field: '/config'
+    - service: deconz.configure
+      data:
+        entity: binary_sensor.pir_stanzetta
+        data: {'duration': 60}
+        field: '/config'
+    - service: deconz.configure
+      data:
+        entity: binary_sensor.pir_stanzaletto
+        data: {'duration': 60}
+        field: '/config'
+    - service: deconz.configure
+      data:
+        entity: binary_sensor.pir_cucina
+        data: {'duration': 60}
+        field: '/config'
+    - service: deconz.configure
+      data:
+        entity: binary_sensor.pir_corridoio
+        data: {'duration': 60}
+        field: '/config'
+youtube:
+  sequence:
+  - service: rest_command.youtube
+plex:
+  sequence:
+  - service: rest_command.plex
+netflix:
+  sequence:
+  - service: rest_command.netflix
+climatizzami:
+  sequence:
+  - service: climate.set_hvac_mode
+    data:
+      entity_id: climate.hisense_cucina, climate.hisense_stanzaletto
+      hvac_modes: cool
+riepilogo:
+  sequence:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Riepilogo
+      message: la temperatura media è di {{ states("sensor.temperatura_casa")|float|round(1)}}°, e c'è un'umidità del {{ states("sensor.umidita_casa")|float|round(1)}}%.
+peperoni:
+  sequence:
+  - service: script.turn_on
+    entity_id: script.disattiva_allarme
+  - service: switch.turn_off
+    entity_id: switch.dafang_motion_detection
+controllo_infissi:
+  sequence:
+  - service: script.my_notify
+    data:
+      call_informare: 0
+      call_controllo_infissi: 1
+      call_controllo_luci: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: AllarmeAway
+      message: >-
+        {% if is_state('alarm_control_panel.home_alarm', 'armed_away') %}
+          Allarme Totale attivato!
+        {% else %}
+          Allarme non inserito!
+         {% endif %}
+
+buonanotte:
+  sequence:
+  - service: media_player.turn_off
+    entity_id: media_player.televisione
+  - service: light.turn_off
+    entity_id: light.corridoio,light.lampada,light.stanzetta,light.switchfarino,light.switchstanzaletto,light.switchtavolo,light.cappa
+  - service: switch.turn_off
+    entity_id: switch.comodino_marco
+  - service: switch.turn_off
+    entity_id: switch.luce_baby
+  - service: switch.turn_on
+    entity_id: switch.comodino_noemi
+  - service: script.turn_on
+    entity_id: script.attiva_allarme_perimetrale
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.sleep_mode
+
+
+attiva_allarme_totale:
+  sequence:
+  - service: alarm_control_panel.alarm_arm_away
+    data:
+      entity_id: alarm_control_panel.home_alarm
+      code: 24442
+      
+attiva_allarme_perimetrale:
+  sequence:
+  - service: alarm_control_panel.alarm_arm_home
+    data:
+      entity_id: alarm_control_panel.home_alarm
+      code: 24442
+  - service: light.turn_on
+    entity_id: light.migateway
+    data:
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      brightness: 80
+disattiva_allarme:
+  sequence:
+  - service: alarm_control_panel.alarm_disarm
+    data:
+      entity_id: alarm_control_panel.home_alarm
+      code: 24442
+  - service: light.turn_on
+    entity_id: light.migateway
+    data:
+      rgb_color:
+      - 100
+      - 200
+      - 255
+      brightness: 80
+  - service: script.turn_on
+    data:
+      entity_id: script.light_loop_kill
+  - service: switch.turn_off
+    entity_id: switch.dafang_motion_detection
+canale_5:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.samsungtv
+      media_content_id: 505
+      media_content_type: channel
+italia_1:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.samsungtv
+      media_content_id: 506
+      media_content_type: channel
+tv_8:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.samsungtv
+      media_content_id: 508
+      media_content_type: channel
+canale_31:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.samsungtv
+      media_content_id: 31
+      media_content_type: channel
+cartoni_animati:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.samsungtv
+      media_content_id: 43
+      media_content_type: channel
+chromecast:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.televisione
+      source: HDMI 3
+playstation:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.televisione
+      source: HDMI 2
+zidu:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.televisione
+      source: HDMI 1
+twdiretta:
+  sequence:
+  - service: media_player.turn_on
+    data:
+      entity_id: media_player.televisione
+  - delay: '{{ states.sensor.channel_delay.state }}'
+  - service: media_player.media_next_track
+    entity_id: media_player.televisione
+luci_soffuse:
+  sequence:
+  - entity_id: light.switchtavolo,light.cappa
+    service: light.turn_off
+  - entity_id: light.switchfarino
+    service: light.turn_off
+  - data:
+      brightness_pct: "{{ state_attr('switch.circadian_lighting_circadian', 'brightness') | int }}"
+      kelvin: "{{ state_attr('sensor.circadian_values', 'colortemp') | int }}"
+    entity_id: light.lampada
+    service: light.turn_on
+  alias: Luci Soffuse
+
+playlist_preferita:
+  alias: Playlist Preferita
+  sequence:
+  - service: media_player.volume_set
+    entity_id:
+    - media_player.stanza_tv
+    data:
+      volume_level: 0.5
+  - service: media_player.select_source
+    data:
+      entity_id:
+      - media_player.stanza_tv
+      source: Estate 2019
+allarme_on:
+  alias: Allarme ON
+  sequence:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: ALLARME ON!
+      alexa_type: announce
+      alexa_method: all
+      message: occhio!! C'è qualcuno in casa!!
+  - service: media_player.volume_set
+    entity_id:
+    - media_player.stanza_tv
+    data:
+      volume_level: 0.9
+  - service: media_player.select_source
+    data:
+      entity_id:
+      - media_player.stanza_tv
+      source: Allarme
+  - service: xiaomi_aqara.play_ringtone
+    data:
+      gw_mac: 04CF8C913328
+      ringtone_id: 8
+      ringtone_vol: 9
+  - service: light.turn_on
+    entity_id: light.migateway
+    data:
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      brightness: 255
+baby_on:
+  alias: Allarme Baby ON
+  sequence:
+  - service: script.my_notify
+    data:
+      mute: 1
+      call_informare: 0
+      call_no_fatto_casuale: 1
+      call_no_annuncio: 1
+      notify: "Family"
+      title: "Allarme Baby"
+      message: "Occhio!! Il baby si è mosso!!"
+      
+office_mode:
+  alias: Office Mode ON
+  sequence:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: "Family"
+      title: "OfficeMode"
+      message: "Marco è in call! Non disturbare!"
+car_locator:
+  alias: Car Locator
+  sequence:
+  - variables:
+      sensor_name: "{{ geocoded_location}}"
+      notify_app: "{{ mobile_app }}"
+  - service: "{{ notify_app}}"
+    data:
+      message: "request_location_update"
+  - delay: 2 # timeout before proceeding
+  - service: device_tracker.see
+    data:
+      dev_id: c4_cactus
+      gps:
+        - "{{ state_attr(sensor_name,'Location')[0] }}"
+        - "{{ state_attr(sensor_name,'Location')[1] }}"
+  - service: script.my_notify
+    data:
+      mute: 1
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      call_no_annuncio: 1
+      notify: mobile_app_iphonexs
+      title: "CarLocator"
+      message: "la posizione della C4 è stata aggiornata: {{ states('sensor.c4_cactus') }}."

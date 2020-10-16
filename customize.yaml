@@ -1,0 +1,438 @@
+light.tavolo1:
+  icon: mdi:ceiling-light
+light.tavolo2:
+  icon: mdi:ceiling-light
+switch.comodino_marco:
+  icon: mdi:lamp
+switch.comodino_noemi:
+  icon: mdi:lamp
+device_tracker.iphone:
+  friendly_name: Marco
+device_tracker.iphone_noemi_2:
+  friendly_name: Noemi
+  entity_picture: https://graph.facebook.com/1360609891/picture?type=normal
+  icon: mdi:face
+device_tracker.iphonexs_3:
+  friendly_name: Marco
+  entity_picture: https://graph.facebook.com/1379310734/picture?type=normal
+person.noemi:
+  friendly_name: Noemi
+  entity_picture: https://graph.facebook.com/1360609891/picture?type=normal
+  icon: mdi:face
+person.marco:
+  friendly_name: Marco
+  entity_picture: https://graph.facebook.com/1379310734/picture?type=normal
+device_tracker.airmarcobischero:
+  hidden: true
+device_tracker.alexwatch:
+  hidden: true
+automation.hassio_backup:
+  icon: mdi:dropbox
+script.tv_8:
+  friendly_name: TV 8
+  icon: mdi:television-classic
+script.italia_1:
+  friendly_name: Italia 1
+  icon: mdi:television-classic
+script.canale_5:
+  friendly_name: Canale 5
+  icon: mdi:television-classic
+script.canale_31:
+  friendly_name: Canale 31
+  icon: mdi:television-classic
+script.check_dropbox_successful:
+  friendly_name: Check Dropbox Successfull
+  icon: mdi:dropbox
+script.sonos_say:
+  icon: mdi:speaker-wireless
+automation.automazione_hassio_backup:
+  friendly_name: Hassio Backup
+  icon: mdi:cloud-upload
+automation.uploaded_backup:
+  friendly_name: Backup Uploaded
+  icon: mdi:upload
+automation.upload_dropbox_backup:
+  friendly_name: Upload Dropbox backup
+  icon: mdi:dropbox
+script.luci_soffuse:
+  friendly_name: Luci Soffuse
+  icon: mdi:lightbulb-on
+script.light_loop:
+  friendly_name: Light Loop
+  icon: mdi:circle-double
+script.light_loop_kill:
+  friendly_name: Light Loop Kill
+  icon: mdi:flashlight-off
+script.flash_lights:
+  friendly_name: Flash Lights
+  icon: mdi:flashlight
+device_tracker.fritzbox:
+  friendly_name: fritz.box
+  icon: mdi:router-wireless
+automation.allarme:
+  icon: mdi:alarm-light
+automation.hass_shutdown:
+  icon: mdi:home-assistant
+automation.hass_startup:
+  icon: mdi:home-assistant
+media_player.kodi:
+  icon: mdi:kodi
+automation.kodi_stop:
+  icon: mdi:kodi
+automation.kodi_in_pause:
+  icon: mdi:kodi
+switch.luce_baby:
+  icon: mdi:face
+media_player.samsungtv:
+  icon: mdi:television-classic
+automation.start_homekit:
+  icon: mdi:apple
+automation.luci_soffuse:
+  icon: mdi:lightbulb-on
+automation.noemi_is_home:
+  icon: mdi:pig
+sensor.noah:
+  friendly_name: Noah
+  icon: mdi:face
+variable.last_notification_name:
+  friendly_name: lastNotificationDevice
+  icon: mdi:cellphone-iphone
+variable.last_notification_zone:
+  friendly_name: lastNotificationZone
+  icon: mdi:google-maps
+variable.marco_last_notification_zone:
+  friendly_name: Marco Last Location
+  icon: mdi:google-maps
+variable.noemi_last_notification_zone:
+  icon: mdi:google-maps
+binary_sensor.dwporta:
+  icon: mdi:door
+  device_class: door
+binary_sensor.smokeingresso:
+  icon: mdi:smoke-detector
+binary_sensor.dwbagno:
+  icon: mdi:border-inside
+  device_class: window
+binary_sensor.dwcucina:
+  icon: mdi:border-inside
+  device_class: window
+binary_sensor.dwstanzaletto:
+  icon: mdi:border-inside
+  device_class: window
+binary_sensor.dwstanzetta:
+  icon: mdi:border-inside
+  device_class: window
+media_player.echo_dot:
+  icon: mdi:amazon-alexa
+device_tracker.alexa:
+  icon: mdi:amazon-alexa
+media_player.echo:
+  icon: mdi:amazon-alexa
+light.corridoio:
+  icon: mdi:vanity-light
+light.stanzetta:
+  icon: mdi:vanity-light
+light.farino_2:
+  icon: mdi:track-light
+light.migateway:
+  icon: mdi:material-ui
+media_player.salotto:
+  icon: mdi:speaker-wireless
+light.lampada:
+  icon: mdi:floor-lamp
+media_player.stanza_tv:
+  icon: mdi:speaker-wireless
+sensor.db_file_size:
+  icon: mdi:database
+media_player.echo_cucina:
+  icon: mdi:amazon-alexa
+media_player.echo_dot_camera_letto:
+  icon: mdi:amazon-alexa
+switch.allarme_perimetrale:
+  friendly_name: Allarme Perimetrale
+  icon: mdi:border-all-variant
+script.disattiva_allarme_perimetrale:
+  friendly_name: Disattiva Allarme Perimetrale
+script.attiva_allarme_perimetrale:
+  friendly_name: Attiva Allarme Perimetrale
+  icon: mdi:border-all-variant
+light.farino:
+  icon: mdi:wall-sconce
+script.buonanotte:
+  friendly_name: Buonanotte
+  icon: mdi:weather-night
+light.switchtavolo:
+  friendly_name: Tavolo
+  icon: mdi:light-switch
+light.switchfarino:
+  friendly_name: Farino
+  icon: mdi:track-light
+light.switchstanzaletto:
+  friendly_name: Stanza da Letto
+  icon: mdi:vanity-light
+script.rai_yoyo:
+  friendly_name: Rai YoYo
+  icon: mdi:television-classic
+script.controllo_infissi:
+  friendly_name: Controllo Infissi
+  icon: mdi:border-inside
+script.allarme_on:
+  icon: mdi:alarm-light
+automation.allarme_away:
+  icon: mdi:border-all
+automation.allarme_home:
+  icon: mdi:border-all-variant
+script.disattiva_allarme:
+  friendly_name: Disattiva Allarme
+  icon: mdi:border-none
+script.attiva_allarme_totale:
+  friendly_name: Attiva Allarme Totale
+  icon: mdi:border-all
+script.peperoni:
+  friendly_name: Peperoni
+  icon: mdi:fingerprint
+media_player.echodot_stanzaletto:
+  icon: mdi:amazon-alexa
+media_player.echodot_bagno:
+  icon: mdi:amazon-alexa
+automation.allarme_batteria:
+  icon: mdi:battery-charging-outline
+automation.armedhometriggered:
+  icon: mdi:alarm-light-outline
+automation.avviso_tts_allarme_in_innesco:
+  icon: mdi:voice
+automation.avviso_tts_allarme_innescato:
+  icon: mdi:voice
+automation.dryon:
+  icon: mdi:air-purifier
+automation.awayalarmdeact:
+  icon: mdi:border-none
+automation.frontdooropen:
+  icon: mdi:door-open
+automation.familynothome:
+  icon: mdi:home-outline
+automation.welcomehome:
+  icon: mdi:home-circle
+automation.noemi_entered_zone:
+  friendly_name: Noemi zoning
+  icon: mdi:home-map-marker
+automation.marco_entered_zone:
+  friendly_name: Marco zoning
+  icon: mdi:home-map-marker
+automation.notifica_fine_lavaggio:
+  icon: mdi:washing-machine-alert
+script.cartoni_animati:
+  friendly_name: Cartoni Animati
+  icon: mdi:television-classic
+script.riepilogo:
+  friendly_name: Riepilogo
+  icon: mdi:voice
+automation.notifica_fine_asciugatura:
+  icon: mdi:tumble-dryer-alert
+automation.attiva_notifica_asciugatrice:
+  icon: mdi:tumble-dryer-alert
+automation.attiva_notifica_lavatrice:
+  icon: mdi:washing-machine-alert
+script.netflix:
+  friendly_name: Netflix
+  icon: mdi:netflix
+script.youtube:
+  friendly_name: Youtube
+  icon: mdi:youtube
+script.plex:
+  friendly_name: Plex
+  icon: mdi:plex
+climate.hisense_cucina:
+  friendly_name: Hisense Cucina
+climate.hisense_stanzaletto:
+  friendly_name: Hisense Stanza da Letto
+script.climatizzami:
+  friendly_name: Climatizzami
+  icon: mdi:air-conditioner
+automation.turn_off_baby_light:
+  icon: mdi:face
+automation.riscaldamento_t1:
+  icon: mdi:hexagon-slice-1
+automation.riscaldamento_t2:
+  icon: mdi:hexagon-slice-2
+automation.riscaldamento_t3:
+  icon: mdi:hexagon-slice-3
+automation.riscaldamento_home_away:
+  icon: mdi:hexagon-multiple
+switch.asciugatrice:
+  icon: mdi:tumble-dryer
+automation.automazione_attivazione_spegnimento_climate:
+  icon: mdi:thermostat
+automation.automazione_spegnimento_climate:
+  icon: mdi:thermostat
+switch.lavatrice:
+  icon: mdi:washing-machine
+automation.hacs_persistent_notification:
+  icon: mdi:alpha-c-box-outline
+automation.windows_timer_reminder:
+  icon: mdi:border-inside
+media_player.echo_show_cucina:
+  icon: mdi:amazon-alexa
+media_player.multistanza:
+  icon: mdi:amazon-alexa
+media_player.echodot_stanzetta:
+  icon: mdi:amazon-alexa
+media_player.marco_s_alexa_apps:
+  icon: mdi:amazon-alexa
+automation.attivazione_automazione_spegnimento_climate:
+  icon: mdi:air-conditioner
+automation.facebox_announcement:
+  icon: mdi:face-agent
+automation.pausa_timer_dwcucina:
+  icon: mdi:timer-off
+automation.pausa_timer_dwstanzaletto:
+  icon: mdi:timer-off
+automation.pausa_timer_dwstanzetta:
+  icon: mdi:timer-off
+automation.restart_facebox_container:
+  icon: mdi:restart
+automation.start_timer_dwcucina:
+  icon: mdi:timer
+automation.start_timer_dwstanzaletto:
+  icon: mdi:timer
+automation.start_timer_dwstanzetta:
+  icon: mdi:timer
+automation.turn_on_facebox_automation:
+  icon: mdi:face-recognition
+sensor.facebox_detection:
+  icon: mdi:face-recognition
+group.facebox_pack:
+  icon: mdi:face-recognition
+image_processing.facedetection:
+  icon: mdi:face-recognition
+sensor.facebox_detection1:
+  icon: mdi:face
+sensor.facebox_detection2:
+  icon: mdi:face
+sensor.facebox_detection3:
+  icon: mdi:face
+sensor.facebox_detection4:
+  icon: mdi:face
+sensor.temperatura_casa:
+  icon: mdi:thermometer
+sensor.umidita_casa:
+  icon: mdi:water-percent
+climate.riscaldamentocucina:
+  friendly_name: Termosifone Cucina Tado
+climate.riscaldamentosalotto:
+  friendly_name: Termosifone Salotto
+climate.riscaldamentostanzetta:
+  friendly_name: Termosifone Stanzetta Tado
+climate.riscaldamentostanzaletto:
+  friendly_name: Termosifone Stanza da Letto Tado
+sensor.cucina_heating:
+  friendly_name: Cucina heating
+sensor.cucina_temperature:
+  friendly_name: Cucina temperature
+sensor.cucina_humidity:
+  friendly_name: Cucina heating
+sensor.cucina_link:
+  friendly_name: Cucina link
+sensor.cucina_power:
+  friendly_name: Cucina power
+sensor.cucina_overlay:
+  friendly_name: Cucina overlay
+sensor.cucina_tado_mode:
+  friendly_name: Cucina tado mode
+sensor.riscaldamento_heating:
+  friendly_name: Salotto heating
+sensor.riscaldamento_temperature:
+  friendly_name: Salotto temperature
+sensor.riscaldamento_humidity:
+  friendly_name: Salotto heating
+sensor.riscaldamento_link:
+  friendly_name: Salotto link
+sensor.riscaldamento_power:
+  friendly_name: Salotto power
+sensor.riscaldamento_overlay:
+  friendly_name: Salotto overlay
+sensor.riscaldamento_tado_mode:
+  friendly_name: Salotto tado mode
+sensor.stanzetta_heating:
+  friendly_name: Stanzetta heating
+sensor.stanzetta_temperature:
+  friendly_name: Stanzetta temperature
+sensor.stanzetta_humidity:
+  friendly_name: Stanzetta heating
+sensor.stanzetta_link:
+  friendly_name: Stanzetta link
+sensor.stanzetta_power:
+  friendly_name: Stanzetta power
+sensor.stanzetta_overlay:
+  friendly_name: Stanzetta overlay
+sensor.stanzetta_tado_mode:
+  friendly_name: Stanzetta tado mode
+sensor.stanza_da_letto_heating:
+  friendly_name: Stanza da Letto heating
+sensor.stanza_da_letto_temperature:
+  friendly_name: Stanza da Letto temperature
+sensor.stanza_da_letto_humidity:
+  friendly_name: Stanza da Letto heating
+sensor.stanza_da_letto_link:
+  friendly_name: Stanza da Letto link
+sensor.stanza_da_letto_power:
+  friendly_name: Stanza da Letto power
+sensor.stanza_da_letto_overlay:
+  friendly_name: Stanza da Letto overlay
+sensor.stanza_da_letto_tado_mode:
+  friendly_name: Stanza da Letto tado mode
+light.cappa:
+  icon: mdi:wall-sconce-flat
+sensor.synology_dsm_cpu_load_total:
+  friendly_name: CPU Load (Total)
+sensor.synology_dsm_memory_usage_real:
+  friendly_name: Memory Usage (Real)
+sensor.synology_dsm_network_down:
+  friendly_name: Network Down
+sensor.synology_dsm_network_up:
+  friendly_name: Network Up
+sensor.synology_dsm_status_smart_sda:
+  friendly_name: Status (Smart) (sda)
+sensor.synology_dsm_status_smart_sdb:
+  friendly_name: Status (Smart) (sdb)
+sensor.synology_dsm_status_sda:
+  friendly_name: Status (sda)
+sensor.synology_dsm_volume_used_volume_1:
+  friendly_name: Volume Used (volume_1)
+sensor.synology_dsm_status_sdb:
+  friendly_name: Status (sdb)
+sensor.synology_dsm_status_volume_1:
+  friendly_name: Status (volume_1)
+climate.heat_cucina:
+  friendly_name: Termosifone Cucina
+climate.heat_stanzaletto:
+  friendly_name: Termosifone Stanza da Letto
+climate.heat_stanzetta:
+  friendly_name: Termosifone Stanzetta
+automation.thermo_temperature_set:
+  icon: mdi:home-thermometer-outline
+light.bagno:
+  icon: mdi:toilet
+switch.forno:
+  icon: mdi:toaster-oven
+automation.crease_counter_automation:
+  icon: mdi:tumble-dryer-alert
+automation.notifica_fine_lavoro:
+  icon: mdi:car-info
+climate.climate_cucina:
+  friendly_name: Condizionatore Cucina
+climate.climate_stanzaletto:
+  friendly_name: Condizionatore Stanza da Letto
+sensor.c4_cactus:
+  icon: mdi:car
+  friendly_name: C4 Cactus
+alarm_control_panel.home_alarm:
+  code_format: FORMAT_NUMBER
+camera.dafang3:
+  friendly_name: Telecamera Cucina
+script.zidu:
+  friendly_name: Zidu
+script.twdiretta:
+  friendly_name: Twdiretta
+script.playstation:
+  friendly_name: Playstation

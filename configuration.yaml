@@ -1,0 +1,237 @@
+homeassistant:
+# Name of the location where Home Assistant is running
+# Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+# Impacts weather/sunrise data (altitude above sea level in meters)
+# elevation: 0
+# metric for Metric, imperial for Imperial
+# unit_system: metric
+# Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  external_url: "https://marcobischerohome.duckdns.org"
+  internal_url: "https://marcobischerohome.duckdns.org"
+  time_zone: Europe/Rome
+# Customization file
+  customize: !include customize.yaml
+  auth_providers:
+  #- type: trusted_networks
+  #  trusted_networks:
+  #    - 192.168.1.0/24
+  - type: homeassistant
+  - type: legacy_api_password
+    api_password: !secret http_password
+  packages: !include_dir_named packages/
+
+
+tado:
+  username: !secret tado_username
+  password: !secret tado_pwd
+
+rest_command:
+  netflix:
+    method: POST
+    url: !secret netflixUrl
+  youtube:
+    method: POST
+    url: !secret youtubeUrl
+  plex:
+    method: POST
+    url: !secret plexUrl
+
+hacs:
+  token: !secret hacsToken
+  python_script: true
+  theme: true
+  options:
+    release_limit: 5
+    experimental: true
+notify:
+  - name: family
+    platform: group
+    services:
+      - service: mobile_app_iphonexs
+      - service: mobile_app_noemi11
+
+xiaomi_aqara:
+  discovery_retry: 10
+  gateways:
+    - key: !secret migw_pwd
+
+#ifttt:
+ # key: !secret ifttt_key
+
+
+recorder:
+  purge_keep_days: 3
+  db_url: !secret db_url
+  include:
+    domains:
+      - sensor
+      - switch
+      - alarm_control_panel
+      - climate
+      - automation
+      #- script
+      - binary_sensor
+      - input_boolean
+
+#weather:
+#  - platform: darksky
+ #   api_key: c0a01271f9b486f64ccd155c0a32fd52
+
+#panel_iframe:
+#  deconz:
+#    title: deConz
+#    icon: mdi:zigbee
+#    url: !secret deConzVNC
+#panel_iframe:
+#  portainer:
+#    title: Portainer
+#    icon: mdi:docker
+#    url: xxxxxxxxxx
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+  server_port: 443
+  #base_url: "https://marcobischerohome.duckdns.org:8123"
+  ssl_certificate: "/ssl/fullchain.pem"
+  ssl_key: "/ssl/privkey.pem"
+  #api_password: !secret http_password
+  ip_ban_enabled: true
+  login_attempts_threshold: 7
+
+#pi_hole:
+#    host: !secret piHoleUrl
+#    ssl: false
+#    verify_ssl: false
+    
+logger:
+  default: error
+  logs:
+    homeassistant.core: fatal
+   # homeassistant.components.automation: info
+   # homeassistant.components.script: warning
+    
+input_datetime:
+  mauro_away:
+    name: Mauro last presence
+    has_date: true
+  motion_sensor_light_start:
+    name: Auto Lights Start
+    has_date: false
+    has_time: true
+  motion_sensor_light_end:
+    name: Auto Lights End
+    has_date: false
+    has_time: true
+  motion_sensor_delay_off:
+    name: Auto Lights Off Delay
+    has_date: false
+    has_time: true
+  motion_sensor_delay_off_bagno:
+    name: Auto Lights Off Delay Bagno
+    has_date: false
+    has_time: true   
+  motion_sensor_delay_off_corridoio:
+    name: Auto Lights Off Delay Corridoio
+    has_date: false
+    has_time: true   
+  motion_sensor_delay_off_stanzetta:
+    name: Auto Lights Off Delay Stanzetta
+    has_date: false
+    has_time: true   
+input_boolean:
+  family_home_toggle:
+    name: Family Home Toggle
+    initial: off
+
+#sleep mode creato dall'interfaccia
+
+device_tracker:
+  - platform: fritz
+    interval_seconds: 300
+    consider_home: 300
+  - platform: bluetooth_tracker
+    request_rssi: true
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+    language: "it"
+
+camera:
+  - platform: generic
+    name: DaFang3
+    username: !secret cameraUser
+    password: !secret cameraPwd
+    authentication: basic
+    still_image_url: !secret cameraStillImageUrl
+    stream_source: !secret cameraStreamSource
+    verify_ssl: false
+    scan_interval: 5
+#
+media_player:
+  - platform: smartir
+    name: TV Salotto
+    unique_id: tv.salotto
+    device_code: 1060
+    controller_data: remote.broadlink_cucina_remote
+    
+ # - platform: samsungtv_tizen
+ #   host: !secret samsungtv_ip
+ #   name: tvsamsung
+ #   port: 8002
+ #   mac: !secret samsungtv_mac
+ #   api_key: !secret samsungtv_api
+ #   device_id: !secret samsungtv_deviceid
+    
+alarm_control_panel:
+  - platform: manual
+    name: Home Alarm
+    code: !secret ha_code
+    delay_time: 20
+    trigger_time: 4
+    disarmed:
+      trigger_time: 0
+    armed_home:
+      delay_time: 0
+
+shelly:
+  discovery: true
+  additional_information: true
+  upgrade_switch: true
+  sensors:
+    - rssi
+    - mqtt
+
+
+cloud:
+circadian_lighting:
+smartir:
+stream:
+ffmpeg:
+system_health:
+shopping_list:
+updater:
+discovery:
+zeroconf:
+ssdp:
+logbook:
+history:
+map:
+mobile_app:
+api:
+config:
+climate: !include climate.yaml
+switch: !include switch.yaml
+light: !include light.yaml
+binary_sensor: !include binary_sensor.yaml
+utility_meter: !include utility_meter.yaml
+sensor: !include sensors.yaml
+frontend: !include frontend.yaml
+zone: !include zone.yaml
+homekit: !include homekit.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

@@ -1,0 +1,30 @@
+- name: Italgas
+  latitude: !secret italgasLat
+  longitude: !secret italgasLon
+  radius: 80
+  icon: mdi:worker
+- name: Home
+  latitude: !secret homeLat
+  longitude: !secret homeLon
+  radius: 50
+  icon: mdi:castle
+- name: Reply K1
+  latitude: !secret k1Lat
+  longitude: !secret k1Lon
+  radius: 500
+  icon: mdi:worker
+- name: Ospedale Buzzi
+  latitude: !secret buzziLat
+  longitude: !secret buzziLon
+  radius: 100
+  icon: mdi:hospital
+- name: Alfa Torino
+  latitude: !secret alfaLat
+  longitude: !secret alfaLon
+  radius: 80
+  icon: mdi:worker
+- name: Esselunga
+  latitude: !secret esseLat
+  longitude: !secret esseLon
+  radius: 80
+  icon: mdi:cart

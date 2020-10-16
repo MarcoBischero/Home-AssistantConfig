@@ -1,0 +1,3356 @@
+title: Home
+views:
+  - badges: []
+    cards:
+      - entities:
+          - entity: person.marco
+          - entity: person.noemi
+          - entity: sensor.noah
+            icon: 'mdi:face'
+          - type: divider
+          - binary_sensor.family_home
+          - input_boolean.family_home_toggle
+          - type: divider
+          - entity: sensor.go_to_work
+        show_header_toggle: false
+        state_color: true
+        theme: Google Light Theme
+        title: Family
+        type: entities
+      - cards:
+          - color_type: card
+            double_tap_action:
+              action: call-service
+              confirmation:
+                text: '[[[ return `Stai uscendo?` ]]]'
+              haptic: success
+              service: script.turn_on
+              service_data:
+                entity_id: script.attiva_allarme_totale
+            entity: alarm_control_panel.home_alarm
+            state:
+              - color: 'rgb(189, 117, 111)'
+                icon: 'mdi:shield-home'
+                name: Armed Home
+                value: armed_home
+              - color: 'rgb(255, 51, 51)'
+                icon: 'mdi:shield-lock'
+                name: Armed Away
+                value: armed_away
+              - color: 'rgb(250, 201, 51)'
+                icon: 'mdi:shield-outline'
+                name: Pending
+                value: pending
+              - color: 'rgb(117, 189, 111)'
+                icon: 'mdi:shield-check'
+                name: Disarmed
+                value: disarmed
+            tap_action:
+              action: call-service
+              haptic: success
+              service: switch.toggle
+              service_data:
+                entity_id: switch.allarme_perimetrale
+            theme: Google Light Theme
+            type: 'custom:button-card'
+          - color_type: card
+            entity: script.buonanotte
+            name: Buonanotte
+            state:
+              - color: 'rgb(117, 200, 255)'
+                icon: 'mdi:weather-night'
+                operator: default
+            tap_action:
+              action: call-service
+              confirmation:
+                text: '[[[ return `Stai andando a letto?` ]]]'
+              haptic: success
+              service: script.turn_on
+              service_data:
+                entity_id: script.buonanotte
+            type: 'custom:button-card'
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_type: blank-card
+                type: 'custom:button-card'
+              - color: 'rgb(30, 180, 230)'
+                color_type: card
+                icon: 'mdi:volume-minus'
+                tap_action:
+                  action: call-service
+                  service: media_player.volume_down
+                  service_data:
+                    entity_id: media_player.stanza_tv
+                type: 'custom:button-card'
+              - color: 'rgb(30, 180, 230)'
+                color_type: card
+                icon: 'mdi:volume-plus'
+                tap_action:
+                  action: call-service
+                  service: media_player.volume_up
+                  service_data:
+                    entity_id: media_player.stanza_tv
+                type: 'custom:button-card'
+              - color_type: blank-card
+                type: 'custom:button-card'
+            type: horizontal-stack
+          - cards:
+              - color_type: card
+                double_tap_action:
+                  action: call-service
+                  haptic: success
+                  service: media_player.media_play_pause
+                  service_data:
+                    entity_id: media_player.salotto_2
+                entity: media_player.salotto_2
+                hold_action:
+                  action: more-info
+                  haptic: success
+                state:
+                  - color: 'rgb(36, 152, 137)'
+                    icon: 'mdi:pause'
+                    name: ChromeCast Playing
+                    value: playing
+                  - color: 'rgb(36, 152, 137)'
+                    icon: 'mdi:google-chrome'
+                    name: ChromeCast
+                    value: 'off'
+                  - color: 'rgb(36, 152, 137)'
+                    icon: 'mdi:play'
+                    name: ChromeCast Paused
+                    value: paused
+                  - color: 'rgb(36, 152, 137)'
+                    icon: 'mdi:google-chrome'
+                    name: ChromeCast Paused
+                    value: idle
+                tap_action:
+                  action: call-service
+                  haptic: success
+                  service: script.turn_on
+                  service_data:
+                    entity_id: script.chromecast
+                type: 'custom:button-card'
+              - color_type: card
+                double_tap_action:
+                  action: call-service
+                  haptic: success
+                  service: media_player.media_play_pause
+                  service_data:
+                    entity_id: media_player.kodi
+                entity: media_player.kodi
+                hold_action:
+                  action: more-info
+                  haptic: success
+                state:
+                  - color: 'rgb(20, 144, 158)'
+                    icon: 'mdi:pause'
+                    name: ZidooXS Playing
+                    value: playing
+                  - color: 'rgb(20, 144, 158)'
+                    icon: 'mdi:television-box'
+                    name: ZidooXS
+                    value: idle
+                  - color: 'rgb(20, 144, 158)'
+                    icon: 'mdi:television-box'
+                    name: ZidooXS
+                    value: 'off'
+                  - color: 'rgb(20, 144, 158)'
+                    icon: 'mdi:play'
+                    name: ZidooXS Paused
+                    value: paused
+                tap_action:
+                  action: call-service
+                  haptic: success
+                  service: script.turn_on
+                  service_data:
+                    entity_id: script.zidu
+                type: 'custom:button-card'
+            type: horizontal-stack
+        type: vertical-stack
+      - entities:
+          - artwork: cover
+            entity: media_player.televisione
+            icon: 'mdi:television-classic'
+            shortcuts:
+              buttons:
+                - icon: 'mdi:television-classic'
+                  id: script.canale_5
+                  name: Canale 5
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.italia_1
+                  name: Italia 1
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.cartoni_animati
+                  name: Cartoon
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.canale_31
+                  name: RealTime
+                  type: script
+                - icon: 'mdi:television-classic'
+                  id: script.tv_8
+                  name: TV 8
+                  type: script
+                - icon: 'mdi:playstation'
+                  id: script.playstation
+                  name: Playstation
+                  type: script
+                - icon: 'mdi:plex'
+                  id: script.plex
+                  name: Plex
+                  type: script
+                - icon: 'mdi:youtube'
+                  id: script.youtube
+                  name: Youtube
+                  type: script
+              columns: 2
+              hide_when_off: true
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: Google Light Theme
+        title: Media Players
+        type: entities
+      - entities:
+          - entity: media_player.stanza_tv
+            hide_power: true
+            icon: 'mdi:speaker-wireless'
+            speaker_group:
+              entities:
+                - entity_id: media_player.stanza_tv
+                  name: Stanza TV
+                - entity_id: media_player.salotto
+                  name: Cassa Salotto
+              platform: sonos
+              show_group_count: true
+            type: 'custom:mini-media-player'
+          - entity: media_player.salotto
+            hide_power: true
+            icon: 'mdi:speaker-wireless'
+            show_toggle: false
+            speaker_group:
+              entities:
+                - entity_id: media_player.salotto
+                  name: Cassa Salotto
+                - entity_id: media_player.stanza_tv
+                  name: Stanza TV
+              platform: sonos
+              show_group_count: true
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: Google Light Theme
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echo_show_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - artwork: cover
+            entity: media_player.multistanza
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: Google Light Theme
+        title: Alexa
+        type: entities
+      - card:
+          entities:
+            - entity: sensor.battery_level
+          title: Low Battery Devices
+          type: glance
+        filter:
+          include:
+            - entity_id: '*battery_level*'
+              state: < 15
+            - attributes:
+                battery: < 15
+            - attributes:
+                battery_level: < 15
+        show_empty: false
+        type: 'custom:auto-entities'
+    icon: 'mdi:home-assistant'
+    id: 0
+    theme: dark_teal
+    title: Home
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - card:
+                  entities:
+                    - entity: light.corridoio
+                    - entity: light.migateway
+                    - type: divider
+                    - entity: light.stanzetta
+                    - type: divider
+                    - entity: light.lampada
+                    - entity: light.switchfarino
+                    - type: divider
+                    - entity: light.switchtavolo
+                    - entity: light.cappa
+                    - type: divider
+                    - entity: light.bagno
+                    - type: divider
+                    - entity: light.switchstanzaletto
+                    - entity: switch.comodino_marco
+                    - entity: switch.comodino_noemi
+                    - entity: light.lampada_comodino_noemi
+                    - entity: switch.luce_baby
+                  show_header_toggle: true
+                  state_color: true
+                  theme: dark_teal
+                  title: Luci
+                  type: entities
+                conditions:
+                  - entity: light.switchtavolo
+                    state: 'off'
+                  - entity: switch.comodino_noemi
+                    state: 'on'
+                type: conditional
+              - card:
+                  entities:
+                    - entity: light.corridoio
+                    - entity: light.migateway
+                    - type: divider
+                    - entity: light.stanzetta
+                    - type: divider
+                    - entity: light.lampada
+                    - entity: light.switchfarino
+                    - type: divider
+                    - entity: light.switchtavolo
+                    - entity: light.cappa
+                    - type: divider
+                    - entity: light.bagno
+                    - type: divider
+                    - entity: light.switchstanzaletto
+                    - entity: switch.comodino_marco
+                    - entity: switch.comodino_noemi
+                    - entity: switch.luce_baby
+                  show_header_toggle: true
+                  state_color: true
+                  theme: dark_teal
+                  title: Luci
+                  type: entities
+                conditions:
+                  - entity: light.switchtavolo
+                    state: 'off'
+                  - entity: switch.comodino_noemi
+                    state: 'off'
+                type: conditional
+              - card:
+                  entities:
+                    - entity: light.corridoio
+                    - entity: light.migateway
+                    - type: divider
+                    - entity: light.stanzetta
+                    - type: divider
+                    - entity: light.lampada
+                    - entity: light.switchfarino
+                    - type: divider
+                    - entity: light.switchtavolo
+                    - entity: light.lampada_tavolo1
+                    - entity: light.lampada_tavolo2
+                    - entity: light.cappa
+                    - type: divider
+                    - entity: light.bagno
+                    - type: divider
+                    - entity: light.switchstanzaletto
+                    - entity: switch.comodino_marco
+                    - entity: switch.comodino_noemi
+                    - entity: switch.luce_baby
+                  show_header_toggle: true
+                  state_color: true
+                  theme: dark_teal
+                  title: Luci
+                  type: entities
+                conditions:
+                  - entity: light.switchtavolo
+                    state: 'on'
+                  - entity: switch.comodino_noemi
+                    state: 'off'
+                type: conditional
+              - card:
+                  entities:
+                    - entity: light.corridoio
+                    - entity: light.migateway
+                    - type: divider
+                    - entity: light.stanzetta
+                    - type: divider
+                    - entity: light.lampada
+                    - entity: light.switchfarino
+                    - type: divider
+                    - entity: light.switchtavolo
+                    - entity: light.lampada_tavolo1
+                    - entity: light.lampada_tavolo2
+                    - entity: light.cappa
+                    - type: divider
+                    - entity: light.bagno
+                    - type: divider
+                    - entity: light.switchstanzaletto
+                    - entity: switch.comodino_marco
+                    - entity: switch.comodino_noemi
+                    - entity: light.lampada_comodino_noemi
+                    - entity: switch.luce_baby
+                  show_header_toggle: true
+                  state_color: true
+                  theme: dark_teal
+                  title: Luci
+                  type: entities
+                conditions:
+                  - entity: light.switchtavolo
+                    state: 'on'
+                  - entity: switch.comodino_noemi
+                    state: 'on'
+                type: conditional
+            type: 'custom:vertical-stack-in-card'
+          - break
+          - color_type: card
+            entity: switch.circadian_lighting_circadian
+            size: 10%
+            type: 'custom:button-card'
+          - color_type: card
+            entity: switch.circadian_lighting_tavolo
+            size: 10%
+            type: 'custom:button-card'
+          - entities:
+              - entity: sensor.dafang_light_sensor
+            name: Lumen Cucina
+            theme: midnight
+            type: 'custom:mini-graph-card'
+          - entities:
+              - entity: sensor.migatewaylumen
+            name: Lumen Ingresso
+            theme: midnight
+            type: 'custom:mini-graph-card'
+        layout: vertical
+        type: 'custom:layout-card'
+    icon: 'mdi:lightbulb'
+    panel: true
+    path: lights
+    title: Lights
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - cards:
+                  - entity: sensor.temperatura_casa
+                    graph: line
+                    hours_to_show: 48
+                    type: sensor
+                  - entity: sensor.umidita_casa
+                    graph: line
+                    hours_to_show: 48
+                    type: sensor
+                type: horizontal-stack
+              - cards:
+                  - cards:
+                      - entity: input_number.thermotemperatureset
+                        show_header_toggle: false
+                        type: 'custom:bignumber-card'
+                      - cards:
+                          - color: 'rgb(20, 144, 158)'
+                            color_type: card
+                            icon: 'mdi:plus'
+                            size: 26%
+                            tap_action:
+                              action: call-service
+                              service: input_number.increment
+                              service_data:
+                                entity_id: input_number.thermotemperatureset
+                            type: 'custom:button-card'
+                          - color: 'rgb(20, 144, 158)'
+                            color_type: card
+                            icon: 'mdi:minus'
+                            size: 26%
+                            tap_action:
+                              action: call-service
+                              service: input_number.decrement
+                              service_data:
+                                entity_id: input_number.thermotemperatureset
+                            type: 'custom:button-card'
+                        type: vertical-stack
+                    type: horizontal-stack
+                  - entity: sensor.thermostattemperature
+                    graph: line
+                    hours_to_show: 168
+                    type: sensor
+                type: vertical-stack
+            type: vertical-stack
+        type: 'custom:vertical-style-card'
+      - cards:
+          - cards:
+              - entity: climate.riscaldamentosalotto
+                highlight_tap: true
+                name: Salotto
+                no_card: true
+                small_i: true
+                title: Salotto
+                type: 'custom:thermostat-card'
+              - entity: climate.heat_cucina
+                highlight_tap: true
+                name: Cucina
+                no_card: true
+                small_i: true
+                title: Cucina
+                type: 'custom:thermostat-card'
+            type: horizontal-stack
+          - cards:
+              - entity: climate.heat_stanzaletto
+                highlight_tap: true
+                name: Camera
+                no_card: true
+                small_i: true
+                title: Camera
+                type: 'custom:thermostat-card'
+              - entity: climate.heat_stanzetta
+                highlight_tap: true
+                name: Stanzetta
+                no_card: true
+                small_i: true
+                title: Stanzetta
+                type: 'custom:thermostat-card'
+            type: horizontal-stack
+        type: vertical-stack
+      - cards:
+          - cards:
+              - detail: 3
+                entities:
+                  - input_datetime.t3_1_after
+                  - input_datetime.t2_after
+                  - input_datetime.t3_2_after
+                  - input_datetime.t1_after
+                head:
+                  label: Chrono Thermostat
+                  type: section
+                type: 'custom:fold-entity-row'
+              - detail: 3
+                entities:
+                  - input_number.t1
+                  - input_number.t2
+                  - input_number.t3
+                  - input_number.thome
+                  - input_number.taway
+                head:
+                  label: Input Temp
+                  type: section
+                type: 'custom:fold-entity-row'
+            type: horizontal-stack
+          - cards:
+              - detail: 3
+                entities:
+                  - input_number.offset_salotto
+                  - input_number.offset_cucina
+                  - input_number.offset_stanzaletto
+                  - input_number.offset_stanzetta
+                head:
+                  label: Offset
+                  type: section
+                type: 'custom:fold-entity-row'
+              - detail: 3
+                entities:
+                  - automation.riscaldamento_t1
+                  - automation.riscaldamento_t2
+                  - automation.riscaldamento_t3_1
+                  - automation.riscaldamento_t3_2
+                  - automation.riscaldamentoaway
+                  - automation.riscaldamentohome
+                  - automation.thermo_temperature_set
+                head:
+                  label: Automation
+                  type: section
+                type: 'custom:fold-entity-row'
+            type: vertical-stack
+          - cards:
+              - chevron_size: 30
+                entity: climate.riscaldamentosalotto
+                highlight_tap: true
+                name: Salotto
+                no_card: true
+                small_i: true
+                title: Salotto
+                type: 'custom:thermostat-card'
+              - chevron_size: 30
+                entity: climate.riscaldamentocucina
+                highlight_tap: true
+                name: Cucina
+                no_card: true
+                small_i: true
+                title: Cucina
+                type: 'custom:thermostat-card'
+            type: horizontal-stack
+          - cards:
+              - chevron_size: 30
+                entity: climate.riscaldamentostanzaletto
+                highlight_tap: true
+                name: Stanza da Letto
+                no_card: true
+                small_i: true
+                title: Stanza da Letto
+                type: 'custom:thermostat-card'
+              - chevron_size: 30
+                entity: climate.riscaldamentostanzetta
+                highlight_tap: true
+                name: Stanzetta
+                no_card: true
+                small_i: true
+                title: Stanzetta
+                type: 'custom:thermostat-card'
+            type: horizontal-stack
+        type: vertical-stack
+    icon: 'mdi:timetable'
+    panel: false
+    theme: default
+    title: Chronotherm
+  - badges: []
+    cards:
+      - card:
+          show_header_toggle: false
+          title: All Scripts
+          type: entities
+        filter:
+          include:
+            - domain: script
+        id: scripts
+        sort:
+          method: name
+        title: All Scripts
+        type: 'custom:auto-entities'
+      - card:
+          show_header_toggle: true
+          title: All Automations
+          type: entities
+        filter:
+          include:
+            - domain: automation
+        id: automations
+        sort:
+          method: name
+        title: All Automations
+        type: 'custom:auto-entities'
+      - card:
+          show_header_toggle: true
+          title: All Switch
+          type: entities
+        filter:
+          include:
+            - domain: switch
+        id: switch
+        sort:
+          method: name
+        title: All Switch
+        type: 'custom:auto-entities'
+    icon: 'mdi:home-automation'
+    id: auto
+    theme: Green Dark Mode
+    title: Automations
+  - badges: []
+    cards:
+      - entities:
+          - entity: binary_sensor.smokeingresso
+          - entity: sensor.migatewaylumen
+        show_header_toggle: false
+        title: Ambientali
+        type: entities
+      - entities:
+          - entity: binary_sensor.dwporta
+          - entity: binary_sensor.dwstanzetta
+          - entity: binary_sensor.dwcucina
+          - entity: binary_sensor.dwbagno
+          - entity: binary_sensor.dwstanzaletto
+        show_header_toggle: false
+        title: D/W
+        type: entities
+      - aspect_ratio: 0%
+        camera_image: camera.dafang3
+        camera_view: live
+        entities:
+          - sensor.dafang_light_sensor
+          - binary_sensor.dafang_motion_sensor
+          - cover.dafang_move_up_down
+          - cover.dafang_move_left_right
+          - light.lampada
+          - light.switchtavolo
+        entity: camera.dafang3
+        title: Cucina
+        type: picture-glance
+      - entity: alarm_control_panel.home_alarm
+        type: alarm-panel
+      - entities:
+          - entity: script.attiva_allarme_perimetrale
+          - entity: script.attiva_allarme_totale
+          - entity: script.disattiva_allarme
+          - entity: script.allarme_on
+          - entity: switch.allarme_perimetrale
+          - entities:
+              - entity: automation.allarme_away
+              - entity: automation.allarme_home
+            head:
+              label: Automation
+              type: section
+            type: 'custom:fold-entity-row'
+        show_header_toggle: false
+        type: entities
+      - entity: light.migateway
+        type: light
+    icon: 'mdi:alarm-light'
+    panel: false
+    path: alarm
+    theme: Green Dark Mode
+    title: Alarm
+  - badges: []
+    cards:
+      - entities:
+          - entity: media_player.kodi
+            type: 'custom:mini-media-player'
+          - entity: media_player.salotto_2
+            icon: 'mdi:plex'
+            type: 'custom:mini-media-player'
+          - entity: media_player.plex
+            icon: 'mdi:plex'
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        theme: midnight
+        title: Media Players
+        type: entities
+    icon: 'mdi:television-play'
+    path: media-players
+    title: Media Players
+  - cards:
+      - background: var(--primary-color)
+        entities:
+          - entity: sensor.period_of_day_volume
+          - entity: binary_sensor.dnd
+          - action:
+              service: input_boolean.turn_on
+            entity: input_boolean.last_message
+            value: Ascolta
+        heading: "\U0001F916 Cipriano"
+        link: /lovelace/notification_center
+        type: 'custom:banner-card'
+      - entities:
+          - head: group.automations_notification_hub
+            type: 'custom:fold-entity-row'
+        show_header_toggle: false
+        title: Automazioni
+        type: entities
+      - entities:
+          - label: Monitor
+            type: section
+          - entities:
+              - input_datetime.start_morning
+              - input_datetime.start_afternoon
+              - input_datetime.start_evening
+              - input_datetime.start_night
+            head: sensor.period_of_day
+            type: 'custom:fold-entity-row'
+          - entities:
+              - input_number.morning_volume
+              - input_number.afternoon_volume
+              - input_number.evening_volume
+              - input_number.night_volume
+              - input_number.default_restore_volume
+            head: sensor.period_of_day_volume
+            type: 'custom:fold-entity-row'
+          - entity: binary_sensor.dnd
+          - action_name: Ascolta
+            icon: 'mdi:power'
+            name: Ultimo Messaggio
+            service: input_boolean.turn_on
+            service_data:
+              entity_id: input_boolean.last_message
+            type: call-service
+          - entities:
+              - entity: input_boolean.last_message
+              - entity: input_boolean.guest_mode
+              - entity: input_boolean.priority_message
+              - entity: input_boolean.speech_notifications
+              - entity: input_boolean.text_notifications
+              - entity: input_boolean.screen_notifications
+              - entity: input_boolean.random_fact
+            head:
+              label: Modalità
+              type: section
+            type: 'custom:fold-entity-row'
+          - label: Interfono
+            type: section
+          - entity: automation.send_intercom_message_hub
+            name: Off/On
+          - entity: input_number.intercom_message_volume
+          - entity: input_text.intercom_message_hub
+        show_header_toggle: false
+        title: Centro Notifiche
+        type: entities
+      - entities:
+          - label: ''
+            type: section
+          - entity: input_boolean.alexa_switch
+          - entity: input_boolean.alexa_push
+          - entity: input_select.notification_media_player_alexa
+          - entity: input_select.default_alexa_type
+          - entity: input_select.default_alexa_method
+          - entity: automation.alexa_volume_restore
+        show_header_toggle: false
+        title: Alexa
+        type: entities
+      - entities:
+          - entity: input_text.personal_assistant_name
+          - entity: input_select.default_notify
+          - entities:
+              - entity: input_datetime.dnd_start
+              - entity: input_datetime.dnd_end
+            head:
+              label: Impostazione orario modo silenzioso
+              type: section
+            type: 'custom:fold-entity-row'
+          - entities:
+              - input_datetime.start_morning
+              - input_datetime.start_afternoon
+              - input_datetime.start_evening
+              - input_datetime.start_night
+              - input_number.morning_volume
+              - input_number.afternoon_volume
+              - input_number.evening_volume
+              - input_number.night_volume
+              - input_number.default_restore_volume
+            head:
+              label: Impostazione Volume di default durante il griorno
+              type: section
+            type: 'custom:fold-entity-row'
+        show_header_toggle: false
+        title: Impostazioni Assistente
+        type: entities
+    icon: 'mdi:account-tie'
+    path: notification_center
+    title: Notification Center
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_cucina
+                graph: line
+                hours_to_show: 24
+                name: Cucina
+                show:
+                  labels: true
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - direction: up
+                    entity: sensor.humidity_cucina
+                    height: 200px
+                    padding: 2px
+                    severity:
+                      - color: '#40bf40'
+                        value: 70
+                      - color: '#edcc39'
+                        value: 72
+                      - color: '#bf4040'
+                        value: 100
+                    title_position: inside
+                    type: 'custom:bar-card'
+                    unit_of_measurement: '%'
+                    width: 150%
+                  - detail: 2
+                    entity: sensor.pressure_cucina
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_salotto
+                graph: line
+                hours_to_show: 24
+                name: Salotto
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - direction: up
+                    entity: sensor.humidity_salotto
+                    height: 200px
+                    padding: 2px
+                    severity:
+                      - color: '#40bf40'
+                        value: 70
+                      - color: '#edcc39'
+                        value: 72
+                      - color: '#bf4040'
+                        value: 100
+                    title_position: inside
+                    type: 'custom:bar-card'
+                    unit_of_measurement: '%'
+                    width: 150%
+                  - detail: 2
+                    entity: sensor.pressure_salotto
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_stanzaletto
+                graph: line
+                hours_to_show: 24
+                name: Stanza da Letto
+                show:
+                  labels: true
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - direction: up
+                    entity: sensor.humidity_stanzaletto
+                    height: 200px
+                    padding: 2px
+                    severity:
+                      - color: '#40bf40'
+                        value: 70
+                      - color: '#edcc39'
+                        value: 72
+                      - color: '#bf4040'
+                        value: 100
+                    title_position: inside
+                    type: 'custom:bar-card'
+                    unit_of_measurement: '%'
+                    width: 150%
+                  - detail: 2
+                    entity: sensor.pressure_stanzaletto
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_stanzetta
+                graph: line
+                hours_to_show: 24
+                name: Stanzetta
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - direction: up
+                    entity: sensor.humidity_stanzetta
+                    height: 200px
+                    padding: 2px
+                    severity:
+                      - color: '#40bf40'
+                        value: 70
+                      - color: '#edcc39'
+                        value: 72
+                      - color: '#bf4040'
+                        value: 100
+                    title_position: inside
+                    type: 'custom:bar-card'
+                    unit_of_measurement: '%'
+                    width: 150%
+                  - detail: 2
+                    entity: sensor.pressure_stanzetta
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.temperature_bagno
+                graph: line
+                hours_to_show: 24
+                name: Bagno
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - direction: up
+                    entity: sensor.humidity_bagno
+                    height: 200px
+                    padding: 2px
+                    severity:
+                      - color: '#40bf40'
+                        value: 70
+                      - color: '#edcc39'
+                        value: 72
+                      - color: '#bf4040'
+                        value: 100
+                    title_position: inside
+                    type: 'custom:bar-card'
+                    unit_of_measurement: '%'
+                    width: 150%
+                  - detail: 2
+                    entity: sensor.pressure_bagno
+                    graph: line
+                    hours_to_show: 24
+                    name: Pressione
+                    type: sensor
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - color_thresholds:
+                  - color: '#f39c12'
+                    value: 22
+                  - color: '#d35400'
+                    value: 24
+                  - color: '#c0392b'
+                    value: 25
+                detail: 2
+                entities:
+                  - sensor.riscaldamentosalotto_temperature
+                graph: line
+                hours_to_show: 24
+                name: Corridoio
+                show:
+                  labels: true
+                theme: midnight
+                type: 'custom:mini-graph-card'
+              - cards:
+                  - direction: up
+                    entity: sensor.riscaldamentosalotto_humidity
+                    height: 200px
+                    padding: 2px
+                    severity:
+                      - color: '#40bf40'
+                        value: 70
+                      - color: '#edcc39'
+                        value: 72
+                      - color: '#bf4040'
+                        value: 100
+                    title_position: inside
+                    type: 'custom:bar-card'
+                    unit_of_measurement: '%'
+                    width: 150%
+                  - detail: 2
+                    entities:
+                      - sensor.thermostattemperature
+                    hours_to_show: 24
+                    name: Temperatura Set
+                    points_per_hour: 1
+                    show:
+                      graph: line
+                    type: 'custom:mini-graph-card'
+                type: horizontal-stack
+            type: vertical-stack
+        type: horizontal-stack
+    icon: 'mdi:thermometer'
+    panel: false
+    theme: dark_teal
+    title: Sensors
+  - badges: []
+    cards:
+      - camera_image: camera.dafang3
+        camera_view: live
+        entities:
+          - sensor.dafang_light_sensor
+          - binary_sensor.dafang_motion_sensor
+          - cover.dafang_move_up_down
+          - cover.dafang_move_left_right
+          - light.lampada
+          - light.switchtavolo
+        entity: camera.dafang3
+        title: Cucina
+        type: picture-glance
+      - entities:
+          - binary_sensor.dafang_motion_sensor
+          - cover.dafang_move_left_right
+          - cover.dafang_move_up_down
+          - sensor.dafang_light_sensor
+          - switch.dafang_h264_rtsp_server
+          - switch.dafang_ir_filter
+          - switch.dafang_motion_detection
+          - switch.dafang_motion_tracking
+          - switch.dafang_night_mode
+          - switch.dafang_night_mode_auto
+          - switch.dafang_blue_led
+          - switch.dafang_yellow_led
+          - switch.dafang_ir_led
+          - switch.dafang_motion_send_mail
+          - switch.dafang_mjpeg_rtsp_server
+          - camera.dafang_motion_snapshot
+        head: camera.dafang3
+        type: 'custom:fold-entity-row'
+    icon: 'mdi:cctv'
+    panel: false
+    theme: midnight
+    title: Camera
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.synology_dsm_cpu_load_total
+            severity:
+              - color: '#40bf40'
+                value: 50
+              - color: '#bf9540'
+                value: 75
+              - color: '#bf4040'
+                value: 100
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.synology_dsm_memory_usage_real
+            severity:
+              - color: '#40bf40'
+                value: 50
+              - color: '#bf9540'
+                value: 75
+              - color: '#bf4040'
+                value: 100
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.synology_dsm_network_up
+          - entity: sensor.synology_dsm_network_down
+          - entity: sensor.synology_dsm_status_sda
+          - entity: sensor.synology_dsm_status_smart_sda
+          - entity: sensor.synology_dsm_status_volume_2
+          - entity: sensor.synology_dsm_volume_used_volume_2
+            severity:
+              - color: '#40bf40'
+                value: 50
+              - color: '#bf9540'
+                value: 75
+              - color: '#bf4040'
+                value: 100
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+        show_header_toggle: false
+        title: Nas
+        type: entities
+      - entities:
+          - input_boolean.dropbox_backup
+          - input_boolean.dropbox_sync_completed
+          - input_datetime.backup_time
+          - input_number.ritardo_upload
+          - input_select.backup_day
+          - input_text.backup_status
+        icon: 'mdi:dropbox'
+        path: dropbox_menu
+        show_header_toggle: false
+        title: Dropbox Backup
+        type: entities
+      - cards:
+          - background: var(--primary-color)
+            heading: "\U0001F916 Raspy"
+            type: 'custom:banner-card'
+          - align: split
+            entity: sensor.last_boot
+            show_icon: true
+            title: LastBoot
+            title_position: inside
+            type: 'custom:bar-card'
+          - align: split
+            entity: sensor.disk_free
+            show_icon: true
+            title: HDD
+            title_position: inside
+            type: 'custom:bar-card'
+          - align: split
+            entity: sensor.processor_use
+            show_icon: true
+            title: Processor
+            title_position: inside
+            type: 'custom:bar-card'
+          - align: split
+            entity: sensor.cpu_temperature
+            show_icon: true
+            title: Cpu Temp
+            title_position: inside
+            type: 'custom:bar-card'
+          - align: split
+            entity: sensor.memory_free
+            show_icon: true
+            title: RAM
+            title_position: inside
+            type: 'custom:bar-card'
+          - align: split
+            entity: sensor.network_in_wlan0
+            show_icon: true
+            title: Network In
+            title_position: inside
+            type: 'custom:bar-card'
+          - align: split
+            entity: sensor.network_out_wlan0
+            show_icon: true
+            title: Network Out
+            title_position: inside
+            type: 'custom:bar-card'
+        type: vertical-stack
+      - cards:
+          - entity: switch.pihole_switch
+            hold_action:
+              action: none
+            icon: 'mdi:pi-hole'
+            show_icon: true
+            show_name: true
+            tap_action:
+              action: toggle
+            theme: midnight
+            type: entity-button
+          - entities:
+              - entity: sensor.pi_hole_ads_percentage_blocked_today
+              - entity: sensor.pi_hole_ads_blocked_today
+              - entity: sensor.pi_hole_dns_queries_cached
+              - entity: sensor.pi_hole_dns_queries_forwarded
+              - entity: sensor.pi_hole_dns_queries_today
+              - entity: sensor.pi_hole_dns_unique_domains
+              - entity: sensor.pi_hole_seen_clients
+              - entity: sensor.pi_hole_domains_blocked
+              - entity: sensor.pi_hole_dns_unique_clients
+              - entity: switch.pihole_switch
+            show_header_toggle: false
+            title: PiHole
+            type: entities
+        type: vertical-stack
+      - entities:
+          - entity: sensor.italy_coronavirus_confirmed
+            icon: 'mdi:emoticon-neutral-outline'
+            name: Confirmed
+          - entity: sensor.italy_coronavirus_current
+            icon: 'mdi:emoticon-frown-outline'
+            name: Current
+          - entity: sensor.italy_coronavirus_recovered
+            icon: 'mdi:emoticon-happy-outline'
+            name: Recovered
+          - entity: sensor.italy_coronavirus_deaths
+            icon: 'mdi:emoticon-dead-outline'
+            name: Deaths
+        show_icon: true
+        show_name: true
+        show_state: true
+        title: Italia COVID-19
+        type: glance
+      - entities:
+          - entity: sensor.bat_dw_porta
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_dw_stanzetta
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_dw_cucina
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_dw_bagno
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_dw_stanzaletto
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_temp_stanzetta
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_temp_salotto
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_temp_cucina
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_temp_bagno
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_temp_stanzaletto
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - entity: sensor.bat_telecomando_ikea
+            severity:
+              - color: '#bf4040'
+                value: 15
+              - color: '#bf9540'
+                value: 25
+              - color: '#40bf40'
+                value: 50
+            type: 'custom:bar-card'
+            unit_of_measurement: '%'
+          - type: divider
+          - entity: input_number.soglia_minima_batterie
+        show_header_toggle: false
+        theme: midnight
+        title: Battery Level
+        type: entities
+      - entity: sensor.plex_recently_added
+        title: Recently Downloaded
+        type: 'custom:upcoming-media-card'
+    icon: 'mdi:incognito'
+    theme: midnight
+    title: Geek
+  - badges: []
+    cards:
+      - entities:
+          - device_tracker.iphone_noemi_2
+          - sensor.activity_2
+          - sensor.average_active_pace_2
+          - sensor.bssid_2
+          - sensor.connection_type_2
+          - sensor.distance_2
+          - sensor.floors_ascended_2
+          - sensor.floors_descended_2
+          - sensor.geocoded_location_2
+          - sensor.last_update_trigger_2
+          - sensor.sim_1_2
+          - sensor.ssid_2
+          - sensor.steps_2
+        show_header_toggle: false
+        title: iPhone Noemi
+        type: entities
+      - entities:
+          - entity: device_tracker.iphonexs_3
+          - entity: sensor.iphonexs_activity
+          - entity: sensor.iphonexs_connection_type
+          - entity: sensor.iphonexs_distance
+          - entity: sensor.iphonexs_floors_ascended
+          - entity: sensor.iphonexs_floors_descended
+          - entity: sensor.iphonexs_geocoded_location
+          - entity: sensor.iphonexs_last_update_trigger
+          - entity: sensor.iphonexs_sim_1
+          - entity: sensor.iphonexs_ssid
+          - entity: sensor.iphonexs_steps
+        show_header_toggle: false
+        title: iPhone Marco
+        type: entities
+    icon: 'mdi:cellphone-iphone'
+    panel: false
+    path: iphone
+    title: iPhone
+  - badges: []
+    cards:
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_asciugatrice'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_asciugatrice'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_asciugatrice_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_asciugatrice_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shellyplug_asciugatrice'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          rssi: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:wifi"
+                 style="width: 20px; height: 20px; color: orange;">
+                 </ha-icon>&nbsp;<span>${states['sensor.shellyplugs_asciugatrice_rssi'].state}</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shellyplug_asciugatrice'].state}°C</span>`
+             ]]]
+          update: |
+            [[[
+              if (states['switch.shellyplugs_asciugatrice'].attributes.has_firmware_update = 'false')
+                return `<ha-icon
+                 icon="mdi:update"
+                 style="width: 30; height: 30; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);"> Updated </span>`
+              else
+                return `<ha-icon
+                 icon="mdi:update"
+                 style="width: 30; height: 30; color: red;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);"> Update Needed </span>`
+             ]]]
+        entity: switch.asciugatrice
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+                      return "lightgreen";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+                      return `lightgreen`;
+                    else
+                      return `red`;
+                  ]]]
+            rssi:
+              - position: absolute
+              - left: 43%
+              - top: 3%
+              - font-size: 20px
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+            update:
+              - position: absolute
+              - left: 75%
+              - top: 87%
+              - font-size: 10px
+          icon:
+            - width: 45%
+            - top: 4%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shellyplugs_asciugatrice
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_lavatrice'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_lavatrice'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_lavatrice_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_lavatrice_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shellyplug_lavatrice'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shellyplug_lavatrice'].state}°C</span>`
+             ]]]
+        entity: switch.lavatrice
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_lavatrice'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_lavatrice'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 45%
+            - top: 4%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shellyplugs_lavatrice
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_corridoio'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_corridoio'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_corridoio_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_corridoio_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          rssi: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:wifi"
+                 style="width: 20px; height: 20px; color: orange;">
+                 </ha-icon>&nbsp;<span>${states['sensor.shelly_corridoiostanzetta_rssi'].state}</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shelly_corridoiostanzetta'].state}°C</span>`
+             ]]]
+          update: |
+            [[[
+              if (states['switch.shelly_corridoio'].attributes.has_firmware_update = 'false')
+                return `<ha-icon
+                 icon="mdi:update"
+                 style="width: 30; height: 30; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);"> Updated </span>`
+              else
+                return `<ha-icon
+                 icon="mdi:update"
+                 style="width: 30; height: 30; color: red;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);"> Update Needed </span>`
+             ]]]
+        entity: light.corridoio
+        icon: 'mdi:toggle-switch'
+        name: Corridoio
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+                      return "lightgreen";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+                      return `lightgreen`;
+                    else
+                      return `red`;
+                  ]]]
+            rssi:
+              - position: absolute
+              - left: 43%
+              - top: 3%
+              - font-size: 20px
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+            update:
+              - position: absolute
+              - left: 75%
+              - top: 87%
+              - font-size: 10px
+          icon:
+            - width: 45%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+          name:
+            - position: absolute
+            - left: 14%
+            - top: 70%
+            - font-weight: bold
+        tap_action:
+          action: more-info
+          entity: switch.shelly_corridoio
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_stanzetta'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_stanzetta'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_stanzetta_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_stanzetta_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shelly_corridoiostanzetta'].state}°C</span>`
+             ]]]
+        entity: light.stanzetta
+        icon: 'mdi:toggle-switch'
+        name: Stanzetta
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_corridoiostanzetta'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 45%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+          name:
+            - position: absolute
+            - left: 14%
+            - top: 70%
+            - font-weight: bold
+        tap_action:
+          action: more-info
+          entity: switch.shelly_stanzetta
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_stanzaletto'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_stanzaletto'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_stanzaletto_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_stanzaletto_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shelly_farinoletto'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          rssi: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:wifi"
+                 style="width: 20px; height: 20px; color: orange;">
+                 </ha-icon>&nbsp;<span>${states['sensor.shelly_stanzaletto_rssi'].state}</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shelly_farinoletto'].state}°C</span>`
+             ]]]
+          update: |
+            [[[
+              if (states['switch.shelly_stanzaletto'].attributes.has_firmware_update = 'false')
+                return `<ha-icon
+                 icon="mdi:update"
+                 style="width: 30; height: 30; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);"> Updated </span>`
+              else
+                return `<ha-icon
+                 icon="mdi:update"
+                 style="width: 30; height: 30; color: red;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);"> Update Needed </span>`
+             ]]]
+        entity: light.switchstanzaletto
+        icon: 'mdi:toggle-switch'
+        name: Stanza Da Letto
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_farinoletto'].state == 'off')
+                      return "lightgreen";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_farinoletto'].state == 'off')
+                      return `lightgreen`;
+                    else
+                      return `red`;
+                  ]]]
+            rssi:
+              - position: absolute
+              - left: 43%
+              - top: 3%
+              - font-size: 20px
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+            update:
+              - position: absolute
+              - left: 75%
+              - top: 87%
+              - font-size: 10px
+          icon:
+            - width: 45%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+          name:
+            - position: absolute
+            - left: 8%
+            - top: 70%
+            - font-weight: bold
+        tap_action:
+          action: more-info
+          entity: switch.shelly_stanzaletto
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_farino'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_farino'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_farino_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_farino_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shelly_farinoletto'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shelly_farinoletto'].state}°C</span>`
+             ]]]
+        entity: light.switchfarino
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_farinoletto'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shelly_farinoletto'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 37%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shelly_farino
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_forno'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_forno'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_forno_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_forno_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shellyplug_forno'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shellyplug_forno'].state}°C</span>`
+             ]]]
+        entity: switch.forno
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_forno'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_forno'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 42%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shellyplugs_forno
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_comodino_marco'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_comodino_marco'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_comodino_marco_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_comodino_marco_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shellyplug_comodinomarco'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shellyplug_comodino_marco'].state}°C</span>`
+             ]]]
+        entity: switch.comodino_marco
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_comodinomarco'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_comodinomarco'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 40%
+            - top: 4%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shellyplugs_comodino_marco
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_comodino_noemi'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_comodino_noemi'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_comodino_noemi_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_comodino_noemi_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shellyplug_comodinonoemi'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shellyplug_comodino_noemi'].state}°C</span>`
+             ]]]
+        entity: switch.comodino_noemi
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_comodinonoemi'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_comodinonoemi'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 40%
+            - top: 4%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shellyplugs_comodino_noemi
+        type: 'custom:button-card'
+      - aspect_ratio: 2/1
+        custom_fields:
+          assorbimento: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-auto"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.assorbimento_luce_baby'].state} W</span>`
+             ]]]
+          consumo: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:flash-circle"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span style="color: var(--text-color-sensor);">${states['sensor.consumo_luce_baby'].state} kWh</span>`
+             ]]]
+          daily: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_luce_baby_daily'].state} kWh</span>`
+             ]]]
+          daily_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-d-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          monthly: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:counter"
+                 style="width: 40px; height: 40px; color: deepskyblue;">
+                 </ha-icon>&nbsp <span>${states['sensor.consumo_luce_baby_monthly'].state} kWh</span>`
+             ]]]
+          monthly_ic: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:alpha-m-circle"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon>`
+             ]]]
+          overtemp: |
+            [[[
+              if (states['binary_sensor.surriscaldamento_shellyplug_comodinonoemi'].state == 'off')
+               return `<ha-icon
+                 icon="mdi:shield-check"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>OK</span>`
+               else
+               return `<ha-icon
+                 icon="mdi:shield-alert"
+                 style="width: 20px; height: 20px; color: var: --icon-color-sensor;">
+                 </ha-icon><span>NOT OK</span>`
+             ]]]
+          temp: |
+            [[[
+               return `<ha-icon
+                 icon="mdi:thermometer"
+                 style="width: 20px; height: 20px; color: deepskyblue;">
+                 </ha-icon><span>${states['sensor.temperatura_shellyplug_luce_baby'].state}°C</span>`
+             ]]]
+        entity: switch.luce_baby
+        show_name: false
+        styles:
+          custom_fields:
+            assorbimento:
+              - position: absolute
+              - left: 40%
+              - top: 16%
+              - font-size: 40px
+            consumo:
+              - position: absolute
+              - left: 40%
+              - top: 32%
+              - font-size: 40px
+            daily:
+              - position: absolute
+              - left: 40%
+              - top: 48%
+              - font-size: 40px
+            daily_ic:
+              - position: absolute
+              - left: 50%
+              - top: 45%
+              - font-size: 40px
+            monthly:
+              - position: absolute
+              - left: 40%
+              - top: 64%
+              - font-size: 40px
+            monthly_ic:
+              - position: absolute
+              - left: 50%
+              - top: 61%
+              - font-size: 40px
+            overtemp:
+              - position: absolute
+              - left: 9%
+              - top: 3%
+              - font-size: 20px
+              - color: |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_comodinonoemi'].state == 'off')
+                      return "green";
+                    else
+                    return "red";
+                  ]]]
+              - '--icon-color-sensor': |
+                  [[[
+                    if (states['binary_sensor.surriscaldamento_shellyplug_comodinonoemi'].state == 'off')
+                      return `green`;
+                    else
+                      return `red`;
+                  ]]]
+            temp:
+              - position: absolute
+              - left: 75%
+              - top: 3%
+              - font-size: 20px
+          icon:
+            - width: 42%
+          img_cell:
+            - justify-content: start
+            - align-items: start
+            - margin: none
+        tap_action:
+          action: more-info
+          entity: switch.shellyplugs_luce_baby
+        type: 'custom:button-card'
+    icon: 'mdi:flash'
+    panel: false
+    path: shelly
+    theme: dark_teal
+    title: Shelly
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - cards:
+                  - chevron_size: 30
+                    entity: climate.hisense_cucina
+                    highlight_tap: true
+                    name: Cucina
+                    no_card: true
+                    small_i: true
+                    title: Cucina
+                    type: 'custom:thermostat-card'
+                  - chevron_size: 30
+                    entity: climate.hisense_stanzaletto
+                    highlight_tap: true
+                    name: Stanza da Letto
+                    no_card: true
+                    small_i: true
+                    title: Stanza da Letto
+                    type: 'custom:thermostat-card'
+                type: horizontal-stack
+              - entities:
+                  - entity: climate.hisense_cucina
+                  - entity: climate.hisense_stanzaletto
+                show_header_toggle: false
+                title: Climatizzatori
+                type: entities
+            type: vertical-stack
+        type: horizontal-stack
+      - entities:
+          - entities:
+              - input_boolean.deumidificatore_away
+              - input_number.dry_away_stanzaletto
+              - input_number.dry_away_cucina
+            head: automation.dryon
+            type: 'custom:fold-entity-row'
+          - entities:
+              - input_boolean.climate_timer
+              - input_number.climate_timer_off
+            head: automation.automazione_spegnimento_climate
+            type: 'custom:fold-entity-row'
+        show_header_toggle: false
+        title: Climate Automation
+        type: entities
+    icon: 'mdi:air-conditioner'
+    panel: false
+    theme: midnight
+    title: Climate
+  - badges: []
+    cards:
+      - borders: true
+        cards:
+          - entities:
+              - entity: timer.dwcucina
+              - entity: timer.dwstanzaletto
+              - entity: timer.dwstanzetta
+              - entity: timer.lavatrice_ontime
+              - entity: timer.asciugatrice_ontime
+            show_header_toggle: false
+            type: entities
+          - entities:
+              - entity: automation.windows_timer_reminder
+              - entity: automation.reset_muffaattack
+              - entity: automation.muffaattack
+            head: input_boolean.muffa_attack
+            type: 'custom:fold-entity-row'
+          - entities:
+              - entity: automation.start_timer_dwcucina
+              - entity: automation.start_timer_dwstanzaletto
+              - entity: automation.start_timer_dwstanzetta
+              - entity: automation.pausa_timer_dwcucina
+              - entity: automation.pausa_timer_dwstanzaletto
+              - entity: automation.pausa_timer_dwstanzetta
+              - entity: automation.start_timer_lavatrice
+              - entity: automation.start_timer_asciugatrice
+              - entity: automation.pausa_timer_lavatrice
+              - entity: automation.pausa_timer_asciugatrice
+            head:
+              label: Automation
+              type: section
+            type: 'custom:fold-entity-row'
+        type: 'custom:vertical-stack-in-card'
+    icon: 'mdi:timer'
+    path: timers
+    title: Timers
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - action: none
+                color_type: card
+                entity: sensor.assorbimento_lavatrice
+                icon: 'mdi:washing-machine'
+                state:
+                  - color: 'rgb(245, 245, 245)'
+                    icon: 'mdi:washing-machine-off'
+                    name: 'Off'
+                    operator: <
+                    value: 3
+                  - color: 'rgb(117, 189, 111)'
+                    icon: 'mdi:washing-machine'
+                    name: Lavaggio in corso
+                    operator: '>'
+                    value: 3
+                type: 'custom:button-card'
+              - entities:
+                  - entity: sensor.assorbimento_lavatrice
+                  - entity: sensor.consumo_lavatrice
+                  - entity: sensor.consumo_lavatrice_daily
+                  - entity: sensor.consumo_lavatrice_monthly
+                  - entity: sensor.temperatura_shellyplug_lavatrice
+                  - entity: binary_sensor.surriscaldamento_shellyplug_lavatrice
+                type: entities
+            type: 'custom:vertical-style-card'
+          - break
+          - cards:
+              - content: >-
+                  # &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                  &nbsp; Laundry <ha-icon icon="mdi:power-plug"></ha-icon>
+                type: markdown
+              - cards:
+                  - action: more_info
+                    color: 'rgb(117, 189, 111)'
+                    color_off: 'rgb(245, 245, 245)'
+                    color_type: card
+                    entity: switch.lavatrice
+                    icon: 'mdi:washing-machine'
+                    type: 'custom:button-card'
+                  - action: more_info
+                    color: 'rgb(117, 189, 111)'
+                    color_off: 'rgb(245, 245, 245)'
+                    color_type: card
+                    entity: switch.asciugatrice
+                    icon: 'mdi:tumble-dryer'
+                    type: 'custom:button-card'
+                type: horizontal-stack
+              - cards:
+                  - entity: timer.lavatrice_ontime
+                    scale: 20px
+                    title: Time elapsed
+                    type: 'custom:bignumber-card'
+                  - entity: timer.asciugatrice_ontime
+                    scale: 20px
+                    title: Time elapsed
+                    type: 'custom:bignumber-card'
+                type: horizontal-stack
+            type: 'custom:vertical-stack-in-card'
+          - entities:
+              - entities:
+                  - entity: automation.notifica_fine_lavaggio
+                head: automation.attiva_notifica_lavatrice
+                show_header_toggle: false
+                theme: default
+                type: 'custom:fold-entity-row'
+              - entities:
+                  - entity: automation.notifica_fine_asciugatura
+                head: automation.attiva_notifica_asciugatrice
+                show_header_toggle: false
+                theme: default
+                type: 'custom:fold-entity-row'
+            type: entities
+          - break
+          - cards:
+              - action: none
+                color_type: card
+                entity: sensor.assorbimento_asciugatrice
+                state:
+                  - color: 'rgb(245, 245, 245)'
+                    icon: 'mdi:tumble-dryer-off'
+                    name: 'Off'
+                    operator: <
+                    value: 3
+                  - color: 'rgb(117, 189, 111)'
+                    icon: 'mdi:tumble-dryer'
+                    name: Asciugatura in corso
+                    operator: '>'
+                    value: 3
+                type: 'custom:button-card'
+              - entities:
+                  - entity: sensor.assorbimento_asciugatrice
+                  - entity: sensor.consumo_asciugatrice
+                  - entity: sensor.consumo_asciugatrice_daily
+                  - entity: sensor.consumo_asciugatrice_monthly
+                  - entity: sensor.temperatura_shellyplug_asciugatrice
+                  - entity: binary_sensor.surriscaldamento_shellyplug_asciugatrice
+                type: entities
+            type: 'custom:vertical-style-card'
+        layout: vertical
+        type: 'custom:layout-card'
+    icon: 'mdi:washing-machine'
+    panel: true
+    path: laundry
+    theme: default
+    title: Lavatrice
+  - badges: []
+    cards:
+      - title: Shopping List
+        type: shopping-list
+    icon: 'mdi:cart'
+    theme: midnight
+    title: Spesa
+  - badges: []
+    cards:
+      - entities:
+          - artwork: cover
+            entity: media_player.echo_show_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: device_tracker.echo_show_5_auj
+          - entity: switch.echo_show_cucina_do_not_disturb_switch
+          - entity: sensor.echo_show_cucina_next_alarm
+          - entity: sensor.echo_show_cucina_next_reminder
+          - entity: sensor.echo_show_cucina_next_timer
+          - entity: switch.echo_show_cucina_repeat_switch
+          - entity: switch.echo_show_cucina_shuffle_switch
+        show_header_toggle: false
+        title: EchoShow Cucina
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echo_cucina
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: sensor.echo_cucina_next_alarm
+          - entity: sensor.echo_cucina_next_reminder
+          - entity: sensor.echo_cucina_next_timer
+        show_header_toggle: false
+        title: Echo Cucina
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.multistanza
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+        show_header_toggle: false
+        title: Multistanza
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echodot_stanzetta
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: sensor.echodot_stanzetta_next_alarm
+          - entity: sensor.echodot_stanzetta_next_reminder
+          - entity: sensor.echodot_stanzetta_next_timer
+        show_header_toggle: false
+        title: EchoDot Stanzetta
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echodot_stanzaletto
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: sensor.echodot_stanza_da_letto_next_alarm
+          - entity: sensor.echodot_stanza_da_letto_next_reminder
+          - entity: sensor.echodot_stanza_da_letto_next_timer
+        show_header_toggle: false
+        title: EchoDot Stanza da Letto
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.echodot_bagno
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - entity: sensor.echodot_bagno_next_alarm
+          - entity: sensor.echodot_bagno_next_reminder
+          - entity: sensor.echodot_bagno_next_timer
+        show_header_toggle: false
+        title: EchoDot Bagno
+        type: entities
+      - entities:
+          - artwork: cover
+            entity: media_player.marco_s_alexa_apps
+            hide:
+              power_state: false
+              source: true
+              volume: false
+            icon: 'mdi:amazon-alexa'
+            tts:
+              platform: alexa
+            type: 'custom:mini-media-player'
+          - switch.marco_s_alexa_apps_do_not_disturb_switch
+        show_header_toggle: false
+        title: Alexa Apps
+        type: entities
+    icon: 'mdi:amazon-alexa'
+    path: alexa
+    title: Alexa
+  - badges: []
+    cards:
+      - entities:
+          - entity: image_processing.facedetection
+          - entity: sensor.facebox_detection1
+          - entity: sensor.facebox_detection2
+          - entity: sensor.facebox_detection3
+          - entity: sensor.facebox_detection4
+          - entity: sensor.facebox_detection
+          - entity: automation.facebox_announcement
+          - entity: automation.turn_on_facebox_automation
+          - entity: automation.restart_facebox_container
+        type: entities
+    icon: 'mdi:face'
+    title: FaceDetection
+  - badges: []
+    cards:
+      - cards:
+          - elements:
+              - entity: switch.asciugatrice
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 80%
+                  top: 55%
+                type: state-icon
+              - entity: light.lampada
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 92%
+                  top: 6%
+                type: state-icon
+              - entity: light.switchtavolo
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 80%
+                  top: 44%
+                  transform: rotate(90deg)
+                tap_action:
+                  action: toggle
+                type: state-icon
+              - entity: light.lampada_tavolo1
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 49%
+                  top: 25%
+                type: state-icon
+              - entity: light.lampada_tavolo2
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 58%
+                  top: 25%
+                type: state-icon
+              - entity: binary_sensor.smokeingresso
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 96%
+                  top: 59%
+                type: state-icon
+              - entity: binary_sensor.dwstanzaletto
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 15.2%
+                  top: 59%
+                type: state-icon
+              - entity: binary_sensor.dwporta
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 92%
+                  top: 95%
+                type: state-icon
+              - entity: binary_sensor.dwstanzetta
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 50%
+                  top: 85%
+                type: state-icon
+              - entity: binary_sensor.dwcucina
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 29%
+                  top: 55%
+                  transform: rotate(30deg)
+                type: state-icon
+              - entity: binary_sensor.dwbagno
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 39%
+                  top: 62%
+                  transform: rotate(30deg)
+                type: state-icon
+              - entity: light.corridoio
+                icon: 'mdi:ceiling-light'
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 92%
+                  top: 72%
+                tap_action:
+                  action: toggle
+                type: state-icon
+              - entity: light.stanzetta
+                icon: 'mdi:ceiling-light'
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 68%
+                  top: 82%
+                tap_action:
+                  action: toggle
+                type: state-icon
+              - entity: alarm_control_panel.home_alarm
+                icon: 'mdi:shield-lock'
+                style:
+                  '--iron-icon-height': 42px
+                  '--iron-icon-width': 42px
+                  left: 4%
+                  top: 93%
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/alarm
+                type: state-icon
+            image: /local/Casa.svg
+            type: picture-elements
+          - type: 'custom:plan-coordinates'
+        column_width: 70%
+        layout: vertical
+        type: 'custom:layout-card'
+    icon: 'mdi:floor-plan'
+    panel: true
+    path: floorplan
+    theme: default
+    title: FloorPlan

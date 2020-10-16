@@ -1,0 +1,55 @@
+  - platform: template
+    lights:
+      dummy_light:
+        friendly_name: "Dummy Light"
+        turn_on:
+        turn_off:
+        set_level:
+  - platform: mqtt
+    name: 'Bagno'
+    state_topic: 'shellies/shellyswitch-32BFD7/relay/0'
+    command_topic: 'shellies/shellyswitch-32BFD7/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'Stanzetta'
+    state_topic: 'shellies/shellyswitch25-00AE5A/relay/0'
+    command_topic: 'shellies/shellyswitch25-00AE5A/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'Corridoio'
+    state_topic: 'shellies/shellyswitch25-00AE5A/relay/1'
+    command_topic: 'shellies/shellyswitch25-00AE5A/relay/1/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'SwitchFarino'
+    state_topic: 'shellies/shellyswitch25-E62E63/relay/0'
+    command_topic: 'shellies/shellyswitch25-E62E63/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'SwitchStanzaLetto'
+    state_topic: 'shellies/shellyswitch25-E62E63/relay/1'
+    command_topic: 'shellies/shellyswitch25-E62E63/relay/1/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false
+  - platform: mqtt
+    name: 'SwitchTavolo'
+    state_topic: 'shellies/shellyswitch-32B841/relay/0'
+    command_topic: 'shellies/shellyswitch-32B841/relay/0/command'
+    payload_on: "on"
+    payload_off: "off"
+    optimistic: false
+    retain: false

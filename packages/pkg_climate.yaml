@@ -1,0 +1,343 @@
+#################################################################
+#                                                               #
+#                       Packages/Dropbox                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'Climate'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+    input_boolean.deumidificatore_away:
+      <<: *customize
+      friendly_name: "Deumidificatore Away"
+      icon: mdi:cloud-upload
+
+    input_boolean.climate_timer:
+      <<: *customize
+      friendly_name: "Timer Climatizzatore"
+      icon: mdi:cloud-upload
+
+    input_number.climate_timer_off:
+      <<: *customize
+      icon: mdi:timer-sand
+    input_number.dry_away_cucina:
+      <<: *customize
+      icon: mdi:timer-sand
+    input_number.dry_away_stanzaletto:
+      <<: *customize
+      icon: mdi:timer-sand
+#########################################################
+#                                                       #
+#                       GROUP                           #
+#                                                       #
+#########################################################
+group:
+  climate_pack:
+    name: Climate Pack
+    entities:
+      - input_boolean.climate_timer
+      - input_number.climate_timer_off
+      - input_number.dry_away_cucina
+      - input_number.dry_away_stanzaletto
+      - input_boolean.deumidificatore_away
+      - input_number.climate_t1
+      - input_number.climate_offset_stanzaletto
+      - input_datetime.climate_t1_after
+      - input_number.climate_temperatureset
+      - climate.climate_stanzaletto
+
+#########################################################
+#                                                       #
+#                        INPUT                          #
+#                                                       #
+#########################################################
+input_boolean:
+  climate_timer:
+    name: Climate Timer
+    icon: mdi:cloud-upload
+  deumidificatore_away:
+    name: Deumidificatore Away
+    icon: mdi:cloud-upload
+input_number:
+  climate_temperatureset:
+    name: Climate Temperature Set
+    min: 16
+    max: 30
+    step: 1
+    icon: mdi:home-thermometer-outline
+  climate_t1:
+    name: Climate T1
+    min: 16
+    max: 30
+    step: 1
+    icon: mdi:timer-sand
+  climate_timer_off:
+    name: Timer Spegnimento Climatizzatore
+    initial: 120
+    min: 15
+    max: 180
+    step: 15
+    icon: mdi:timer-sand
+  dry_away_cucina:
+    name: Timer Spegnimento Deumidificatore Cucina
+    initial: 60
+    min: 15
+    max: 180
+    step: 15
+    icon: mdi:timer-sand
+  dry_away_stanzaletto:
+    name: Timer Spegnimento Deumidificatore Stanza da Letto
+    initial: 120
+    min: 15
+    max: 180
+    step: 15
+    icon: mdi:timer-sand
+input_datetime:
+  climate_t1_after:
+    name: "Climate T1 Start"
+    has_date: false
+    has_time: true
+
+#########################################################
+#                                                       #
+#                        SCRIPT                         #
+#                                                       #
+#########################################################
+script:
+  cucina_climate_on:
+    sequence:
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: "{{ entity_id }}"
+          hvac_mode: cool
+      - service: climate.set_temperature
+        data:
+          entity_id: "{{ entity_id }}"
+          temperature: "{{ states.climate.climate_cucina.attributes.temperature|int }}"
+      - service: climate.set_fan_mode
+        data:
+          entity_id: "{{ entity_id }}"
+          fan_mode: 'auto' 
+  stanzaletto_climate_on:
+    sequence:
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: "{{ entity_id }}"
+          hvac_mode: cool
+      - service: climate.set_temperature
+        data:
+          entity_id: "{{ entity_id }}"
+          temperature: "{{ states.climate.climate_stanzaletto.attributes.temperature|int }}"
+      - service: climate.set_fan_mode
+        data:
+          entity_id: "{{ entity_id }}"
+          fan_mode: 'Level1'
+  climate_off:
+    sequence:
+      - service: climate.turn_off
+        data:
+          entity_id: "{{ entity_id }}"
+#########################################################
+#                                                       #
+#                     AUTOMAZIONI                       #
+#                                                       #
+#########################################################
+automation:
+#########################################################
+#                                                       #
+#                     AUTOMAZIONI D/W                   #
+#                                                       #
+#########################################################
+  - id: climate_cucina_open_window_detection
+    alias: Climate Cucina Open Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwcucina
+        to: 'on'
+    condition:
+      condition: state
+      entity_id: climate.climate_cucina
+      state: 'cool'
+    action:
+      - service: climate.turn_off
+        entity_id: climate.climate_cucina
+  - id: climate_stanzaletto_open_window_detection
+    alias: Climate Stanza da Letto Open Window Detection
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dwstanzaletto
+        to: 'on'
+    condition:
+      condition: state
+      entity_id: climate.climate_stanzaletto
+      state: 'cool'
+    action:
+      - service: climate.turn_off
+        entity_id: climate.climate_stanzaletto
+#########################################################
+#                                                       #
+#              AUTOMAZIONI DEUMIDIFICATORE              #
+#                                                       #
+#########################################################
+  - alias: DryOn
+    id: dryon
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.family_home
+        to: 'off'
+    condition:
+      condition: state
+      entity_id: input_boolean.deumidificatore_away
+      state: 'on'
+    action:
+      - delay: 00:10:00
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: climate.climate_cucina
+          hvac_mode: dry
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: climate.climate_stanzaletto
+          hvac_mode: dry
+      - delay:
+          minutes: "{{ states('input_number.dry_away_stanzaletto')|int }}"
+      - service: climate.turn_off
+        entity_id: climate.climate_stanzaletto
+      - delay:
+          minutes: "{{ states('input_number.dry_away_cucina')|int }}"
+      - service: climate.turn_off
+        entity_id: climate.climate_cucina
+
+#########################################################
+#                                                       #
+#               AUTOMAZIONI TERMOSTATO                  #
+#                                                       #
+#########################################################
+
+  - alias: Climate T1
+    id: climate_t1
+    trigger:
+      - platform: template
+        value_template: >-
+          {% set temperaturestanzaletto = (states.climate.climate_stanzaletto.attributes.temperature | int) %}
+            {{ states('sensor.time') == (states.input_datetime.climate_t1_after.attributes.timestamp | int | timestamp_custom('%H:%M', False)) and (temperaturestanzaletto != (states('input_number.climate_t1')|int)) }}
+      - platform: state
+        entity_id: input_number.climate_t1
+    condition:
+    - condition: template
+      value_template: >-
+        {% set time = states('sensor.time') %}
+        {% if time >= (states.input_datetime.climate_t1_after.attributes.timestamp | int | timestamp_custom('%H:%M', False)) %} true
+        {% else %} false
+        {% endif %}
+    action:
+      - service: climate.set_hvac_mode
+        data:
+          entity_id: climate.climate_stanzaletto
+          hvac_mode: cool
+      - service: climate.set_temperature
+        entity_id: climate.climate_stanzaletto
+        data:
+          temperature: >-
+              {{ states('input_number.climate_t1')|int }}
+     # - service: input_number.set_value
+     #   data:
+     #     entity_id: input_number.climate_temperatureset
+     #     value: "{{ states('input_number.climate_t1')|int }}"
+#########################################################
+#                                                       #
+#                  AWAY/HOME MODE                       #
+#                                                       #
+#########################################################
+  - alias: Climate Temperature Set
+    id: climate_temperature_set
+    trigger:
+      - platform: state
+        entity_id: input_number.climate_temperatureset
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.climate_stanzaletto, climate.climate_cucina
+        data:
+          temperature: >-
+            {{ states('input_number.climate_temperatureset')|int }}
+
+  - alias: Climate Temperature Set Cucina
+    id: climate_temperature_set_cucina
+    trigger:
+      - platform: state
+        entity_id: sensor.cucina_climatetemperature
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.hisense_cucina
+        data:
+          temperature: >-
+              {{ states('sensor.cucina_climatetemperature')|int }}
+  - alias: Climate Temperature Set Stanza da Letto
+    id: climate_temperature_set_stanzaletto
+    trigger:
+      - platform: state
+        entity_id: sensor.stanzaletto_climatetemperature
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.hisense_stanzaletto
+        data:
+          temperature: >-
+              {{ states('sensor.stanzaletto_climatetemperature')|int }}
+#########################################################
+#                                                       #
+#                  CLIMATE TIMER OFF                    #
+#                                                       #
+#########################################################
+  - alias: Attivazione Automazione Spegnimento Climate
+    id: attivazione_automazione_spegnimento_climate
+    trigger:
+      platform: state
+      entity_id: input_number.climate_timer_off
+    action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.climate_timer
+  - alias: Automazione Spegnimento Climate
+    trigger:
+      - platform: state
+        entity_id: climate.climate_cucina
+        from: 'off'
+      - platform: state
+        entity_id: climate.climate_stanzaletto
+        from: 'off'
+      - platform: state
+        entity_id: input_boolean.climate_timer
+        to: 'on'
+      - platform: state
+        entity_id: input_number.climate_timer_off
+    condition:
+      condition: state
+      entity_id: input_boolean.climate_timer
+      state: 'on'
+    action:
+      - delay:
+          minutes: "{{ states('input_number.climate_timer_off')|int }}"
+      - service: climate.turn_off
+        entity_id: climate.climate_stanzaletto
+      - delay: 00:00:03
+      - service: climate.turn_off
+        entity_id: climate.climate_cucina

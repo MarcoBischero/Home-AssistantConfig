@@ -1,0 +1,72 @@
+  consumo_lavatrice_daily:
+    source: sensor.consumo_lavatrice
+    cycle: daily
+  consumo_forno_daily:
+    source: sensor.consumo_forno
+    cycle: daily
+  consumo_asciugatrice_daily:
+    source: sensor.consumo_asciugatrice
+    cycle: daily
+  consumo_corridoio_daily:
+    source: sensor.consumo_corridoio
+    cycle: daily
+  consumo_stanzetta_daily:
+    source: sensor.consumo_stanzetta
+    cycle: daily
+  consumo_farino_daily:
+    source: sensor.consumo_farino
+    cycle: daily
+  consumo_stanzaletto_daily:
+    source: sensor.consumo_stanzaletto
+    cycle: daily
+  consumo_cucina_daily:
+    source: sensor.consumo_cucina
+    cycle: daily
+  consumo_comodino_marco_daily:
+    source: sensor.consumo_comodino_marco
+    cycle: daily
+  consumo_luce_baby_daily:
+    source: sensor.consumo_luce_baby
+    cycle: daily
+  consumo_comodino_noemi_daily:
+    source: sensor.consumo_comodino_noemi
+    cycle: daily
+  consumo_bagno_daily:
+    source: sensor.consumo_bagno
+    cycle: daily
+  consumo_bagno_monthly:
+    source: sensor.consumo_bagno
+    cycle: monthly
+  consumo_lavatrice_monthly:
+    source: sensor.consumo_lavatrice
+    cycle: monthly
+  consumo_forno_monthly:
+    source: sensor.consumo_forno
+    cycle: monthly
+  consumo_asciugatrice_monthly:
+    source: sensor.consumo_asciugatrice
+    cycle: monthly
+  consumo_corridoio_monthly:
+    source: sensor.consumo_corridoio
+    cycle: monthly
+  consumo_stanzetta_monthly:
+    source: sensor.consumo_stanzetta
+    cycle: monthly
+  consumo_farino_monthly:
+    source: sensor.consumo_farino
+    cycle: monthly
+  consumo_stanzaletto_monthly:
+    source: sensor.consumo_stanzaletto
+    cycle: monthly
+  consumo_cucina_monthly:
+    source: sensor.consumo_cucina
+    cycle: monthly
+  consumo_comodino_marco_monthly:
+    source: sensor.consumo_comodino_marco
+    cycle: monthly
+  consumo_luce_baby_monthly:
+    source: sensor.consumo_luce_baby
+    cycle: monthly
+  consumo_comodino_noemi_monthly:
+    source: sensor.consumo_comodino_noemi
+    cycle: monthly

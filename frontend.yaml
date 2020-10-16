@@ -1,0 +1,8 @@
+#https://www.home-assistant.io/components/frontend/
+#################################################################
+#                                                               #
+#                            Themes                             #
+#                                                               #
+#################################################################
+
+  themes: !include_dir_merge_named themes

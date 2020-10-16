@@ -1,0 +1,90 @@
+  - platform: generic_thermostat
+    name: heat_stanzaletto
+    heater: switch.heat_stanzaletto
+    target_sensor: sensor.temperature_stanzaletto
+    min_temp: 16
+    max_temp: 25
+    ac_mode: false
+    target_temp: 20
+    cold_tolerance: 0.3
+    hot_tolerance: 0.3
+    initial_hvac_mode: "heat"
+    away_temp: 16
+    precision: 0.1
+  - platform: generic_thermostat
+    name: climate_stanzaletto
+    heater: switch.climate_stanzaletto
+    target_sensor: sensor.temperature_stanzaletto
+    min_temp: 16
+    max_temp: 30
+    ac_mode: true
+    target_temp: 25
+    cold_tolerance: 0.3
+    hot_tolerance: 0.3
+    initial_hvac_mode: "off"
+    precision: 0.1
+  - platform: generic_thermostat
+    name: heat_stanzetta
+    heater: switch.heat_stanzetta
+    target_sensor: sensor.temperature_stanzetta
+    min_temp: 16
+    max_temp: 25
+    ac_mode: false
+    target_temp: 20
+    cold_tolerance: 0.3
+    hot_tolerance: 0.3
+    initial_hvac_mode: "heat"
+    away_temp: 16
+    precision: 0.1
+  - platform: generic_thermostat
+    name: heat_cucina
+    heater: switch.heat_cucina
+    target_sensor: sensor.temperature_cucina
+    min_temp: 16
+    max_temp: 25
+    ac_mode: false
+    target_temp: 20
+    cold_tolerance: 0.3
+    hot_tolerance: 0.3
+    initial_hvac_mode: "heat"
+    away_temp: 16
+    precision: 0.1
+  - platform: generic_thermostat
+    name: climate_cucina
+    heater: switch.climate_cucina
+    target_sensor: sensor.temperature_cucina
+    min_temp: 16
+    max_temp: 30
+    ac_mode: true
+    target_temp: 25
+    cold_tolerance: 0.3
+    hot_tolerance: 0.3
+    initial_hvac_mode: "off"
+    precision: 0.1
+#  - platform: generic_thermostat
+#    name: heat_salotto
+#    heater: switch.heat_salotto
+#    target_sensor: sensor.temperature_salotto
+#    min_tem#p: 16
+#    max_temp: 25
+#    ac_mode: false
+#    target_temp: 20
+#    cold_tolerance: 0.4
+#    hot_tolerance: 0.4
+#    initial_hvac_mode: "heat"
+#    away_temp: 16
+#    precision: 0.1
+  - platform: smartir
+    name: hisense_cucina
+    device_code: 2000
+    controller_data: remote.broadlink_cucina_remote
+    temperature_sensor: sensor.temperature_cucina
+    humidity_sensor: sensor.humidity_cucina
+    #power_sensor: binary_sensor.stato_accensione
+  - platform: smartir
+    name: hisense_stanzaletto
+    device_code: 2000
+    controller_data: remote.broadlink_stanza_da_letto_remote
+    temperature_sensor: sensor.temperature_stanzaletto
+    humidity_sensor: sensor.humidity_stanzaletto
+    #power_sensor: binary_sensor.stato_accensione

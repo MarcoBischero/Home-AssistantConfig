@@ -1,0 +1,1093 @@
+################################################
+## TV
+################################################
+- alias: TvSync
+  id: tvsync
+  max_exceeded: silent
+  trigger:
+    - platform: state
+      entity_id: media_player.samsungtv
+  condition:
+    condition: template
+    value_template: "{{ states('media_player.samsungtv') != states('media_player.televisione') }}"
+  action:
+    - service: media_player.toggle
+      entity_id: media_player.televisione
+################################################
+## Motion Sensor
+################################################
+- alias: Motion Sensor Lights On
+  id: motion_sensor_lights_on
+  max_exceeded: silent
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.pir_stanzetta
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.pir_stanzaletto
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.pir_corridoio
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.pir_bagno
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.pir_cucina
+      to: 'on'
+  condition:
+    condition: template
+    value_template: >
+      {% set n = now() %}
+      {% set n = (n.hour*60+n.minute)*60+n.second %}
+      {% set ts_from = state_attr('input_datetime.motion_sensor_light_start', 'timestamp') %}
+      {% set ts_to = state_attr('input_datetime.motion_sensor_light_end', 'timestamp') %}
+      {{ n > ts_from or n < ts_to }}
+  action:
+    - service: light.turn_on
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == "binary_sensor.pir_cucina" and is_state('light.switchtavolo', 'off') and is_state('input_boolean.auto_light_on_cucina', 'on')  %}
+            light.switchtavolo
+          {% elif trigger.entity_id == "binary_sensor.pir_corridoio" and is_state('light.corridoio', 'off') and is_state('input_boolean.auto_light_on_corridoio', 'on') %}
+            light.corridoio
+          {% elif trigger.entity_id == "binary_sensor.pir_stanzetta" and is_state('light.stanzetta', 'off') and is_state('input_boolean.auto_light_on_stanzetta', 'on') %}
+            light.stanzetta
+          {% elif trigger.entity_id == "binary_sensor.pir_stanzaletto" and is_state('light.switchstanzaletto', 'off') and is_state('input_boolean.auto_light_on_stanzaletto', 'on') %}
+            light.switchstanzaletto
+          {% elif trigger.entity_id == "binary_sensor.pir_bagno" and is_state('light.bagno', 'off') and is_state('input_boolean.auto_light_on_bagno', 'on') %}
+            light.bagno
+          {% else %}
+            light.dummy_light
+          {% endif %}
+- alias: Motion Sensor Lights Off
+  id: motion_sensor_lights_off
+  max_exceeded: silent
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.pir_stanzetta
+      to: 'off'
+      for: '{{ states.input_datetime.motion_sensor_delay_off_stanzetta.state }}'
+    - platform: state
+      entity_id: binary_sensor.pir_stanzaletto
+      to: 'off'
+      for: '{{ states.input_datetime.motion_sensor_delay_off.state }}'
+    - platform: state
+      entity_id: binary_sensor.pir_corridoio
+      to: 'off'
+      for: '{{ states.input_datetime.motion_sensor_delay_off_corridoio.state }}'
+    - platform: state
+      entity_id: binary_sensor.pir_bagno
+      to: 'off'
+      for: '{{ states.input_datetime.motion_sensor_delay_off_bagno.state }}'
+    - platform: state
+      entity_id: binary_sensor.pir_cucina
+      to: 'off'
+      for: '{{ states.input_datetime.motion_sensor_delay_off.state }}'
+  action:
+    - service: light.turn_off
+      data:
+        entity_id: >-
+          {% if trigger.entity_id == "binary_sensor.pir_cucina" and is_state('light.switchtavolo', 'on') and is_state('input_boolean.auto_light_off_cucina', 'on') %}
+            light.switchtavolo
+          {% elif trigger.entity_id == "binary_sensor.pir_corridoio" and is_state('light.corridoio', 'on') and is_state('input_boolean.auto_light_off_corridoio', 'on') %}
+            light.corridoio
+          {% elif trigger.entity_id == "binary_sensor.pir_stanzetta" and is_state('light.stanzetta', 'on') and is_state('input_boolean.auto_light_off_stanzetta', 'on') %}
+            light.stanzetta
+          {% elif trigger.entity_id == "binary_sensor.pir_stanzaletto" and is_state('light.switchstanzaletto', 'on') and is_state('input_boolean.auto_light_off_stanzaletto', 'on') %}
+            light.switchstanzaletto
+          {% elif trigger.entity_id == "binary_sensor.pir_bagno" and is_state('light.bagno', 'on') and is_state('input_boolean.auto_light_off_bagno', 'on') %}
+            light.bagno
+          {% else %}
+            light.dummy_light
+          {% endif %}
+################################################
+## Circadian
+################################################
+#- alias: TurnOff Circardian Light
+#  trigger:
+#    platform: state
+#    entity_id: switch.allarme_perimetrale
+#    to: 'on'
+#  action:
+#    service: switch.turn_off
+#    entity_id: switch.circadian_lighting_circadian
+#  id: a32549260bbd4eb8882472baedd09016
+#- alias: TurnON Circardian Light
+#  trigger:
+#    platform: state
+#    entity_id: switch.allarme_perimetrale
+#    to: 'off'
+#  action:
+#    service: switch.turn_on
+#    entity_id: switch.circadian_lighting_circadian
+#  id: 248abd00444f40f8a39835a9b01ede9a
+################################################
+## Mi Flora
+################################################
+- alias: Notifica pianta secca
+  id: notifica_pianta_secca
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.fc_zamioculcas_moisture
+    below: 10
+  action:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Giardinaggio
+      alexa_type: announce
+      alexa_method: all
+      message: La pianta sta morendo disidratata! Abbeveraggio!!
+
+################################################
+## Remote
+################################################  
+- alias: Toggle Cappa
+  id: toggle_cappa
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: remote
+      event: 1002
+  action:
+    service: light.toggle
+    entity_id: light.cappa
+- alias: Increase brightness Cappa
+  id: increase_brightness_cappa
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: remote
+      event: 2002
+  action:
+  - service: light.turn_on
+    data:
+      entity_id: light.cappa
+      brightness: "{% set bri = state_attr('light.cappa', 'brightness') | int
+        %} {{ [bri+30, 249] | min }}"
+- alias: Decrease brightness Cappa
+  id: decrease_brightness_cappa
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: remote
+      event: 3002
+  action:
+  - service: light.turn_on
+    data:
+      entity_id: light.cappa
+      brightness: "{% set bri = state_attr('light.cappa', 'brightness') | int
+        %} {{ [bri-30, 0] | max }}"
+- alias: Toggle Tavolo
+  id: toggle_tavolo
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: remote
+      event: 4002
+  action:
+    service: light.toggle
+    entity_id: light.switchtavolo
+- alias: Toggle Lampada
+  id: toggle_lampada
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: remote
+      event: 5002
+  action:
+    service: light.toggle
+    entity_id: light.lampada
+################################################
+## Theme
+################################################
+#- alias: Interface - Set UI theme
+#  id: set_ui_theme_automation
+#  trigger:
+#  - platform: state
+#    entity_id: input_select.theme_switcher
+#  action:
+#  - service: frontend.set_theme
+#    data:
+#      name: '{{states(''input_select.theme_switcher'')}}'
+#- id: lightdark_theme_automation
+#  alias: LightDark Theme Automation
+#  trigger:
+#  - platform: homeassistant
+#    event: start
+#  - platform: state
+#    entity_id: input_select.theme_daytime
+#  - platform: state
+#    entity_id: input_select.theme_nighttime
+#  - entity_id: sun.sun
+#    platform: state
+#    to: above_horizon
+#  - entity_id: sun.sun
+#    platform: state
+#    to: below_horizon
+#  action:
+#  - data:
+#      name: >
+#        "{% if (is_state('sun.sun', 'above_horizon')) %}
+#           {{ states.input_select.theme_daytime.state }}
+#         {% else %}
+#           {{ states.input_select.theme_nighttime.state }}
+#         {% endif %}"
+#    service: frontend.set_theme
+#################################################
+## Laundry
+################################################
+- id: crease_counter_automation
+  alias: Crease Counter Automation
+  trigger:
+  - above: '2'
+    entity_id: input_number.crease_counter
+    platform: numeric_state
+  action:
+  - entity_id: switch.asciugatrice
+    service: switch.turn_off
+  - data:
+      alexa_method: all
+      alexa_type: announce
+      call_informare: 0
+      call_no_fatto_casuale: 1
+      message: Antipiega? Asciugatrice spenta! Non dimenticare di ritirare i vestiti!
+      notify: Family
+      title: Anti Piega
+    service: script.my_notify
+  - data:
+      value: 0
+    entity_id: input_number.crease_counter
+    service: input_number.set_value
+- id: spegnimento_shelly_lavatrice
+  alias: Spegnimento Shelly Lavatrice
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_lavatrice
+    below: '2'
+    for:
+      minutes: 30
+  action:
+  - service: switch.turn_off
+    entity_id: switch.lavatrice
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Lavatrice Spenta
+      alexa_type: announce
+      alexa_method: all
+      message: ho spento la lavatrice per te
+- id: spegnimento_shelly_asciugatrice
+  alias: Spegnimento Shelly Asciugatrice
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_asciugatrice
+    below: '2'
+    for:
+      minutes: 30
+  action:
+  - service: switch.turn_off
+    entity_id: switch.asciugatrice
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Asciugatrice Spenta
+      alexa_type: announce
+      alexa_method: all
+      message: ho spento la asciugatrice per te
+- id: fine_lavaggio_automation
+  alias: Notifica Fine Lavaggio
+  initial_state: false
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_lavatrice
+    below: '5'
+    for:
+      seconds: 40
+  action:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Lavaggio Completato
+      alexa_type: announce
+      alexa_method: all
+      message: 'la lavatrice ha finito. '
+  - service: automation.turn_off
+    entity_id: automation.notifica_fine_lavaggio
+- id: attiva_notifica_lavaggio_automation
+  alias: Attiva Notifica Lavatrice
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_lavatrice
+    above: '50'
+  action:
+  - service: automation.turn_on
+    entity_id: automation.notifica_fine_lavaggio
+- id: fine_asciugatura_automation
+  alias: Notifica Fine Asciugatura
+  initial_state: false
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_asciugatrice
+    below: '5'
+    for:
+      seconds: 40
+  action:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Asciugatura Completata
+      alexa_type: announce
+      alexa_method: all
+      message: "l'asciugatrice ha finito."
+  - service: input_number.increment
+    entity_id: input_number.crease_counter
+  - service: automation.turn_off
+    entity_id: automation.notifica_fine_asciugatura
+- id: attiva_notifica_asciugatura_automation
+  alias: Attiva Notifica Asciugatrice
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.assorbimento_asciugatrice
+    above: '50'
+  action:
+  - service: automation.turn_on
+    entity_id: automation.notifica_fine_asciugatura
+- id: luce_baby_automation
+  alias: Turn off Baby Light
+  trigger:
+    platform: time
+    at: 06:00:00
+  action:
+  - service: switch.turn_off
+    entity_id: switch.comodino_noemi
+################################################
+## Tavolo
+################################################
+#- id: lucitavoloautomationOff
+#  alias: Turn off Tavolo Switch
+#  trigger:
+#  - platform: state
+#    entity_id: light.lampada_tavolo1
+#    to: 'off'
+#  - platform: state
+#    entity_id: light.lampada_tavolo2
+#    to: 'off'
+#  condition:
+#    condition: and
+#    conditions:
+#    - condition: state
+#      entity_id: light.lampada_tavolo2
+#      state: 'off'
+#    - condition: state
+#      entity_id: light.lampada_tavolo1
+#      state: 'off'
+#  action:
+#  - service: light.turn_off
+#    entity_id: light.switchtavolo
+#- id: LuciTavoloAutomationOn
+#  alias: Turn on Tavolo Light
+#  trigger:
+#  - platform: state
+#    entity_id: light.switchtavolo
+#    to: 'on'
+#  condition:
+#    condition: or
+#    conditions:
+#    - condition: state
+#      entity_id: light.lampada_tavolo2
+#      state: 'off'
+#    - condition: state
+#      entity_id: light.lampada_tavolo1
+#      state: 'off'
+#  action:
+#  - service: light.turn_on
+#    entity_id: light.lampada_tavolo2
+#  - service: light.turn_on
+#    entity_id: light.lampada_tavolo1
+################################################
+## Front Door
+################################################
+- id: front_door_open_automation
+  alias: FrontDoorOpen
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dwporta
+    from: 'off'
+    to: 'on'
+    for: 00:02:00
+  action:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: FrontDoorOpen
+      alexa_type: announce
+      alexa_method: all
+      message: "avete lasciato la porta aperta polli.."
+################################################
+## Alarm
+################################################
+- id: allarmehome_automation
+  alias: Allarme@Home
+  trigger:
+    platform: state
+    entity_id: group.door_windows
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.family_home
+      state: 'on'
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_home
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'off'
+  action:
+  - service: script.turn_on
+    entity_id: script.allarme_on
+    
+- id: allarmeaway_automation
+  alias: Allarme@Away
+  trigger:
+  - platform: state
+    entity_id: group.door_windows
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.dafang_motion_sensor
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.pir_stanzetta
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.pir_stanzaletto
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.pir_corridoio
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.pir_bagno
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.pir_cucina
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.family_home
+      state: 'off'
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_away
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'off'
+  action:
+  - service: script.turn_on
+    entity_id: script.allarme_on
+  - service: script.my_notify
+    data:
+      mute: 1
+      call_informare: 0
+      call_no_fatto_casuale: 1
+      call_no_annuncio: 1
+      notify: mobile_app_iphonexs
+      title: "DEBUG"
+      message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: AllarmeOn"
+- id: AwayAlarmDeact_automation
+  alias: AwayAlarmDeact
+  trigger:
+  - platform: state
+    entity_id: person.marco
+    to: home
+  - platform: state
+    entity_id: person.noemi
+    to: home
+  action:
+  - service: script.turn_on
+    entity_id: script.disattiva_allarme
+################################################
+## Family
+################################################    
+- id: familynothome_automation
+  alias: FamilyNotHome
+  trigger:
+    platform: state
+    entity_id: binary_sensor.family_home
+    to: 'off'
+  condition:
+    condition: and
+    conditions:
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'off'
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: person.noemi
+      state: 'not_home'
+    - condition: state
+      entity_id: person.marco
+      state: 'not_home'
+  action:
+  - service: switch.turn_on
+    entity_id: switch.dafang_motion_detection
+  - service: light.turn_off
+    entity_id: light.corridoio,light.lampada,light.stanzetta,light.switchfarino,light.switchstanzaletto,light.switchtavolo,light.cappa,
+      light.bagno
+  - service: switch.turn_off
+    entity_id: switch.comodino_marco
+  - service: switch.turn_off
+    entity_id: switch.luce_baby
+  - service: switch.turn_off
+    entity_id: switch.comodino_noemi
+  - service: script.turn_off
+    entity_id: media_player.televisione
+  - service: climate.turn_off
+    entity_id: climate.hisense_stanzaletto
+  - service: climate.turn_off
+    entity_id: climate.hisense_cucina
+  - service: script.turn_on
+    entity_id: script.attiva_allarme_totale
+  - delay: 00:01:00
+  #- service: script.my_notify
+  #  data:
+  #    mute: 1
+  #    call_informare: 0
+  #    call_no_fatto_casuale: 1
+  #    call_no_annuncio: 1
+  #    notify: mobile_app_iphonexs
+  #    title: "DEBUG"
+  #    message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: FamilyNotHome"
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_controllo_infissi: 1
+      call_controllo_luci: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: AllarmeAway
+      message: >
+        "{% if is_state('alarm_control_panel.home_alarm', 'armed_away') %}
+          Allarme Totale attivato!
+        {% endif %}"
+- id: familytoggle_automation
+  alias: FamilyToggle
+  trigger:
+    - platform: state
+      entity_id: person.marco
+    - platform: state
+      entity_id: person.noemi
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: person.noemi
+              state: 'home'
+          sequence:
+            - delay: '{{ states.sensor.home_delay.state }}'
+            - service: input_boolean.turn_on
+              entity_id: input_boolean.family_home_toggle   
+        - conditions: 
+            - condition: state
+              entity_id: person.marco
+              state: 'home'
+          sequence:
+            - delay: '{{ states.sensor.home_delay.state }}'
+            - service: input_boolean.turn_on
+              entity_id: input_boolean.family_home_toggle    
+        - conditions:
+            - condition: state
+              entity_id: person.marco
+              state: 'not_home'
+            - condition: state
+              entity_id: person.noemi
+              state: 'not_home'
+          sequence:
+            - delay: '{{ states.sensor.home_delay.state }}'
+            - service: input_boolean.turn_off
+              entity_id: input_boolean.family_home_toggle          
+      default:
+        - service: script.my_notify
+          data:
+            mute: 1
+            call_informare: 0
+            call_no_fatto_casuale: 1
+            call_no_annuncio: 1
+            notify: mobile_app_iphonexs
+            title: "DEBUG"
+            message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: FamilyToggle\nfamily_toggleState: {{ states('input_boolean.family_home_toggle') }}"
+       
+- id: welcomehome_automation
+  alias: WelcomeHome
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.dwporta
+    to: 'on'
+  condition:
+    condition: state
+    entity_id: binary_sensor.family_home
+    state: 'off'
+  action:
+  - service: light.turn_on
+    data:
+      entity_id: light.corridoio, light.stanzetta
+  - delay: 00:00:10
+  - service: light.turn_on
+    data:
+      entity_id: light.lampada, light.switchfarino
+  - delay: 00:00:40
+  - service: light.turn_off
+    data:
+      entity_id: light.stanzetta, light.corridoio
+  - service: climate.turn_off
+    entity_id: climate.hisense_stanzaletto
+  - service: climate.turn_off
+    entity_id: climate.hisense_cucina
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.family_home_toggle
+  - service: script.my_notify
+    data:
+      call_no_annuncio: 1
+      call_bentornato: 1
+      alexa_type: announce
+      alexa_method: all
+      title: Bentornato
+  - delay: 00:00:15
+  - service: script.my_notify
+    data:
+      call_riepilogo: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Riepilogo
+  - service: script.my_notify
+    data:
+      mute: 1
+      call_informare: 0
+      call_no_fatto_casuale: 1
+      call_no_annuncio: 1
+      notify: mobile_app_iphonexs
+      title: "DEBUG"
+      message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: WelcomeHome"
+
+#- id: marcozone_automation
+#  alias: Marco entered zone
+#  trigger:
+#    platform: state
+#    entity_id: person.marco
+#  condition:
+#    condition: and
+#    conditions:
+#    - condition: template
+#      value_template: '{{ trigger.to_state.state != "not_home" }}'
+#    - condition: template
+#      value_template: '{{ trigger.to_state.state != states.variable.marco_last_notification_zone.state
+#        }}'
+#  action:
+#  - service: variable.set_variable
+#    data:
+#      variable: marco_last_notification_zone
+#      attributes_template: >
+#        '{ 
+#        "history_1": "{{ variable.state }}",
+#        "history_2": "{{ variable.attributes.history_1 }}",
+#        "history_3": "{{ variable.attributes.history_2 }}"
+#        }'
+#      value: '{{ trigger.to_state.state }}'
+#  - service: script.my_notify
+#    data:
+#      call_informare: 1
+#      call_no_fatto_casuale: 1
+#      notify: mobile_app_iphone_noemi
+#      title: Family Location
+#      message: '{% if trigger.to_state.state == "home" %} {{ trigger.to_state.name
+#        }} è a Casa {% else %} {{ trigger.to_state.name }} è in {{ trigger.to_state.state
+#        }} {% endif %}'
+#- id: noemizone_automation
+#  alias: Noemi entered zone
+#  trigger:
+#    platform: state
+#    entity_id: person.noemi
+#  condition:
+#    condition: and
+#    conditions:
+#    - condition: template
+#      value_template: '{{ trigger.to_state.state != ''not_home'' }}'
+#    - condition: template
+#      value_template: '{{ trigger.to_state.state != states.variable.noemi_last_notification_zone.state }}'
+#  action:
+#  - service: variable.set_variable
+#    data:
+#      variable: noemi_last_notification_zone
+#      attributes_template: >
+#        '{
+#          "history_1": "{{ variable.state }}",
+#          "history_2": "{{ variable.attributes.history_1 }}",
+#          "history_3": "{{ variable.attributes.history_2 }}"
+#          }'
+#      value: '{{ trigger.to_state.state }}'
+#  - service: script.my_notify
+#    data:
+#      call_informare: 1
+#      call_no_fatto_casuale: 1
+#      notify: mobile_app_iphonexs
+#      title: Family Location
+#      message: '{% if trigger.to_state.state == "home" %} {{ trigger.to_state.name
+#        }} è a Casa {% else %} {{ trigger.to_state.name }} è in {{ trigger.to_state.state
+#        }} {% endif %}'
+################################################
+## Luci Soffuse
+################################################
+- id: luci_soffuse_automation
+  alias: Luci soffuse
+  trigger:
+  - platform: state
+    entity_id: media_player.kodi
+    to: playing
+  - platform: state
+    entity_id: media_player.chromecast_salotto
+    to: playing
+  action:
+  - service: script.turn_on
+    data:
+      entity_id: script.luci_soffuse
+################################################
+## IFTTT
+################################################
+#- id: ifttt_automation
+#  alias: IFTTT Auto
+#  trigger:
+#  - event_data:
+#      action: call_service
+#    event_type: ifttt_webhook_received
+#    platform: event
+#  condition: []
+#  action:
+#  - service: '{{ trigger.event.data.service }}'
+#    data:
+#      entity_id: '{{ trigger.event.data.entity_id }}'
+################################################
+## NFC Tags
+################################################
+#- id: office_mode_tags_automation
+#  alias: OfficeModeTagsAutomation
+#  trigger:
+#    - platform: tag
+#      tag_id: f9f846f6-8b93-47b2-b709-9d94a576dad5
+#      event_data:
+#        actionName: 'Ready for Bed'
+#  action:
+#  - service: script.turn_on
+#    entity_id: script.buonanotte  
+- id: handle_tag_scan
+  alias: Handle Tag Scan
+  mode: single
+  # Hide warnings when triggered while in delay.
+  max_exceeded: silent
+  variables:
+    # Map scanner device ID to media player entity ID
+    device_id:
+      329FE5D8-D565-4FA9-83AF-D4191E5716C7: 
+        geocode_sensor: sensor.iphonexs_geocoded_location
+        mobile_app: notify.mobile_app_iphonexs
+      9C5B234A-EFA6-4A71-A1C0-1D16A34FD086: 
+        geocode_sensor: sensor.noemi11_geocoded_location
+        mobile_app: notify.mobile_app_noemi11
+    # Map tag ID to script
+    tags:
+      OfficeMode:
+        script_name: script.office_mode
+      CarLocator:
+        script_name: script.car_locator
+        geocoded_location: "{{ device_id[trigger.event.data.device_id].geocode_sensor }}"
+        mobile_app: "{{ device_id[trigger.event.data.device_id].mobile_app }}"
+      #04-B1-C6-62-2F-64-80:
+      #  media_content_id: spotify:playlist:0OtWh3u6fZrBJTQtVBQWge
+      #  media_content_type: playlist
+  trigger:
+    platform: event
+    event_type: tag_scanned
+  condition:
+    # Test that we support this device and tag
+    - "{{ trigger.event.data.tag_id in tags }}"
+    - "{{ trigger.event.data.device_id in device_id }}"
+  action:
+    - variables:
+        script_name: "{{ tags[trigger.event.data.tag_id].script_name }}"
+        geocoded_location: "{{ tags[trigger.event.data.tag_id].geocoded_location }}"
+        mobile_app: "{{ tags[trigger.event.data.tag_id].mobile_app }}"
+    - service: script.turn_on
+      data:
+        entity_id: "{{ script_name }}"
+        variables:
+          geocoded_location: "{{ geocoded_location }}"
+          mobile_app: "{{ mobile_app }}"
+    - delay: 2 # timeout before we allow processing next scan
+
+################################################
+## IOS Actions
+################################################
+
+- id: ios_actions_buonanotte
+  alias: IOSAction_BedTime
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'Ready for Bed'
+  action:
+  - service: script.turn_on
+    entity_id: script.buonanotte   
+
+- id: ios_actions_homealarm
+  alias: IOSAction_HomeAlarm
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'Alarm'
+  action:
+  - service: switch.toggle
+    entity_id: switch.allarme_perimetrale 
+
+- id: ios_actions_zidoo
+  alias: IOSAction_ZidooXs
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'Zidoo'
+  action:
+  - service: script.turn_on
+    entity_id: script.zidu 
+
+- id: ios_actions_chromecast
+  alias: IOSAction_ChromeCast
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'ChromeCast'
+  action:
+  - service: script.turn_on
+    entity_id: script.chromecast  
+
+- alias: Shelly OverPower/Temp Notification
+  id: shelly_overpower
+  trigger:
+    - platform: state
+      entity_id: 
+        - binary_sensor.overtemp_shelly_corridoiostanzetta
+        - binary_sensor.overtemp_shelly_farinoletto
+        - binary_sensor.overtemp_shellyplug_lavatrice
+        - binary_sensor.overtemp_shellyplug_asciugatrice
+        - binary_sensor.overtemp_shellyplug_comodinomarco
+        - binary_sensor.overtemp_shellyplug_comodinonoemi
+        - binary_sensor.overtemp_shellyplug_lucebaby
+        - binary_sensor.overtemp_shellyplug_forno        
+        - binary_sensor.overpower_shelly_corridoiostanzetta
+        - binary_sensor.overpower_shelly_farinoletto
+        - binary_sensor.overpower_shellyplug_lavatrice
+        - binary_sensor.overpower_shellyplug_asciugatrice
+        - binary_sensor.overpower_shellyplug_comodinomarco
+        - binary_sensor.overpower_shellyplug_comodinonoemi
+        - binary_sensor.overpower_shellyplug_lucebaby
+        - binary_sensor.overpower_shellyplug_forno  
+      to: 'on'
+  action:
+    - service: script.my_notify
+      data:
+        title: "Shelly Notify"
+        message: "{{ trigger.to_state.attributes.friendly_name }}"
+        mute: 1
+        notify: mobile_app_iphonexs
+  #----------------------------------------------------------------------------------------------------#
+  # Volume Alexa #
+  #----------------------------------------------------------------------------------------------------#
+- alias: Volume Alexa Mattina
+  id: volume_alexa_mattina
+  trigger:
+    - platform: template
+      value_template: >-
+          {{ states('sensor.time') == (states.input_datetime.start_morning.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}
+  action:
+    - service: media_player.volume_set
+      entity_id: media_player.multistanza
+      data:
+        volume_level: "{{ ((states.input_number.morning_volume.state)|int)/(100) }}"
+- alias: Volume Alexa Pomeriggio
+  id: volume_alexa_pomeriggio
+  trigger:
+    - platform: template
+      value_template: >-
+          {{ states('sensor.time') == (states.input_datetime.start_afternoon.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}
+  action:
+    - service: media_player.volume_set
+      entity_id: media_player.multistanza
+      data:
+        volume_level: "{{ ((states.input_number.afternoon_volume.state)|int)/(100) }}"
+- alias: Volume Alexa Sera
+  id: volume_alexa_sera
+  trigger:
+    - platform: template
+      value_template: >-
+          {{ states('sensor.time') == (states.input_datetime.start_evening.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}
+  action:
+    - service: media_player.volume_set
+      entity_id: media_player.multistanza
+      data:
+        volume_level: "{{ ((states.input_number.evening_volume.state)|int)/(100) }}"
+- alias: Volume Alexa Notte
+  id: volume_alexa_notte
+  trigger:
+    - platform: template
+      value_template: >-
+          {{ states('sensor.time') == (states.input_datetime.start_night.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}
+  action:
+    - service: media_player.volume_set
+      entity_id: media_player.multistanza
+      data:
+        volume_level: "{{ ((states.input_number.night_volume.state)|int)/(100) }}"
+#----------------------------------------------------------------------------------------------------#
+# Nuova versione di Hassi.io #
+#----------------------------------------------------------------------------------------------------#
+- alias: HA New Release Notification
+  id: ha_new_release_not
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.updater
+      to: 'on'
+  action:
+    - service: script.my_notify
+      data:
+        title: "Hassio Update"
+        message: "Home Assistant {{ state_attr('binary_sensor.updater', 'newest_version') }} is available."
+        mute: 1
+        notify: mobile_app_iphonexs
+#----------------------------------------------------------------------------------------------------#
+# Update HACS#
+#----------------------------------------------------------------------------------------------------#
+- alias: HACS Persistent Notification
+  id: hacs_update_available
+  initial_state: 'on'
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.hacs
+    above: 0
+  action:
+    - service: persistent_notification.create
+      data:
+        message: "Update available!"
+        title: "HACS"
+#----------------------------------------------------------------------------------------------------#
+# Hassio Startup/Shutdown #
+#----------------------------------------------------------------------------------------------------#
+- alias: 'Hass Shutdown'
+  id: ha_shutdown
+  trigger:
+    - platform: homeassistant
+      event: shutdown
+  action:
+    service: script.my_notify
+    data:
+      mute: 1
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      call_no_annuncio: 1
+      notify: mobile_app_iphonexs
+      title: "Hass"
+      message: "Hassio è in shutdown"
+      
+- alias: 'Hass Restart'
+  id: ha_restart
+  trigger:
+    - event_type: homeassistant.restart
+      platform: event
+    - platform: event
+      event_type: call_service
+      event_data:
+        domain: homeassistant
+        service: restart
+  action:
+    service: script.my_notify
+    data:
+      mute: 1
+      call_informare: 0
+      call_no_fatto_casuale: 1
+      call_no_annuncio: 1
+      notify: mobile_app_iphonexs
+      title: "Hass"
+      message: "Hassio: Restart ricevuto"
+- alias: 'Hass Startup'
+  id: ha_startup
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    - service: script.turn_on
+      data:
+        entity_id: script.pirconfig
+    - service: script.my_notify
+      data:
+        mute: 1
+        call_informare: 1
+        call_no_fatto_casuale: 1
+        call_no_annuncio: 1
+        notify: mobile_app_iphonexs
+        title: "Hass"
+        message: "Hassio è partito"
+    - service: mqtt.publish
+      data:
+        topic: shellies/command
+        payload: announce
+    - service_template: >
+        {% if (is_state('person.marco', 'home') or is_state('person.noemi', 'home'))   %}
+          input_boolean.turn_on
+        {% else %}
+          input_boolean.turn_off
+        {% endif %}
+      entity_id: input_boolean.family_home_toggle
+    - delay: 00:01:00  # Waits 3 minutes
+    - service: homekit.start
+#----------------------------------------------------------------------------------------------------#
+# Lavoro/Zone # Esempio Call di Inizio/Fine lavoro [ {% if call_fine_lavoro == 1 %} {{ fine_lavoro(person) }} {% endif %} ]
+#----------------------------------------------------------------------------------------------------#
+- id: notifica_fine_lavoro_hub
+  alias: Notifica Fine Lavoro
+  initial_state: true
+  trigger:
+    platform: state
+    entity_id: person.marco
+    from: "Reply K1"
+    to: "not_home"
+  action:
+    - service: script.my_notify
+      data:
+        call_fine_lavoro: 1
+        notify: "Family"
+        title: "Fine Lavoro"
+        alexa_type: "announce"
+        person: >-
+          {{ trigger.to_state.attributes.friendly_name }}  

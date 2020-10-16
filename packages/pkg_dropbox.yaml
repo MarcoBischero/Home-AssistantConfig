@@ -1,0 +1,242 @@
+#################################################################
+#                                                               #
+#                       Packages/Dropbox                        #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+
+    package.node_anchors:
+      customize: &customize
+        package: 'DropBox'
+
+      expose: &expose
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+    ################################################
+    ## sensor
+    ################################################
+
+    input_boolean.dropbox_backup:
+      <<: *customize
+      friendly_name: "Dropbox Backup"
+      icon: mdi:cloud-upload
+
+    input_boolean.dropbox_sync_completed:
+      <<: *customize
+      friendly_name: "Dropbox Upload Completato"
+      icon: mdi:dropbox
+
+    input_datetime.backup_time:
+      <<: *customize
+      icon: mdi:clock-outline
+
+    input_select.backup_day:
+      <<: *customize
+      icon: mdi:calendar
+
+    input_number.ritardo_upload:
+      <<: *customize
+      icon: mdi:timer-sand
+
+#########################################################
+#                                                       #
+#                       GROUP                           #
+#                                                       #
+#########################################################
+group:
+  dropbox_pack:
+    name: Dropbox Pack
+    entities:
+      - input_boolean.dropbox_backup
+      - input_boolean.dropbox_sync_completed
+      - input_datetime.backup_time
+      - input_select.backup_day
+      - input_text.backup_status
+      - input_number.ritardo_upload
+
+#########################################################
+#                                                       #
+#                        INPUT                          #
+#                                                       #
+#########################################################
+input_boolean:
+  dropbox_backup:
+    name: Dropbox Backup
+    initial: 'on'
+    icon: mdi:cloud-upload
+
+  dropbox_sync_completed:
+    name: Dropbox Sync Completato
+    initial: 'off'
+    icon: mdi:dropbox
+
+#########################################################
+input_select:
+  backup_day:
+    name: Giorno di Backup
+    options:
+      - "Tutti i giorni"
+      - "Lun - Mer - Ven"
+      - "Lun e Ven"
+      - "Sabato"
+      - "Domenica"
+      - "Mai"
+    initial: "Lun e Ven"
+    icon: mdi:calendar
+
+#########################################################
+input_datetime:
+  backup_time:
+    name: "Orario Backup"
+    has_date: false
+    has_time: true
+    initial: '02:00'
+
+#########################################################
+input_text:
+  backup_status:
+    icon: mdi:database-check
+    name: Stato Backup
+    initial: Normale
+
+#########################################################
+input_number:
+  ritardo_upload:
+    name: Ritardo Upload Dropbox
+    initial: 30
+    min: 15
+    max: 180
+    step: 15
+    icon: mdi:timer-sand
+
+#########################################################
+#                                                       #
+#                        SCRIPT                         #
+#                                                       #
+#########################################################
+script:
+  check_dropbox_successful:
+    sequence:
+    - service: notify.mobile_app_iphonexs
+      data:
+        title: '*-- Backup Home Assistant --*'
+        message: &check_sync >
+            {% if is_state("input_boolean.dropbox_sync_completed", "off")  -%}
+              ERRORE nel Dropbox backup!
+            {%- else -%}
+              Backup completato alle {{states('sensor.time')}}
+            {%- endif %}
+    - delay: '00:00:5'
+    - service: persistent_notification.create
+      data:
+        message: *check_sync
+    - delay: '00:00:5'
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.backup_status
+        value: *check_sync
+    - delay: '00:00:5'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.dropbox_sync_completed
+
+#########################################################
+#                                                       #
+#                     AUTOMAZIONI                       #
+#                                                       #
+#########################################################
+automation:
+#########################################################
+#                                                       #
+#                SNAPSHOT e DROPBOX SYNC                #
+#                                                       #
+#########################################################
+  - alias: automazione Hassio backup
+    id: ha_backup
+    trigger:
+      platform: template
+      value_template: >-
+        {{ states('sensor.time') == (states.input_datetime.backup_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}
+    condition:
+    - condition: state
+      entity_id: input_boolean.dropbox_backup
+      state: 'on'
+    - condition: template
+      value_template: >-
+        {% set today = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] %}
+        {% if is_state("input_select.backup_day", "Tutti i giorni") %} true
+        {% elif (is_state("input_select.backup_day", "Lun e Ven") and today in ["Monday","Friday"]) %} true
+        {% elif is_state("input_select.backup_day", "Sabato") and today in ["Saturday"] %} true
+        {% elif is_state("input_select.backup_day", "Domenica") and today in ["Sunday"] %} true
+        {% elif is_state("input_select.backup_day", "Lun - Mer - Ven") and today in ["Monday","Wednesday","Friday"] %} true
+        {% else %} false
+        {% endif %}
+    action:
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.backup_status
+        value: Avviato Snapshot alle {{states('sensor.time')}}
+    - service: hassio.snapshot_full
+      data:
+        name: Backup automatico {{ now().strftime('%Y-%m-%d') }}
+    - delay: '00:00:5'
+    - service: persistent_notification.create
+      data:
+        message: "Creato backup automatico Dropbox {{ now().strftime('%Y-%m-%d') }}"
+    - service: notify.mobile_app_iphonexs
+      data:
+        title: '*Dropbox Backup*'
+        message: 'Avviato snapshot per Dropbox in locale'
+
+#########################################################
+  - alias: uploaded backup
+    id: ha_backup_uploaded
+    trigger:
+      platform: state
+      entity_id: input_boolean.dropbox_sync_completed
+      to: 'on'
+    action:
+    - service: script.turn_on
+      entity_id: script.check_dropbox_successful
+
+#########################################################
+  - alias: upload Dropbox backup
+    id: ha_backup_upload
+    trigger:
+      platform: template
+      value_template: >-
+        {{ states('sensor.time') == (((states.input_datetime.backup_time.attributes.timestamp | int) + (states('input_number.ritardo_upload') | int  * 60)) | timestamp_custom('%H:%M', False)) }}
+    condition:
+    - condition: state
+      entity_id: input_boolean.dropbox_backup
+      state: 'on'
+    - condition: template
+      value_template: >-
+        {% set today = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] %}
+        {% if is_state("input_select.backup_day", "Tutti i giorni") %} true
+        {% elif (is_state("input_select.backup_day", "Lun e Ven") and today in ["Monday","Friday"]) %} true
+        {% elif is_state("input_select.backup_day", "Sabato") and today in ["Saturday"] %} true
+        {% elif is_state("input_select.backup_day", "Domenica") and today in ["Sunday"] %} true
+        {% elif is_state("input_select.backup_day", "Lun - Mer - Ven") and today in ["Monday","Wednesday","Friday"] %} true
+        {% else %} false
+        {% endif %}
+    action:
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.backup_status
+        value: 'Avviato backup su Dropbox'
+    - service: hassio.addon_stdin
+      data:
+        addon: 7be23ff5_dropbox_sync
+        input: {"command":"upload"}

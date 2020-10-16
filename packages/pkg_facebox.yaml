@@ -1,0 +1,171 @@
+
+##################################################################
+##                                                               #
+##                       Packages/Dropbox                        #
+##                                                               #
+##################################################################
+#
+##################################################################
+##                                                               #
+##                          Customize                            #
+##                                                               #
+##################################################################
+#homeassistant:
+#  customize:
+#    ################################################
+#    ## Node Anchors
+#    ################################################
+#
+#    package.node_anchors:
+#      customize: &customize
+#        package: 'FaceBox'
+#
+#      expose: &expose
+#        <<: *customize
+#        haaska_hidden: false
+#        homebridge_hidden: false
+#
+#    ################################################
+#    ## sensor
+#    ################################################
+#
+#
+##########################################################
+##                                                       #
+##                       GROUP                           #
+##                                                       #
+##########################################################
+#group:
+#  facebox_pack:
+#    name: FaceBox Pack
+#    entities:
+#      - shell_command.restart_facebox
+#      - shell_command.upload_facebox_state
+#      - image_processing.facedetection
+#      - sensor.facebox_detection1
+#      - sensor.facebox_detection2
+#      - sensor.facebox_detection3
+#      - sensor.facebox_detection4
+#      - sensor.facebox_detection
+#
+##########################################################
+##                                                       #
+##                        SHELL                          #
+##                                                       #
+##########################################################
+#
+#shell_command:
+#  restart_facebox: !secret restart_facebox
+#  upload_facebox_state: !secret upload_facebox_state
+#
+##########################################################
+##                                                       #
+##                  IMAGE PROCESSING                     #
+##                                                       #
+##########################################################
+#
+#image_processing:
+#  - platform: facebox
+#    ip_address: !secret facebox_host
+#    port: !secret facebox_port
+#    source:
+#      - entity_id: camera.synodafang3
+#        name: FaceDetection
+#
+##########################################################
+##                                                       #
+##                        SENSORS                        #
+##                                                       #
+##########################################################
+#sensor:
+#  - platform: template
+#    sensors:
+#      facebox_detection1:
+#        friendly_name: 'Facebox Detection 1'
+#        value_template: >-
+#          {% if state_attr('image_processing.facedetection','faces') %}
+#            '{{ states.image_processing.facedetection.attributes.faces[0]["name"].title() }}'
+#          {% endif %}
+#      facebox_detection2:
+#        friendly_name: 'Facebox Detection 2'
+#        value_template: >-
+#          {% if state_attr('image_processing.facedetection','faces') %}
+#            '{{ states.image_processing.facedetection.attributes.faces[1]["name"].title() }}'
+#          {% endif %}
+#      facebox_detection3:
+#        friendly_name: 'Facebox Detection 3'
+#        value_template: >-
+#          {% if state_attr('image_processing.facedetection','faces') %}
+#            '{{ states.image_processing.facedetection.attributes.faces[2]["name"].title() }}'
+#          {% endif %}
+#      facebox_detection4:
+#        friendly_name: 'Facebox Detection 4'
+#        value_template: >-
+#          {% if state_attr('image_processing.facedetection','faces') %}
+#            '{{ states.image_processing.facedetection.attributes.faces[3]["name"].title() }}'
+#          {% endif %}
+#      facebox_detection:
+#        friendly_name: 'Face Detection'
+#        value_template: >-
+#          {% if states.sensor.facebox_detection4.state != "unknown" %}
+#            a voi {{ states.image_processing.facedetection.attributes.total_faces }} : {{ states.sensor.facebox_detection1.state }}, {{ states.sensor.facebox_detection2.state }}, {{ states.sensor.facebox_detection3.state }} e {{ states.sensor.facebox_detection4.state }}
+#          {% elif states.sensor.facebox_detection3.state != "unknown" %}
+#            a voi {{ states.image_processing.facedetection.attributes.total_faces }} : {{ states.sensor.facebox_detection1.state }}, {{ states.sensor.facebox_detection2.state }} e {{ states.sensor.facebox_detection3.state }}
+#          {% elif states.sensor.facebox_detection2.state != "unknown" %}
+#            a voi {{ states.image_processing.facedetection.attributes.total_faces }} : {{ states.sensor.facebox_detection1.state }} e {{ states.sensor.facebox_detection2.state }}
+#          {% elif states.sensor.facebox_detection1.state != "unknown" %}
+#            {{ states.sensor.facebox_detection1.state }}
+#          {% elif states.image_processing.facedetection.attributes.total_faces > 0 %}
+#            maledetti sconosciuti!
+#          {% else %}
+#            No Face Detected
+#          {% endif %}
+#
+##########################################################
+##                                                       #
+##                     AUTOMAZIONI                       #
+##                                                       #
+##########################################################
+#automation:
+#  - alias: Restart FaceBox Container
+#    trigger:
+#      platform: state
+#      entity_id: image_processing.facedetection
+#      to: 'unknown'
+#    action:
+#      - service: shell_command.restart_facebox
+#      - delay: 00:00:03
+#      - service: shell_command.upload_facebox_state
+#  - alias: Turn on Facebox Automation
+#    trigger:
+#      platform: state
+#      entity_id: binary_sensor.dwporta
+#      to: 'on'
+#    action:
+#      service: automation.turn_on
+#      entity_id: automation.facebox_announcement
+#
+#  - alias: Facebox Announcement
+#    trigger:
+#      platform: event
+#      event_type: image_processing.detect_face
+#    action:
+#      - service_template: '{% if states.sensor.facebox_detection.state != "unknown" and states.sensor.facebox_detection.state != "No Face Detected" %} notify.alexa_media {% endif %}'
+#        data_template:
+#          target: media_player.echodot_stanzetta
+#          message: >-
+#            {% if states.sensor.facebox_detection.state != "unknown" and states.sensor.facebox_detection.state != "No Face Detected" %}
+#              Ciao {{ states.sensor.facebox_detection.state }}
+#            {% endif %}
+#          data:
+#            type: announce
+#            method: all
+#      - service_template: '{% if states.sensor.facebox_detection.state != "unknown" and states.sensor.facebox_detection.state != "No Face Detected" %} notify.family {% endif %}'
+#        data_template:
+#          message: >-
+#            {% if states.sensor.facebox_detection.state != "unknown" and states.sensor.facebox_detection.state != "No Face Detected" %}
+#              Ciao {{ states.sensor.facebox_detection.state }}
+#            {% endif %}
+#      - service: automation.turn_off
+#        entity_id: automation.facebox_announcement
+#
