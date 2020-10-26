@@ -331,4 +331,4 @@ car_locator:
       call_no_annuncio: 1
       notify: mobile_app_iphonexs
       title: "CarLocator"
-      message: "la posizione della C4 è stata aggiornata: {{ states('sensor.c4_cactus') }}."
+      message: "la posizione della C4 è stata aggiornata"

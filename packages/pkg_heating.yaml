@@ -191,15 +191,15 @@ script:
             {% else %}
               {{ temperature|float + entity_temp|float + states('input_number.taway')|float + offset|float }}
             {% endif %}
-      - service: script.my_notify
-        data:
-          mute: 1
-          call_informare: 0
-          call_no_fatto_casuale: 1
-          call_no_annuncio: 1
-          notify: mobile_app_iphonexs
-          title: "HeatingSystem"
-          message: "Temperatura {{ state_attr(entity,'friendly_name') }}: {{temperature}}°"
+     #- service: script.my_notify
+     #  data:
+     #    mute: 1
+     #    call_informare: 0
+     #    call_no_fatto_casuale: 1
+     #    call_no_annuncio: 1
+     #    notify: mobile_app_iphonexs
+     #    title: "HeatingSystem"
+     #    message: "Temperatura {{ state_attr(entity,'friendly_name') }}: {{temperature}}°"
      # - service: script.my_notify
      #   data:
      #     mute: 1
@@ -249,6 +249,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.dwcucina
         to: 'on'
+        for:
+          minutes: 1
       - platform: state
         entity_id: climate.hisense_cucina
         to: 'dry'
@@ -261,6 +263,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.dwstanzetta
         to: 'on'
+        for:
+          minutes: 1        
     action:
       - service: climate.turn_off
         entity_id: climate.heat_stanzetta
@@ -270,6 +274,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.dwstanzaletto
         to: 'on'
+        for:
+          minutes: 1
       - platform: state
         entity_id: climate.hisense_stanzaletto
         to: 'dry'

@@ -1,4 +1,80 @@
 ################################################
+## MOLD
+################################################
+- alias: "Attivazione Deumidificatore Muffa"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.mold_stanzaletto
+      above: 85
+      for:
+        minutes: 5
+    - platform: numeric_state
+      entity_id: sensor.mold_cucina
+      above: 85
+      for:
+        minutes: 5
+    - platform: numeric_state
+      entity_id: sensor.mold_salotto
+      above: 85
+      for:
+        minutes: 5
+  condition:
+    condition: template
+    value_template: "{{ states('sensor.period_of_day') != 'Notte' }}"
+  action:
+    - choose:
+        - conditions:
+            - condition: numeric_state
+              entity_id: sensor.mold_stanzaletto
+              above: 85
+          sequence:
+           - service: climate.set_hvac_mode
+             data:
+               entity_id: climate.hisense_stanzaletto
+               hvac_mode: dry
+           - delay:
+               minutes: "{{ states('input_number.dry_away_stanzaletto')|int }}"
+           - service: climate.turn_off
+             entity_id: climate.hisense_stanzaletto               
+           - service: script.my_notify
+             data:
+               mute: 1
+               call_informare: 0
+               call_no_fatto_casuale: 1
+               call_no_annuncio: 1
+               notify: mobile_app_iphonexs
+               title: "DEBUG"
+               message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: MolD"
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: numeric_state
+                  entity_id: sensor.mold_salotto
+                  above: 85
+                - condition: numeric_state
+                  entity_id: sensor.mold_cucina
+                  above: 85
+          sequence:
+           - service: climate.set_hvac_mode
+             data:
+               entity_id: climate.hisense_cucina
+               hvac_mode: dry
+           - delay:
+               minutes: "{{ states('input_number.dry_away_cucina')|int }}"
+           - service: climate.turn_off
+             entity_id: climate.hisense_cucina               
+           - service: script.my_notify
+             data:
+               mute: 1
+               call_informare: 0
+               call_no_fatto_casuale: 1
+               call_no_annuncio: 1
+               notify: mobile_app_iphonexs
+               title: "DEBUG"
+               message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: MolD"
+
+
+################################################
 ## TV
 ################################################
 - alias: TvSync

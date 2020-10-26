@@ -108,9 +108,8 @@ http:
 logger:
   default: error
   logs:
-    homeassistant.core: fatal
-   # homeassistant.components.automation: info
-   # homeassistant.components.script: warning
+    homeassistant.components.broadlink: info     # log level for MQTT integration
+    custom_components.smartir: info    # log level for a custom component
     
 input_datetime:
   mauro_away:
@@ -197,13 +196,13 @@ alarm_control_panel:
     armed_home:
       delay_time: 0
 
-shelly:
-  discovery: true
-  additional_information: true
-  upgrade_switch: true
-  sensors:
-    - rssi
-    - mqtt
+#shelly:
+#  discovery: true
+#  additional_information: true
+#  upgrade_switch: true
+#  sensors:
+#    - rssi
+#    - mqtt
 
 
 cloud:

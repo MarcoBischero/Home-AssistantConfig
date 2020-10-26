@@ -1,3 +1,36 @@
+    ################################################
+    ## MOLD
+    ################################################   
+  - platform: mold_indicator
+    name: mold_stanzaletto
+    indoor_temp_sensor: sensor.temperature_stanzaletto
+    indoor_humidity_sensor: sensor.humidity_stanzaletto
+    outdoor_temp_sensor: sensor.outside_temp
+    calibration_factor: 1.7
+  - platform: mold_indicator
+    name: mold_bagno
+    indoor_temp_sensor: sensor.temperature_bagno
+    indoor_humidity_sensor: sensor.humidity_bagno
+    outdoor_temp_sensor: sensor.outside_temp
+    calibration_factor: 1.7
+  - platform: mold_indicator
+    name: mold_cucina
+    indoor_temp_sensor: sensor.temperature_cucina
+    indoor_humidity_sensor: sensor.humidity_cucina
+    outdoor_temp_sensor: sensor.outside_temp
+    calibration_factor: 1.7
+  - platform: mold_indicator
+    name: mold_salotto
+    indoor_temp_sensor: sensor.temperature_salotto
+    indoor_humidity_sensor: sensor.humidity_salotto
+    outdoor_temp_sensor: sensor.outside_temp
+    calibration_factor: 1.7
+  - platform: mold_indicator
+    name: mold_stanzetta
+    indoor_temp_sensor: sensor.temperature_stanzetta
+    indoor_humidity_sensor: sensor.humidity_stanzetta
+    outdoor_temp_sensor: sensor.outside_temp
+    calibration_factor: 1.7
   - platform: google_geocode
     name: C4_Cactus
     origin: device_tracker.c4_cactus
@@ -54,6 +87,11 @@
 
   - platform: template
     sensors:
+      outside_temp:
+        friendly_name: "Temperatura Esterna"
+        value_template: "{{ state_attr('weather.home','temperature') }}"
+        device_class: temperature
+        unit_of_measurement: "°C"
       thermostattemperature:
         friendly_name: "Temperatura Thermostato"
         value_template: '{{ states.climate.riscaldamentosalotto.attributes.temperature }}'

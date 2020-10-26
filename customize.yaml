@@ -1,3 +1,15 @@
+device_tracker.iphone:
+  friendly_name: Marco
+  entity_picture: "/api/image/serve/1e20b6accd10ec1ceda524f82b0dfebc/512x512"
+device_tracker.iphonexs:
+  friendly_name: Marco
+  entity_picture: "/api/image/serve/1e20b6accd10ec1ceda524f82b0dfebc/512x512"
+device_tracker.iphonexs_2:
+  friendly_name: Marco
+  entity_picture: "/api/image/serve/1e20b6accd10ec1ceda524f82b0dfebc/512x512"
+device_tracker.iphonexs_3:
+  friendly_name: Marco
+  entity_picture: "/api/image/serve/1e20b6accd10ec1ceda524f82b0dfebc/512x512"
 light.tavolo1:
   icon: mdi:ceiling-light
 light.tavolo2:
@@ -6,22 +18,21 @@ switch.comodino_marco:
   icon: mdi:lamp
 switch.comodino_noemi:
   icon: mdi:lamp
-device_tracker.iphone:
-  friendly_name: Marco
 device_tracker.iphone_noemi_2:
   friendly_name: Noemi
-  entity_picture: https://graph.facebook.com/1360609891/picture?type=normal
+  entity_picture: "/api/image/serve/c44f346ef79e825e501c69ab00a3f402/512x512"
   icon: mdi:face
-device_tracker.iphonexs_3:
-  friendly_name: Marco
-  entity_picture: https://graph.facebook.com/1379310734/picture?type=normal
+device_tracker.iphone_2:
+  friendly_name: Noemi
+  entity_picture: "/api/image/serve/c44f346ef79e825e501c69ab00a3f402/512x512"
+  icon: mdi:face
 person.noemi:
   friendly_name: Noemi
-  entity_picture: https://graph.facebook.com/1360609891/picture?type=normal
+  entity_picture: "/api/image/serve/c44f346ef79e825e501c69ab00a3f402/512x512"
   icon: mdi:face
 person.marco:
   friendly_name: Marco
-  entity_picture: https://graph.facebook.com/1379310734/picture?type=normal
+  entity_picture: "/api/image/serve/1e20b6accd10ec1ceda524f82b0dfebc/512x512"
 device_tracker.airmarcobischero:
   hidden: true
 device_tracker.alexwatch:
@@ -93,6 +104,7 @@ automation.noemi_is_home:
   icon: mdi:pig
 sensor.noah:
   friendly_name: Noah
+  entity_picture: "/api/image/serve/b3281db77a01f601c5a02b3835d7286e/512x512"
   icon: mdi:face
 variable.last_notification_name:
   friendly_name: lastNotificationDevice
@@ -421,8 +433,16 @@ automation.notifica_fine_lavoro:
   icon: mdi:car-info
 climate.climate_cucina:
   friendly_name: Condizionatore Cucina
+  hvac_modes:
+  - cool
+  - dry
+  - 'off'
 climate.climate_stanzaletto:
   friendly_name: Condizionatore Stanza da Letto
+  hvac_modes:
+  - cool
+  - dry
+  - 'off'
 sensor.c4_cactus:
   icon: mdi:car
   friendly_name: C4 Cactus
