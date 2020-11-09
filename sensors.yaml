@@ -6,31 +6,31 @@
     indoor_temp_sensor: sensor.temperature_stanzaletto
     indoor_humidity_sensor: sensor.humidity_stanzaletto
     outdoor_temp_sensor: sensor.outside_temp
-    calibration_factor: 1.7
+    calibration_factor: 2.3
   - platform: mold_indicator
     name: mold_bagno
     indoor_temp_sensor: sensor.temperature_bagno
     indoor_humidity_sensor: sensor.humidity_bagno
     outdoor_temp_sensor: sensor.outside_temp
-    calibration_factor: 1.7
+    calibration_factor: 2.3
   - platform: mold_indicator
     name: mold_cucina
     indoor_temp_sensor: sensor.temperature_cucina
     indoor_humidity_sensor: sensor.humidity_cucina
     outdoor_temp_sensor: sensor.outside_temp
-    calibration_factor: 1.7
+    calibration_factor: 2.3
   - platform: mold_indicator
     name: mold_salotto
     indoor_temp_sensor: sensor.temperature_salotto
     indoor_humidity_sensor: sensor.humidity_salotto
     outdoor_temp_sensor: sensor.outside_temp
-    calibration_factor: 1.7
+    calibration_factor: 2.3
   - platform: mold_indicator
     name: mold_stanzetta
     indoor_temp_sensor: sensor.temperature_stanzetta
     indoor_humidity_sensor: sensor.humidity_stanzetta
     outdoor_temp_sensor: sensor.outside_temp
-    calibration_factor: 1.7
+    calibration_factor: 2.3
   - platform: google_geocode
     name: C4_Cactus
     origin: device_tracker.c4_cactus
@@ -183,10 +183,10 @@
     name: 'Temperatura Casa'
     entity_ids:
       - sensor.riscaldamentosalotto_temperature
-      - sensor.temperatura_cucina
-      - sensor.temperatura_bagno
-      - sensor.temperatura_stanzetta
-      - sensor.temperatura_stanzaletto
+      - sensor.temperature_cucina
+      - sensor.temperature_bagno
+      - sensor.temperature_stanzetta
+      - sensor.temperature_stanzaletto
 #################################################################
 ##                      HUMIDITY                               ##
 #################################################################

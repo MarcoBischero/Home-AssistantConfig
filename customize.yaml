@@ -1,3 +1,10 @@
+sensor.c4_cactus:
+  icon: mdi:car
+  friendly_name: C4 Cactus
+  entity_picture: "/local/c4.png"
+sensor.go_to_work:
+  icon: mdi:run
+  entity_picture: "/local/reply.png"
 device_tracker.iphone:
   friendly_name: Marco
   entity_picture: "/api/image/serve/1e20b6accd10ec1ceda524f82b0dfebc/512x512"
@@ -20,15 +27,19 @@ switch.comodino_noemi:
   icon: mdi:lamp
 device_tracker.iphone_noemi_2:
   friendly_name: Noemi
-  entity_picture: "/api/image/serve/c44f346ef79e825e501c69ab00a3f402/512x512"
+  entity_picture: "/api/image/serve/b84013dac2708319369e27436d2d1b4f/512x512"
+  icon: mdi:face
+device_tracker.iphone_noemi11:
+  friendly_name: Noemi
+  entity_picture: "/api/image/serve/b84013dac2708319369e27436d2d1b4f/512x512"
   icon: mdi:face
 device_tracker.iphone_2:
   friendly_name: Noemi
-  entity_picture: "/api/image/serve/c44f346ef79e825e501c69ab00a3f402/512x512"
+  entity_picture: "/api/image/serve/b84013dac2708319369e27436d2d1b4f/512x512"
   icon: mdi:face
 person.noemi:
   friendly_name: Noemi
-  entity_picture: "/api/image/serve/c44f346ef79e825e501c69ab00a3f402/512x512"
+  entity_picture: "/api/image/serve/b84013dac2708319369e27436d2d1b4f/512x512"
   icon: mdi:face
 person.marco:
   friendly_name: Marco
@@ -104,7 +115,7 @@ automation.noemi_is_home:
   icon: mdi:pig
 sensor.noah:
   friendly_name: Noah
-  entity_picture: "/api/image/serve/b3281db77a01f601c5a02b3835d7286e/512x512"
+  entity_picture: "/api/image/serve/aba709adf961bffca97e00c131e68f89/512x512"
   icon: mdi:face
 variable.last_notification_name:
   friendly_name: lastNotificationDevice
@@ -443,9 +454,6 @@ climate.climate_stanzaletto:
   - cool
   - dry
   - 'off'
-sensor.c4_cactus:
-  icon: mdi:car
-  friendly_name: C4 Cactus
 alarm_control_panel.home_alarm:
   code_format: FORMAT_NUMBER
 camera.dafang3:

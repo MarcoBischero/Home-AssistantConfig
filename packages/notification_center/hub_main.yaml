@@ -543,6 +543,12 @@ automation:
       - condition: template
         value_template: >
           {{ trigger.event.data.title != "DEBUG" }}
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.title != "AUTOMATION" }}
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.title != "SCRIPT" }}
     action:
       - service: persistent_notification.create
         data:
@@ -614,6 +620,40 @@ automation:
             {% else %}
               {{ now().strftime('%H:%M') }} - {{ trigger.event.data.message |replace('   ',' ')| replace('  ',' ') }} {{ trigger.event.data.link }}
             {% endif %}
+  - id: event_persistent_notifications_hub_automation_script
+    alias: event_persistent_notifications_hub_automation_script
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: hub
+    condition:
+      - condition: state
+        entity_id: input_boolean.screen_notifications
+        state: 'on'
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.no_show | length == 0 }}
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.title == "AUTOMATION" }}
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.title == "SCRIPT" }}
+    action:
+      - service: persistent_notification.create
+        data:
+          notification_id: "automation_script"
+          title: "Auto&Script"
+          message: >
+            {% if is_state('persistent_notification.automation_script' , 'notifying') %}
+              {{ states.persistent_notification.automation_script.attributes.message }}
+
+              {{ now().strftime('%H:%M') }} - {{ trigger.event.data.message |replace('   ',' ')| replace('  ',' ') }} {{ trigger.event.data.link }}
+            {% else %}
+              {{ now().strftime('%H:%M') }} - {{ trigger.event.data.message |replace('   ',' ')| replace('  ',' ') }} {{ trigger.event.data.link }}
+            {% endif %}            
 #4-----------------------------------------------------------------------------------------------------#
   # INTERFONO #
   #----------------------------------------------------------------------------------------------------#

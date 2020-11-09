@@ -1,36 +1,35 @@
-  - platform: circadian_lighting
-    name: Circadian
-    lights_ct:
-      - light.lampada
-    lights_brightness:
-      - light.cappa
-    lights_rgb:
-      - light.lampada_farino
-    disable_entity: switch.allarme_perimetrale
-    disable_state: 'on'
-    initial_transition: 10
-  - platform: circadian_lighting
-    name: Tavolo
-    min_brightness: 40
-    lights_ct:
-      - light.lampada_tavolo1
-      - light.lampada_tavolo2
-    disable_entity: switch.allarme_perimetrale
-    disable_state: 'on'
-    initial_transition: 10
-  - platform: circadian_lighting
-    name: Stanzetta
-    min_brightness: 30
-    lights_ct:
-      - light.lampada_stanzetta1
-      - light.lampada_stanzetta2
-      - light.lampada_stanzetta3
-      - light.lampada_stanzaletto1
-      - light.lampada_stanzaletto2
-      - light.lampada_stanzaletto3
-    disable_entity: switch.allarme_perimetrale
-    disable_state: 'on'
-    initial_transition: 10
+#  - platform: circadian_lighting
+#    name: Circadian
+#    lights_ct:
+#      - light.lampada
+#      - light.lampada_farino
+#    lights_brightness:
+#      - light.cappa
+#    disable_entity: switch.allarme_perimetrale
+#    disable_state: 'on'
+#    initial_transition: 10
+#  - platform: circadian_lighting
+#    name: Tavolo
+#    min_brightness: 45
+#    lights_ct:
+#      - light.lampada_tavolo1
+#      - light.lampada_tavolo2
+#    disable_entity: switch.allarme_perimetrale
+#    disable_state: 'on'
+#    initial_transition: 10
+#  - platform: circadian_lighting
+#    name: Stanzetta
+#    min_brightness: 30
+#    lights_ct:
+#      - light.lampada_stanzetta1
+#      - light.lampada_stanzetta2
+#      - light.lampada_stanzetta3
+#      - light.lampada_stanzaletto1
+#      - light.lampada_stanzaletto2
+#      - light.lampada_stanzaletto3
+#    disable_entity: switch.allarme_perimetrale
+#    disable_state: 'on'
+#    initial_transition: 10
         
 #  - platform: command_line
 #    switches:

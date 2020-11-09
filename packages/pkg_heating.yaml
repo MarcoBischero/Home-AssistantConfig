@@ -167,11 +167,29 @@ script:
         data_template:
           entity_id: "{{ entity_id }}"
           temperature: 25
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "SCRIPT"
+          message: "Script: Heating ON {{ state_attr(entity_id,'friendly_name')|replace('Tado','') }}"  
   heating_off:
     sequence:
       - service: climate.turn_off
         data_template:
           entity_id: "{{ entity_id }}"
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "SCRIPT"
+          message: "Script: Heating OFF {{ state_attr(entity_id,'friendly_name')|replace('Tado','') }}"  
   heating_set_temperature:
     alias: Heating Set Temperature
     mode: queued
@@ -182,33 +200,33 @@ script:
           temperature: "{{ temperature }}"
           offset: "{{ offset }}"
           entity_temp: "{{ entity_temp }}"
+          window: "{{ window }}"
       - service: climate.set_temperature
         data:
           entity_id: "{{ entity }}"
           temperature: >
-            {% if family_toggle  == "on" %}
-              {{ temperature|float + entity_temp|float + states('input_number.thome')|float + offset|float }}
-            {% else %}
-              {{ temperature|float + entity_temp|float + states('input_number.taway')|float + offset|float }}
-            {% endif %}
-     #- service: script.my_notify
-     #  data:
-     #    mute: 1
-     #    call_informare: 0
-     #    call_no_fatto_casuale: 1
-     #    call_no_annuncio: 1
-     #    notify: mobile_app_iphonexs
-     #    title: "HeatingSystem"
-     #    message: "Temperatura {{ state_attr(entity,'friendly_name') }}: {{temperature}}°"
-     # - service: script.my_notify
-     #   data:
-     #     mute: 1
-     #     call_informare: 0
-     #     call_no_fatto_casuale: 1
-     #     call_no_annuncio: 1
-     #     notify: mobile_app_iphonexs
-     #     title: "DEBUG"
-     #     message: "Entity: {{ entity }}{{ '\n' -}}family_toggle: {{ family_toggle }}{{ '\n' -}}temperature: {{ temperature }}{{ '\n' -}}offset: {{ offset }}{{ '\n' -}}entity_temp: {{ entity_temp }}"
+              {% if family_toggle  == "on" %}
+                {{ temperature|float + entity_temp|float + states('input_number.thome')|float + offset|float }}
+              {% else %}
+                {{ temperature|float + entity_temp|float + states('input_number.taway')|float + offset|float }}
+              {% endif %}
+      - service: >
+          {% if window == "on" %}
+            climate.turn_off
+          {% else %}
+            climate.turn_on
+          {% endif %}
+        data:
+          entity_id: "{{ entity }}"
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "SCRIPT"
+          message: "Script: Heating Set Temperature {{ state_attr(entity,'friendly_name') }} - Temp: {{ state_attr(entity,'temperature') }}"
 #########################################################
 #                                                       #
 #                     AUTOMATION                        #
@@ -344,6 +362,8 @@ automation:
       conditions:
         - condition: template
           value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: template
+          value_template: "{{ states('sensor.time') <= (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
         - condition: or
           conditions:
             - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t1')|float + states('input_number.thome')|float) }}"
@@ -365,6 +385,7 @@ automation:
             offset: "{{ states('input_number.offset_salotto')|float }}"
             temperature: "{{ states('input_number.t1')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwcucina') }}"               
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -373,6 +394,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzetta')|float }}"
             temperature: "{{ states('input_number.t1')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwstanzetta') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -381,6 +403,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzaletto')|float }}"
             temperature: "{{ states('input_number.t1')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwstanzaletto') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -389,7 +412,16 @@ automation:
             offset: "{{ states('input_number.offset_cucina')|float }}"
             temperature: "{{ states('input_number.t1')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
-
+            window: "{{ states('binary_sensor.dwcucina') }}"   
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "AUTOMATION"
+          message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: Riscaldamento T1"
   - alias: Riscaldamento T2
     id: riscaldamento_t2
     trigger:
@@ -404,6 +436,8 @@ automation:
       conditions:
         - condition: template
           value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: template
+          value_template: "{{ states('sensor.time') <= (state_attr('input_datetime.t3_2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
         - condition: or
           conditions:
             - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t2')|float + states('input_number.thome')|float) }}"
@@ -425,6 +459,7 @@ automation:
             offset: "{{ states('input_number.offset_salotto')|float }}"
             temperature: "{{ states('input_number.t2')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwcucina') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -433,6 +468,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzetta')|float }}"
             temperature: "{{ states('input_number.t2')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwstanzetta') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -441,6 +477,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzaletto')|float }}"
             temperature: "{{ states('input_number.t2')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwstanzaletto') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -449,6 +486,16 @@ automation:
             offset: "{{ states('input_number.offset_cucina')|float }}"
             temperature: "{{ states('input_number.t2')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwcucina') }}"   
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "AUTOMATION"
+          message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: Riscaldamento T2"
 
   - alias: Riscaldamento T3
     id: riscaldamento_t3
@@ -466,10 +513,18 @@ automation:
       conditions:
         - condition: or
           conditions:
-            - condition: template
-              value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-            - condition: template
-              value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t3_2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+            - condition: and
+              conditions:
+                - condition: template
+                  value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+                - condition: template
+                  value_template: "{{ states('sensor.time') <= (state_attr('input_datetime.t2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+            - condition: and
+              conditions:
+                - condition: template
+                  value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t3_2_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+                - condition: template
+                  value_template: "{{ states('sensor.time') <= (state_attr('input_datetime.t1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
         - condition: or
           conditions:
             - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t3')|float + states('input_number.thome')|float) }}"
@@ -491,6 +546,7 @@ automation:
             offset: "{{ states('input_number.offset_salotto')|float }}"
             temperature: "{{ states('input_number.t3')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwcucina') }}"
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -499,6 +555,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzetta')|float }}"
             temperature: "{{ states('input_number.t3')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwstanzetta') }}"            
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -507,6 +564,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzaletto')|float }}"
             temperature: "{{ states('input_number.t3')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
+            window: "{{ states('binary_sensor.dwstanzaletto') }}"            
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -515,7 +573,16 @@ automation:
             offset: "{{ states('input_number.offset_cucina')|float }}"
             temperature: "{{ states('input_number.t3')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
-
+            window: "{{ states('binary_sensor.dwcucina') }}"
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "AUTOMATION"
+          message: "Entity: {{ trigger.entity_id }}\nda: {{ trigger.from_state.state }}\na: {{ trigger.to_state.state }}\nautomation: Riscaldamento T3"
 #########################################################
 #                                                       #
 #                  AWAY/HOME MODE                       #
@@ -542,7 +609,7 @@ automation:
           variables:
             entity: climate.heat_cucina
             entity_temp: "{{ state_attr('climate.heat_cucina','temperature')|float }}"
-            family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
+            family_toggle: "{{ states('input_boolean.family_home_toggle') }}"
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -557,7 +624,7 @@ automation:
             entity: climate.heat_stanzetta
             entity_temp: "{{ state_attr('climate.heat_stanzetta','temperature')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
-            
+        
   - alias: Thermo Temperature Set
     id: thermo_temperature_set
     trigger:
@@ -576,6 +643,7 @@ automation:
             offset: "{{ states('input_number.offset_salotto')|float }}"
             temperature: "{{ temperature }}"
             family_toggle: "{{ family_toggle }}" 
+            window: "{{ states('binary_sensor.dwcucina') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -584,6 +652,7 @@ automation:
             offset: "{{ states('input_number.offset_cucina')|float }}"
             temperature: "{{ temperature }}"
             family_toggle: "{{ family_toggle }}" 
+            window: "{{ states('binary_sensor.dwcucina') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -592,6 +661,7 @@ automation:
             offset: "{{ states('input_number.offset_stanzetta')|float }}"
             temperature: "{{ temperature }}"
             family_toggle: "{{ family_toggle }}" 
+            window: "{{ states('binary_sensor.dwstanzetta') }}"   
       - service: script.turn_on
         data:
           entity_id: "{{ script_name }}"
@@ -600,4 +670,4 @@ automation:
             offset: "{{ states('input_number.offset_stanzaletto')|float }}"     
             temperature: "{{ temperature }}"
             family_toggle: "{{ family_toggle }}" 
-                   
+            window: "{{ states('binary_sensor.dwstanzaletto') }}"                      

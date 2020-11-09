@@ -27,16 +27,16 @@ tado:
   username: !secret tado_username
   password: !secret tado_pwd
 
-rest_command:
-  netflix:
-    method: POST
-    url: !secret netflixUrl
-  youtube:
-    method: POST
-    url: !secret youtubeUrl
-  plex:
-    method: POST
-    url: !secret plexUrl
+#rest_command:
+#  netflix:
+#    method: POST
+#    url: !secret netflixUrl
+#  youtube:
+#    method: POST
+#    url: !secret youtubeUrl
+#  plex:
+#    method: POST
+#    url: !secret plexUrl
 
 hacs:
   token: !secret hacsToken
@@ -171,19 +171,23 @@ camera:
     scan_interval: 5
 #
 media_player:
-  - platform: smartir
-    name: TV Salotto
-    unique_id: tv.salotto
-    device_code: 1060
-    controller_data: remote.broadlink_cucina_remote
-    
- # - platform: samsungtv_tizen
- #   host: !secret samsungtv_ip
- #   name: tvsamsung
- #   port: 8002
- #   mac: !secret samsungtv_mac
- #   api_key: !secret samsungtv_api
- #   device_id: !secret samsungtv_deviceid
+  #- platform: smartir
+  #  name: TV Salotto
+  #  unique_id: tv.salotto
+  #  device_code: 1060
+  #  controller_data: remote.broadlink_cucina_remote
+  - platform: samsungtv_tizen
+    host: !secret samsungtv_ip
+    name: Televisione
+    update_method: smartthings
+    port: 8002
+    mac: !secret samsungtv_mac
+    api_key: !secret samsungtv_api
+    device_id: !secret samsungtv_deviceid
+    source_list: '{"TV": "ST_TV", "ZidooXS": "ST_HDMI1", "HDMI2": "ST_HDMI2", "Chromecast": "ST_HDMI3"}'
+    app_list: '{"YouTube": "111299001912"}'
+    channel_list: '{ "Rai 1":"1", "Rai 2":"2", "Rai 3":"3", "Rete 4 HD":"4", "Canale 5 HD":"5", "Italia 1 HD":"6", "LA7":"7", "TV8":"8", "NOVE":"9", "Rai 4":"21", "IRIS":"22", "Rai 5":"23", "Rai Movie":"24", "Rai Premium":"25", "Cielo":"26", "Paramount Network":"27", "TV 2000":"28", "LA7D":"29", "La5":"30", "Real Time":"31", "QVC":"32", "Food Network":"33", "Cine 34":"34", "Focus":"35", "RTL 102.5 TV":"36", "HSE 24":"37", "Giallo":"38", "TOP Crime":"39", "Boing":"40", "K2":"41", "Rai Gulp":"42", "Rai YOYO":"43", "Frisbee":"44", "Boing Plus":"45", "Cartoonito":"46", "Super!":"47", "Rai News":"48", "Spike!":"49", "Sky TG24":"50", "Mediaset TGCom24":"51", "DMAX":"52", "Italia 53":"53", "Rai Storia":"54", "Mediaset Extra":"55", "Motor Trend":"56", "Rai Sport+ HD":"57", "Rai Sport":"58", "Motor Trend":"59", "SportItalia":"60", "Life 120 Channel":"61", "Donna Sport Tv":"62", "Zelig Sport":"63", "Super Tennis":"64", "Canale 65":"65", "Italia 2":"66", "Rete 4":"104", "Canale 5":"105", "Italia 1":"106", "LA7":"107", "MTV":"108", "NOVE":"109"}'
+    show_channel_number: true
     
 alarm_control_panel:
   - platform: manual
@@ -204,9 +208,7 @@ alarm_control_panel:
 #    - rssi
 #    - mqtt
 
-
 cloud:
-circadian_lighting:
 smartir:
 stream:
 ffmpeg:
