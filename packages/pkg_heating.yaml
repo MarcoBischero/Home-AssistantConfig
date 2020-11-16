@@ -353,6 +353,8 @@ automation:
     trigger:
       - platform: template
         value_template: "{% if states('sensor.time') >= (state_attr('input_datetime.t1_after','timestamp')| int | timestamp_custom('%H:%M', False)) %}true{% endif %}"
+      - platform: template
+        value_template: "{% if states('sensor.time') < (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) %}true{% endif %}"
       - platform: homeassistant
         event: start
       - platform: state
@@ -360,10 +362,12 @@ automation:
     condition:
       condition: and
       conditions:
-        - condition: template
-          value_template: "{{ states('sensor.time') >= (state_attr('input_datetime.t1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
-        - condition: template
-          value_template: "{{ states('sensor.time') <= (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: or
+          conditions:
+            - condition: template
+              value_template: "{{ state_attr('input_datetime.t1_after','timestamp') | int | timestamp_custom('%H:%M', False) <= states('sensor.time') < strptime('22:59:00','%H:%M') }}"
+            - condition: template
+              value_template: "{{ (strptime('00:00:00','%H:%M')) <= states('sensor.time') < (state_attr('input_datetime.t3_1_after','timestamp') | int | timestamp_custom('%H:%M', False)) }}"
         - condition: or
           conditions:
             - "{{ is_state('input_boolean.family_home_toggle', 'on') and state_attr('climate.riscaldamentosalotto','temperature')| float != (states('input_number.t1')|float + states('input_number.thome')|float) }}"
@@ -624,7 +628,11 @@ automation:
             entity: climate.heat_stanzetta
             entity_temp: "{{ state_attr('climate.heat_stanzetta','temperature')|float }}"
             family_toggle: "{{ states('input_boolean.family_home_toggle') }}" 
-        
+#########################################################
+#                                                       #
+#                  MANUAL MODE                          #
+#                                                       #
+#########################################################                    
   - alias: Thermo Temperature Set
     id: thermo_temperature_set
     trigger:
@@ -670,4 +678,56 @@ automation:
             offset: "{{ states('input_number.offset_stanzaletto')|float }}"     
             temperature: "{{ temperature }}"
             family_toggle: "{{ family_toggle }}" 
-            window: "{{ states('binary_sensor.dwstanzaletto') }}"                      
+            window: "{{ states('binary_sensor.dwstanzaletto') }}"        
+                          
+#########################################################
+#                                                       #
+#                  ANTI-MOLD MODE                       #
+#                                                       #
+#########################################################               
+  - alias: Heater Anti Mold Mode
+    id: heater_anti_mold_mode
+    variables:
+      heater:
+        climate.heat_stanzetta: climate.riscaldamentostanzetta
+        climate.heat_stanzaletto: climate.riscaldamentostanzaletto
+        climate.heat_cucina: climate.riscaldamentocucina
+        climate.riscaldamentosalotto: climate.riscaldamentosalotto
+    trigger:
+      - platform: state
+        entity_id: climate.heat_stanzetta
+        attribute: hvac_action
+        to: 'idle'
+        for:
+          hours: 24
+      - platform: state
+        entity_id: climate.heat_stanzaletto
+        attribute: hvac_action
+        to: 'idle'
+        for:
+          hours: 24
+      - platform: state
+        entity_id: climate.heat_cucina
+        attribute: hvac_action
+        to: 'idle'
+        for:
+          hours: 24
+      - platform: state
+        entity_id: climate.riscaldamentosalotto
+        attribute: hvac_action
+        to: 'idle'
+        for:
+          hours: 24       
+    action:
+      - service: script.heating_on
+        data:
+          entity_id: "{{ heater[trigger.entity_id] }}"  
+      - service: script.my_notify
+        data:
+          mute: 1
+          call_informare: 0
+          call_no_fatto_casuale: 1
+          call_no_annuncio: 1
+          notify: 0
+          title: "AUTOMATION"
+          message: "Entity: {{ trigger.entity_id }}\nheater:{{ heater[trigger.entity_id] }}\nautomation: Heater Anti Mold Mode"        

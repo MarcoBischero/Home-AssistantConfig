@@ -213,18 +213,55 @@
  #   scan_interval: 3600
  #   select: ".current-version h1"
  #   value_template: '{{ value.split(":")[1] }}'
-  #- platform: miflora
-  #  mac: '80:EA:CA:88:B4:B5'
-  #  name: FC-Zamioculcas
-  #  force_update: true
-  #  median: 3
-  #  monitored_conditions:
-  #    - moisture
-  #    - light
-  #    - temperature
-  #    - conductivity
-  #    - battery
-    ################################################
+  - platform: miflora
+    mac: 'C4:7C:8D:6B:CC:08'
+    name: FC-Dracaena Deremensis Warneckii
+    scan_interval: 1200
+    median: 3
+    go_unavailable_timeout: 43200
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery 
+  - platform: miflora
+    mac: 'C4:7C:8D:6B:D3:67'
+    name: FC-Zamioculcas Baby
+    scan_interval: 1200
+    median: 3
+    go_unavailable_timeout: 43200
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery 
+  - platform: miflora
+    mac: '80:EA:CA:88:B4:B5'
+    name: FC-Zamioculcas
+    scan_interval: 1200
+    median: 3
+    go_unavailable_timeout: 43200
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery
+  - platform: miflora
+    mac: 'C4:7C:8D:6B:D3:9D'
+    name: FC-Monstera Deliciosa
+    scan_interval: 1200
+    median: 3
+    go_unavailable_timeout: 43200
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery
+  ################################################
     ## Bagno
     ################################################
   #- platform: mqtt

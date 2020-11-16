@@ -1,0 +1,64 @@
+  zamioculcas_zamiifolia:
+    sensors:
+      moisture: sensor.fc_zamioculcas_moisture
+      battery: sensor.fc_zamioculcas_battery
+      temperature: sensor.fc_zamioculcas_temperature
+      conductivity: sensor.fc_zamioculcas_conductivity
+      brightness: sensor.fc_zamioculcas_light_intensity
+    min_moisture: 15
+    max_moisture: 60
+    min_battery: 15
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 10.0
+    max_temperature: 32.0
+    min_brightness: 600
+    max_brightness: 20000
+  zamioculcas_zamiifolia_baby:
+    sensors:
+      moisture: sensor.fc_zamioculcas_baby_moisture
+      battery: sensor.fc_zamioculcas_baby_battery
+      temperature: sensor.fc_zamioculcas_baby_temperature
+      conductivity: sensor.fc_zamioculcas_baby_conductivity
+      brightness: sensor.fc_zamioculcas_baby_light_intensity
+    min_moisture: 15
+    max_moisture: 60
+    min_battery: 15
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 10.0
+    max_temperature: 32.0
+    min_brightness: 600
+    max_brightness: 20000     
+  monstera_deliciosa:
+    sensors:
+      moisture: sensor.fc_monstera_deliciosa_moisture
+      battery: sensor.fc_monstera_deliciosa_battery
+      temperature: sensor.fc_monstera_deliciosa_temperature
+      conductivity: sensor.fc_monstera_deliciosa_conductivity
+      brightness: sensor.fc_monstera_deliciosa_light_intensity
+    min_moisture: 15
+    max_moisture: 60
+    min_battery: 15
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 12.0
+    max_temperature: 32.0
+    min_brightness: 800
+    max_brightness: 15000        
+  dracaena_deremensis:
+    sensors:
+      moisture: sensor.fc_dracaena_deremensis_warneckii_moisture
+      battery: sensor.fc_dracaena_deremensis_warneckii_battery
+      temperature: sensor.fc_dracaena_deremensis_warneckii_temperature
+      conductivity: sensor.fc_dracaena_deremensis_warneckii_conductivity
+      brightness: sensor.fc_dracaena_deremensis_warneckii_light_intensity
+    min_moisture: 15
+    max_moisture: 60
+    min_battery: 15
+    min_conductivity: 200
+    max_conductivity: 1500
+    min_temperature: 10.0
+    max_temperature: 35.0
+    min_brightness: 2000
+    max_brightness: 50000      

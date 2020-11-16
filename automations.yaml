@@ -34,7 +34,7 @@
   mode: parallel
   trigger:
     platform: event
-    event_type: adaptive_lighting.manual_controlu
+    event_type: adaptive_lighting.manual_control
   variables:
     light: "{{ trigger.event.data.entity_id }}"
     switch: "{{ trigger.entity_id }}"
@@ -310,23 +310,60 @@
 ################################################
 ## Mi Flora
 ################################################
-#- alias: Notifica pianta secca
-#  id: notifica_pianta_secca
-#  trigger:
-#    platform: numeric_state
-#    entity_id: sensor.fc_zamioculcas_moisture
-#    below: 10
-#  action:
-#  - service: script.my_notify
-#    data:
-#      call_informare: 1
-#      call_no_fatto_casuale: 1
-#      notify: Family
-#      title: Giardinaggio
-#      alexa_type: announce
-#      alexa_method: all
-#      message: La pianta sta morendo disidratata! Abbeveraggio!!
-
+- alias: Notifica pianta secca
+  id: notifica_pianta_secca
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.fc_zamioculcas_moisture
+      below: 15
+    - platform: numeric_state
+      entity_id: sensor.fc_zamioculcas_baby_moisture
+      below: 15
+    - platform: numeric_state
+      entity_id: sensor.fc_monstera_deliciosa_moisture
+      below: 15
+    - platform: numeric_state
+      entity_id: sensor.fc_dracaena_deremensis_warneckii_moisture
+      below: 15
+  action:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Giardinaggio
+      alexa_type: announce
+      alexa_method: all
+      message: "La pianta {{ state_attr(trigger.entity_id,'friendly_name') | replace('FC-','') | replace ('Moisture','') }} sta morendo disidratata! Abbeveraggio!!!"
+- id: flower1_moisture_unavailable_check
+  alias: miFlora Unavailable
+  trigger:
+    - platform: state
+      entity_id: sensor.fc_zamioculcas_moisture
+      for: 24:00:00
+      to: unavailable
+    - platform: state
+      entity_id: sensor.fc_zamioculcas_baby_moisture
+      for: 24:00:00
+      to: unavailable
+    - platform: state
+      entity_id: sensor.fc_monstera_deliciosa_moisture
+      for: 24:00:00
+      to: unavailable
+    - platform: state
+      entity_id: sensor.fc_dracaena_deremensis_warneckii_moisture
+      for: 24:00:00
+      to: unavailable
+  action:
+  - service: script.my_notify
+    data:
+      call_informare: 1
+      call_no_fatto_casuale: 1
+      notify: Family
+      title: Giardinaggio
+      alexa_type: announce
+      alexa_method: all
+      message: "Sensore pianta {{ state_attr(trigger.entity_id,'friendly_name') | replace('FC-','')| replace ('Moisture','') }} disconnesso"
 ################################################
 ## Remote
 ################################################  
@@ -571,7 +608,7 @@
   trigger:
   - platform: numeric_state
     entity_id: sensor.assorbimento_lavatrice
-    below: '5'
+    below: '6'
     for:
       seconds: 40
   action:
@@ -602,9 +639,9 @@
     entity_id: sensor.assorbimento_lavatrice
     above: '50'
   condition:
-    condition: state
-    entity_id: automation.notifica_fine_lavaggio
-    state: 'off'
+    - condition: state
+      entity_id: automation.notifica_fine_lavaggio
+      state: 'off'
   action:
     - service: automation.turn_on
       entity_id: automation.notifica_fine_lavaggio
@@ -623,7 +660,7 @@
   trigger:
   - platform: numeric_state
     entity_id: sensor.assorbimento_asciugatrice
-    below: '5'
+    below: '6'
     for:
       seconds: 40
   action:
@@ -656,9 +693,9 @@
     entity_id: sensor.assorbimento_asciugatrice
     above: '50'
   condition:
-    condition: state
-    entity_id: automation.notifica_fine_asciugatura
-    state: 'off'
+    - condition: state
+      entity_id: automation.notifica_fine_asciugatura
+      state: 'off'
   action:
     - service: automation.turn_on
       entity_id: automation.notifica_fine_asciugatura
@@ -862,6 +899,15 @@
   - platform: state
     entity_id: person.noemi
     to: home
+  condition:
+    condition: or
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: armed_away
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: armed_home
   action:
     - service: script.turn_on
       entity_id: script.disattiva_allarme
